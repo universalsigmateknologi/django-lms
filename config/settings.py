@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts",
+    "courses",
+    'django_ckeditor_5',
 ]
 
 
@@ -117,12 +119,25 @@ USE_I18N = True
 
 USE_TZ = True
 
+CKEDITOR_5_CONFIGS = {
+    'extends': {
+        'toolbar': [
+            'bold', 'italic', 'link',
+            'bulletedList', 'numberedList', '|',
+            'imageUpload', 'blockQuote', 'codeBlock'
+        ],
+    }
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 

@@ -47,6 +47,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+    @property
+    def is_admin(self):
+        return self.role == 'admin'
+    @property
+    def _is_staff(self):
+        return self.role == 'staff'
+    @property
+    def is_instructor(self):
+        return self.role == 'instructor'
+    @property
+    def is_student(self):
+        return self.role == 'student'
 
     def __str__(self):
         return self.email

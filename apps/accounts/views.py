@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from .tokens import email_verification_token
+from apps.accounts.utils import redirect_user_by_role
 
 User = get_user_model()
 
@@ -25,7 +26,7 @@ def login_view(request):
                 return redirect('login')
 
             login(request, user)
-            return redirect('dashboard')
+            return redirect(redirect_user_by_role(user))
 
     return render(request, 'accounts/login.html')
 

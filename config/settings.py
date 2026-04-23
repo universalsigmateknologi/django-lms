@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "accounts",
     "courses",
     "quizzes",
+    "payments",
     'django_ckeditor_5',
 ]
 

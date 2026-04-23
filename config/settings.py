@@ -122,9 +122,13 @@ USE_TZ = True
 CKEDITOR_5_CONFIGS = {
     'extends': {
         'toolbar': [
-            'bold', 'italic', 'link',
-            'bulletedList', 'numberedList', '|',
-            'imageUpload', 'blockQuote', 'codeBlock'
+            'heading', '|',
+            'bold', 'italic', 'underline', 'strikethrough', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'alignment', 'indent', 'outdent', '|',
+            'imageUpload', 'insertTable', 'mediaEmbed', '|',
+            'blockQuote', 'codeBlock', 'horizontalLine', '|',
+            'undo', 'redo'
         ],
     }
 }
@@ -147,5 +151,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'peacemanzidan@gmail.com'
-EMAIL_HOST_PASSWORD = 'iibnuwwawan098'  # bukan password biasa!
+EMAIL_HOST_PASSWORD = ''  # bukan password biasa!
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

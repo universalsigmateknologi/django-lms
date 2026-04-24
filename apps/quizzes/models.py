@@ -149,3 +149,35 @@ class Answer(models.Model):
     def __str__(self):
         mark = "✓" if self.is_correct else "✗"
         return f"{mark} {self.text[:60]}"
+    
+# tambahkan di bagian bawah apps/quizzes/models.py
+
+# class EssayGrading(models.Model):
+#     id            = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     answer_record = models.OneToOneField(
+#                       "enrollments.QuizAnswerRecord",
+#                       on_delete=models.CASCADE,
+#                       related_name="essay_grading",
+#                     )
+#     graded_by     = models.ForeignKey(
+#                       settings.AUTH_USER_MODEL,
+#                       on_delete=models.SET_NULL,
+#                       null=True,
+#                       related_name="essay_gradings",
+#                       limit_choices_to={"role__in": ["instructor", "staff", "admin"]},
+#                     )
+#     score         = models.FloatField(
+#                       _("score"), default=0.0,
+#                       validators=[MinValueValidator(0.0)],
+#                     )
+#     feedback      = models.TextField(_("grader feedback"), blank=True)
+#     graded_at     = models.DateTimeField(_("graded at"), default=timezone.now)
+
+#     class Meta:
+#         db_table     = "essay_gradings"
+#         verbose_name = _("essay grading")
+#         verbose_name_plural = _("essay gradings")
+#         ordering     = ["-graded_at"]
+
+#     def __str__(self):
+#         return f"Grading by {self.graded_by} | Score: {self.score}"

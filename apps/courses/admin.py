@@ -11,6 +11,7 @@ class LessonAdmin(admin.ModelAdmin):
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug')
+    search_fields = ('title', 'description')
     
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):

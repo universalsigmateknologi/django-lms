@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "accounts",
-    "courses",
-    "quizzes",
-    "payments",
+    "apps.accounts",
+    "apps.courses",
+    "apps.enrollments",
+    "apps.quizzes",
+    "apps.payments",
     'django_ckeditor_5',
 ]
 

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Count, Sum
-from .models import Quiz, Question, Answer #EssayGrading
+from .models import Quiz, Question, Answer, EssayGrading
 
 
 # ─── Inlines ─────────────────────────────────────────────────────────────────
@@ -145,21 +145,21 @@ class AnswerAdmin(admin.ModelAdmin):
     def question_short(self, obj):
         return obj.question.text[:50]
 
-# @admin.register(EssayGrading)
-# class EssayGradingAdmin(admin.ModelAdmin):
-#     list_display  = ("student_email", "graded_by", "score", "has_feedback", "graded_at")
-#     list_filter   = ("graded_at",)
-#     search_fields = (
-#         "answer_record__attempt__enrollment__student__email",
-#         "graded_by__email",
-#     )
-#     readonly_fields = ("id", "answer_record", "graded_at")
+@admin.register(EssayGrading)
+class EssayGradingAdmin(admin.ModelAdmin):
+    list_display  = ("student_email", "graded_by", "score", "has_feedback", "graded_at")
+    list_filter   = ("graded_at",)
+    search_fields = (
+        "answer_record__attempt__enrollment__student__email",
+        "graded_by__email",
+    )
+    readonly_fields = ("id", "answer_record", "graded_at")
 
-#     @admin.display(description="Student")
-#     def student_email(self, obj):
-#         return obj.answer_record.attempt.enrollment.student.email
+    @admin.display(description="Student")
+    def student_email(self, obj):
+        return obj.answer_record.attempt.enrollment.student.email
 
-#     @admin.display(description="Feedback?", boolean=True)
-#     def has_feedback(self, obj):
-#         return bool(obj.feedback)
+    @admin.display(description="Feedback?", boolean=True)
+    def has_feedback(self, obj):
+        return bool(obj.feedback)
 

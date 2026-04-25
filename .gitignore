@@ -5,3 +5,4 @@ __pycache__/
 media/
 **/migrations/*
 !**/migrations/__init__.py
+node_modules/

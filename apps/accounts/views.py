@@ -28,7 +28,7 @@ def login_view(request):
             login(request, user)
             return redirect(redirect_user_by_role(user))
 
-    return render(request, 'accounts/login.html')
+    return render(request, 'accounts/auth/login.html')
 
 def register(request):
     if request.method == 'POST':
@@ -65,7 +65,7 @@ def register(request):
         messages.success(request, 'Cek email untuk verifikasi!')
         return redirect('login')
 
-    return render(request, 'accounts/register.html')
+    return render(request, 'accounts/auth/register.html')
 
 def verify_email(request, uidb64, token):
     try:

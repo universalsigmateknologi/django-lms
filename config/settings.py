@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "apps.discussions",
     "apps.notifications",
     "apps.analytics",
-    'django_ckeditor_5',
+    "django_ckeditor_5",
 ]
 
 

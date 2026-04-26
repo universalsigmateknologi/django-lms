@@ -1,0 +1,1025 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    * {
+        -webkit-font-smoothing: antialiased;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .custom-check {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid #bcccdc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        transition: all 0.15s;
+    }
+
+    .custom-check:checked {
+        background: #102a43;
+        border-color: #102a43;
+    }
+
+    .custom-check:checked::after {
+        content: '';
+        position: absolute;
+        left: 4.5px;
+        top: 1.5px;
+        width: 5px;
+        height: 9px;
+        border: solid white;
+        border-width: 0 1.5px 1.5px 0;
+        transform: rotate(45deg);
+    }
+
+    .custom-radio {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid #bcccdc;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        transition: all 0.15s;
+    }
+
+    .custom-radio:checked {
+        border-color: #102a43;
+    }
+
+    .custom-radio:checked::after {
+        content: '';
+        position: absolute;
+        left: 3.5px;
+        top: 3.5px;
+        width: 7px;
+        height: 7px;
+        background: #102a43;
+        border-radius: 50%;
+    }
+
+    mark {
+        background: rgba(16, 42, 67, 0.1);
+        color: #102a43;
+        padding: 0 2px;
+        border-radius: 2px;
+        font-weight: 600;
+    }
+
+    .sidebar-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #d9e2ec transparent;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #d9e2ec;
+        border-radius: 2px;
+    }
+
+    .filter-body {
+        max-height: 400px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .filter-body.collapsed {
+        max-height: 0;
+    }
+</style>
+
+
+<!-- ========== RESULTS AREA ========== -->
+<div id="results-area" class="flex-1 flex max-w-[1440px] mx-auto w-full">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside id="sidebar" class="hidden lg:block w-60 shrink-0 border-r border-navy-100 bg-white">
+        <div class="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto sidebar-scroll p-4 space-y-5">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-bold text-navy-900 uppercase tracking-wider">Filter</h2>
+                <button onclick="resetFilters()"
+                    class="text-[11px] font-medium text-navy-500 hover:text-navy-900 transition-colors">Reset</button>
+            </div>
+
+            <!-- Kategori -->
+            <div>
+                <button onclick="toggleFilter(this)"
+                    class="flex items-center justify-between w-full text-[11px] font-semibold text-navy-600 uppercase tracking-wider mb-2.5">
+                    Kategori
+                    <svg class="w-3 h-3 text-navy-400 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="filter-body space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">Web Development</span><span
+                            class="ml-auto text-[11px] text-navy-400">142</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">Mobile
+                            Development</span><span class="ml-auto text-[11px] text-navy-400">38</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">Data Science</span><span
+                            class="ml-auto text-[11px] text-navy-400">24</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">DevOps</span><span
+                            class="ml-auto text-[11px] text-navy-400">12</span></label>
+                </div>
+            </div>
+            <div class="h-px bg-navy-100"></div>
+
+            <!-- Level -->
+            <div>
+                <button onclick="toggleFilter(this)"
+                    class="flex items-center justify-between w-full text-[11px] font-semibold text-navy-600 uppercase tracking-wider mb-2.5">
+                    Level
+                    <svg class="w-3 h-3 text-navy-400 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="filter-body space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">Pemula</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">Menengah</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">Lanjutan</span></label>
+                </div>
+            </div>
+            <div class="h-px bg-navy-100"></div>
+
+            <!-- Harga -->
+            <div>
+                <button onclick="toggleFilter(this)"
+                    class="flex items-center justify-between w-full text-[11px] font-semibold text-navy-600 uppercase tracking-wider mb-2.5">
+                    Harga
+                    <svg class="w-3 h-3 text-navy-400 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="filter-body space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="sr-price"
+                            class="custom-radio" checked onchange="updateFilters()"><span
+                            class="text-sm text-navy-600">Semua</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="sr-price"
+                            class="custom-radio" onchange="updateFilters()"><span
+                            class="text-sm text-navy-600">Gratis</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="sr-price"
+                            class="custom-radio" onchange="updateFilters()"><span
+                            class="text-sm text-navy-600">Berbayar</span></label>
+                </div>
+            </div>
+            <div class="h-px bg-navy-100"></div>
+
+            <!-- Rating -->
+            <div>
+                <button onclick="toggleFilter(this)"
+                    class="flex items-center justify-between w-full text-[11px] font-semibold text-navy-600 uppercase tracking-wider mb-2.5">
+                    Rating
+                    <svg class="w-3 h-3 text-navy-400 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="filter-body space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="sr-rating"
+                            class="custom-radio" checked onchange="updateFilters()"><span
+                            class="text-sm text-navy-600">Semua</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="sr-rating"
+                            class="custom-radio" onchange="updateFilters()">
+                        <div class="flex items-center gap-0.5"><svg class="w-3 h-3 text-amber-400" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg><span class="text-sm text-navy-600">4.5+</span></div>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="sr-rating"
+                            class="custom-radio" onchange="updateFilters()">
+                        <div class="flex items-center gap-0.5"><svg class="w-3 h-3 text-amber-400" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg><span class="text-sm text-navy-600">4.0+</span></div>
+                    </label>
+                </div>
+            </div>
+            <div class="h-px bg-navy-100"></div>
+
+            <!-- Durasi -->
+            <div>
+                <button onclick="toggleFilter(this)"
+                    class="flex items-center justify-between w-full text-[11px] font-semibold text-navy-600 uppercase tracking-wider mb-2.5">
+                    Durasi
+                    <svg class="w-3 h-3 text-navy-400 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div class="filter-body space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">0–10 jam</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">10–30 jam</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="custom-check"
+                            onchange="updateFilters()"><span class="text-sm text-navy-600">30+ jam</span></label>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="flex-1 min-w-0">
+        <!-- Search & Sort Bar -->
+        <div class="sticky top-14 z-40 bg-white border-b border-navy-100 px-6 py-3.5">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <!-- Search -->
+                <div class="relative flex-1">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                    <input id="search-input" type="text" placeholder="Cari kursus, topik, atau instruktur..."
+                        class="w-full pl-9 pr-4 py-2 text-sm border border-navy-200 rounded-lg bg-white text-navy-900 placeholder:text-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent transition-all"
+                        oninput="handleSearch()">
+                </div>
+
+                <!-- Mobile filter toggle -->
+                <button onclick="toggleMobileSidebar()"
+                    class="lg:hidden flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium border border-navy-200 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                    </svg>
+                    Filter
+                </button>
+
+                <!-- Sort -->
+                <div class="relative shrink-0">
+                    <select id="sort-select" onchange="handleSort()"
+                        class="appearance-none pl-3 pr-8 py-2 text-sm border border-navy-200 rounded-lg bg-white text-navy-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent">
+                        <option value="popular">Paling Populer</option>
+                        <option value="newest">Terbaru</option>
+                        <option value="rating">Rating Tertinggi</option>
+                        <option value="price-low">Harga: Rendah ke Tinggi</option>
+                        <option value="price-high">Harga: Tinggi ke Rendah</option>
+                    </select>
+                    <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-navy-400 pointer-events-none"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Active filter tags bar -->
+            <div id="active-filters-bar" class="hidden flex-wrap items-center gap-2 mt-3 pt-3 border-t border-navy-100">
+                <span class="text-xs font-medium text-navy-500">Filter aktif:</span>
+                <div id="active-filter-tags-bar" class="flex flex-wrap gap-1.5"></div>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="px-6 py-5">
+
+            <!-- ===== INSTRUCTOR RESULTS ===== -->
+            <div class="mb-8">
+                <h2 class="text-xs font-semibold text-navy-400 uppercase tracking-wider mb-4">Instruktur</h2>
+                <div class="flex gap-4 overflow-x-auto pb-2">
+                    <!-- Instructor 1 -->
+                    <a href="#"
+                        class="shrink-0 flex items-center gap-3 p-3 bg-white border border-navy-100 rounded-xl hover:shadow-md hover:border-navy-200 transition-all min-w-[260px]">
+                        <img src="https://picsum.photos/seed/inst-dimas/80/80.jpg" alt=""
+                            class="w-12 h-12 rounded-full object-cover">
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-navy-900 truncate">Dimas <mark>Wibowo</mark></p>
+                            <p class="text-xs text-navy-400 truncate"><mark>React</mark> & Next.js Specialist</p>
+                            <div class="flex items-center gap-1 mt-0.5">
+                                <svg class="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <span class="text-[11px] text-navy-500">4.8 · 2.1k siswa</span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Instructor 2 -->
+                    <a href="#"
+                        class="shrink-0 flex items-center gap-3 p-3 bg-white border border-navy-100 rounded-xl hover:shadow-md hover:border-navy-200 transition-all min-w-[260px]">
+                        <img src="https://picsum.photos/seed/inst-rizal/80/80.jpg" alt=""
+                            class="w-12 h-12 rounded-full object-cover">
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-navy-900 truncate">Rizal Firmansyah</p>
+                            <p class="text-xs text-navy-400 truncate">Senior <mark>React</mark> Developer</p>
+                            <div class="flex items-center gap-1 mt-0.5">
+                                <svg class="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <span class="text-[11px] text-navy-500">4.7 · 1.5k siswa</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== COURSE RESULTS ===== -->
+            <h2 class="text-xs font-semibold text-navy-400 uppercase tracking-wider mb-4">Kursus</h2>
+            <div id="course-results" class="space-y-4">
+
+                <!-- Result 1 — Featured match -->
+                <a href="#"
+                    class="group flex flex-col sm:flex-row bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
+                    <div class="relative sm:w-64 shrink-0 overflow-hidden">
+                        <img src="https://picsum.photos/seed/sr-react1/600/360.jpg" alt=""
+                            class="w-full h-40 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div
+                            class="absolute top-2.5 left-2.5 bg-navy-900 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                            Paling Relevan</div>
+                        <button onclick="event.preventDefault(); toggleWishlist(this)"
+                            class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                            <svg class="w-3.5 h-3.5 text-navy-400 heart-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">Web
+                                Dev</span>
+                            <span
+                                class="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Menengah</span>
+                        </div>
+                        <h3 class="text-base font-bold text-navy-900 group-hover:underline leading-snug">
+                            <mark>React</mark>.js & Next.js: Bangun Aplikasi Modern dari Nol
+                        </h3>
+                        <p class="text-xs text-navy-400 mt-1.5 line-clamp-2 leading-relaxed">Pelajari <mark>React</mark>
+                            18, Hooks, Context API, Next.js App Router, Server Components, dan bangun 5 proyek nyata
+                            dari nol.</p>
+                        <p class="text-xs text-navy-400 mt-1.5">Dimas Wibowo</p>
+                        <div class="flex items-center gap-4 mt-auto pt-3">
+                            <div class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <span class="text-xs font-semibold text-navy-700">4.8</span>
+                                <span class="text-[11px] text-navy-400">(876)</span>
+                            </div>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>35 jam</span>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>2.1k</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-base font-bold text-navy-900">Rp279K</span>
+                                <span class="text-xs text-navy-400 line-through">Rp649K</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Result 2 -->
+                <a href="#"
+                    class="group flex flex-col sm:flex-row bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
+                    <div class="relative sm:w-64 shrink-0 overflow-hidden">
+                        <img src="https://picsum.photos/seed/sr-reactnative2/600/360.jpg" alt=""
+                            class="w-full h-40 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <button onclick="event.preventDefault(); toggleWishlist(this)"
+                            class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                            <svg class="w-3.5 h-3.5 text-navy-400 heart-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span
+                                class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">Mobile</span>
+                            <span
+                                class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">Pemula</span>
+                        </div>
+                        <h3 class="text-base font-bold text-navy-900 group-hover:underline leading-snug">
+                            <mark>React</mark> Native: Bikin Aplikasi Mobile iOS & Android
+                        </h3>
+                        <p class="text-xs text-navy-400 mt-1.5 line-clamp-2 leading-relaxed">Kuasai <mark>React</mark>
+                            Native dari dasar. Navigation, state management, API integration, dan publish ke App Store &
+                            Play Store.</p>
+                        <p class="text-xs text-navy-400 mt-1.5">Rizal Firmansyah</p>
+                        <div class="flex items-center gap-4 mt-auto pt-3">
+                            <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg><span class="text-xs font-semibold text-navy-700">4.7</span><span
+                                    class="text-[11px] text-navy-400">(543)</span></div>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>28 jam</span>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>1.5k</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                            <div class="flex items-baseline gap-1.5"><span
+                                    class="text-base font-bold text-navy-900">Rp329K</span><span
+                                    class="text-xs text-navy-400 line-through">Rp749K</span></div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Result 3 -->
+                <a href="#"
+                    class="group flex flex-col sm:flex-row bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
+                    <div class="relative sm:w-64 shrink-0 overflow-hidden">
+                        <img src="https://picsum.photos/seed/sr-react3/600/360.jpg" alt=""
+                            class="w-full h-40 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div
+                            class="absolute top-2.5 left-2.5 bg-white text-navy-900 text-[10px] font-semibold px-2 py-0.5 rounded">
+                            Baru</div>
+                        <button onclick="event.preventDefault(); toggleWishlist(this)"
+                            class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                            <svg class="w-3.5 h-3.5 text-navy-400 heart-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">Web
+                                Dev</span>
+                            <span
+                                class="text-[10px] font-semibold text-red-700 bg-red-50 px-1.5 py-0.5 rounded">Lanjutan</span>
+                        </div>
+                        <h3 class="text-base font-bold text-navy-900 group-hover:underline leading-snug">
+                            <mark>React</mark> Advanced: Performance, Testing & Design Patterns
+                        </h3>
+                        <p class="text-xs text-navy-400 mt-1.5 line-clamp-2 leading-relaxed">Deep dive ke
+                            <mark>React</mark> internals, memoization, code splitting, testing dengan Jest & React
+                            Testing Library, dan design patterns.
+                        </p>
+                        <p class="text-xs text-navy-400 mt-1.5">Dimas Wibowo</p>
+                        <div class="flex items-center gap-4 mt-auto pt-3">
+                            <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg><span class="text-xs font-semibold text-navy-700">4.9</span><span
+                                    class="text-[11px] text-navy-400">(312)</span></div>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>22 jam</span>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>890</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                            <div class="flex items-baseline gap-1.5"><span
+                                    class="text-base font-bold text-navy-900">Rp349K</span><span
+                                    class="text-xs text-navy-400 line-through">Rp849K</span></div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Result 4 -->
+                <a href="#"
+                    class="group flex flex-col sm:flex-row bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
+                    <div class="relative sm:w-64 shrink-0 overflow-hidden">
+                        <img src="https://picsum.photos/seed/sr-react4/600/360.jpg" alt=""
+                            class="w-full h-40 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <button onclick="event.preventDefault(); toggleWishlist(this)"
+                            class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                            <svg class="w-3.5 h-3.5 text-navy-400 heart-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">Web
+                                Dev</span>
+                            <span
+                                class="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Menengah</span>
+                        </div>
+                        <h3 class="text-base font-bold text-navy-900 group-hover:underline leading-snug">Fullstack
+                            dengan <mark>React</mark> + Node.js + MongoDB</h3>
+                        <p class="text-xs text-navy-400 mt-1.5 line-clamp-2 leading-relaxed">Bangun fullstack app
+                            menggunakan <mark>React</mark> di frontend, Node.js/Express API di backend, dan MongoDB
+                            sebagai database. MERN stack lengkap.</p>
+                        <p class="text-xs text-navy-400 mt-1.5">Andi Pratama</p>
+                        <div class="flex items-center gap-4 mt-auto pt-3">
+                            <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg><span class="text-xs font-semibold text-navy-700">4.9</span><span
+                                    class="text-[11px] text-navy-400">(2.1k)</span></div>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>42 jam</span>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>5.8k</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                            <div class="flex items-baseline gap-1.5"><span
+                                    class="text-base font-bold text-navy-900">Rp299K</span><span
+                                    class="text-xs text-navy-400 line-through">Rp799K</span></div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Result 5 -->
+                <a href="#"
+                    class="group flex flex-col sm:flex-row bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
+                    <div class="relative sm:w-64 shrink-0 overflow-hidden">
+                        <img src="https://picsum.photos/seed/sr-react5/600/360.jpg" alt=""
+                            class="w-full h-40 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div
+                            class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                            Gratis</div>
+                        <button onclick="event.preventDefault(); toggleWishlist(this)"
+                            class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                            <svg class="w-3.5 h-3.5 text-navy-400 heart-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">Web
+                                Dev</span>
+                            <span
+                                class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">Pemula</span>
+                        </div>
+                        <h3 class="text-base font-bold text-navy-900 group-hover:underline leading-snug">Belajar
+                            <mark>React</mark> untuk Pemula: Dari 0 sampai Bisa
+                        </h3>
+                        <p class="text-xs text-navy-400 mt-1.5 line-clamp-2 leading-relaxed">Kursus gratis
+                            <mark>React</mark> untuk pemula. Komponen, props, state, hooks dasar, dan mini project
+                            pertamamu.
+                        </p>
+                        <p class="text-xs text-navy-400 mt-1.5">Nadia Putri</p>
+                        <div class="flex items-center gap-4 mt-auto pt-3">
+                            <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg><span class="text-xs font-semibold text-navy-700">4.5</span><span
+                                    class="text-[11px] text-navy-400">(1.2k)</span></div>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>8 jam</span>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>3.4k</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                            <span class="text-base font-bold text-emerald-600">Gratis</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Result 6 -->
+                <a href="#"
+                    class="group flex flex-col sm:flex-row bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
+                    <div class="relative sm:w-64 shrink-0 overflow-hidden">
+                        <img src="https://picsum.photos/seed/sr-react6/600/360.jpg" alt=""
+                            class="w-full h-40 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <button onclick="event.preventDefault(); toggleWishlist(this)"
+                            class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                            <svg class="w-3.5 h-3.5 text-navy-400 heart-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">Web
+                                Dev</span>
+                            <span
+                                class="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Menengah</span>
+                        </div>
+                        <h3 class="text-base font-bold text-navy-900 group-hover:underline leading-snug">
+                            <mark>React</mark> + TypeScript: Typesafe Modern Web App
+                        </h3>
+                        <p class="text-xs text-navy-400 mt-1.5 line-clamp-2 leading-relaxed">Integrasi TypeScript dengan
+                            <mark>React</mark>. Generic types, utility types, custom hooks typed, dan real-world typed
+                            project.
+                        </p>
+                        <p class="text-xs text-navy-400 mt-1.5">Rizal Firmansyah</p>
+                        <div class="flex items-center gap-4 mt-auto pt-3">
+                            <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg><span class="text-xs font-semibold text-navy-700">4.8</span><span
+                                    class="text-[11px] text-navy-400">(198)</span></div>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>18 jam</span>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>670</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                            <div class="flex items-baseline gap-1.5"><span
+                                    class="text-base font-bold text-navy-900">Rp259K</span><span
+                                    class="text-xs text-navy-400 line-through">Rp599K</span></div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Result 7 -->
+                <a href="#"
+                    class="group flex flex-col sm:flex-row bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
+                    <div class="relative sm:w-64 shrink-0 overflow-hidden">
+                        <img src="https://picsum.photos/seed/sr-react7/600/360.jpg" alt=""
+                            class="w-full h-40 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <button onclick="event.preventDefault(); toggleWishlist(this)"
+                            class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                            <svg class="w-3.5 h-3.5 text-navy-400 heart-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1 p-4 sm:p-5 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span
+                                class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">DevOps</span>
+                            <span
+                                class="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Menengah</span>
+                        </div>
+                        <h3 class="text-base font-bold text-navy-900 group-hover:underline leading-snug">Docker & CI/CD
+                            untuk Aplikasi <mark>React</mark></h3>
+                        <p class="text-xs text-navy-400 mt-1.5 line-clamp-2 leading-relaxed">Containerize
+                            <mark>React</mark> app dengan Docker, setup GitHub Actions pipeline, deploy otomatis ke
+                            AWS/GCP.
+                        </p>
+                        <p class="text-xs text-navy-400 mt-1.5">Farel Nugraha</p>
+                        <div class="flex items-center gap-4 mt-auto pt-3">
+                            <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg><span class="text-xs font-semibold text-navy-700">4.7</span><span
+                                    class="text-[11px] text-navy-400">(156)</span></div>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>15 jam</span>
+                            <span class="text-[11px] text-navy-400 flex items-center gap-0.5"><svg class="w-3 h-3"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>430</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                            <div class="flex items-baseline gap-1.5"><span
+                                    class="text-base font-bold text-navy-900">Rp289K</span><span
+                                    class="text-xs text-navy-400 line-through">Rp699K</span></div>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-center gap-1 mt-8 pt-6 border-t border-navy-100">
+                <button
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-navy-900 text-white text-sm font-semibold">1</button>
+                <button
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-600 hover:bg-navy-50 transition-colors">2</button>
+                <button
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-600 hover:bg-navy-50 transition-colors">3</button>
+                <button
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Related Searches -->
+            <div class="mt-10 pt-8 border-t border-navy-100">
+                <h2 class="text-xs font-semibold text-navy-400 uppercase tracking-wider mb-4">Pencarian terkait</h2>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="setSearch('react native')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">react
+                        native</button>
+                    <button onclick="setSearch('react nextjs')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">react
+                        nextjs</button>
+                    <button onclick="setSearch('react hooks')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">react
+                        hooks</button>
+                    <button onclick="setSearch('react redux')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">react
+                        redux</button>
+                    <button onclick="setSearch('react testing')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">react
+                        testing</button>
+                    <button onclick="setSearch('react typescript')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">react
+                        typescript</button>
+                    <button onclick="setSearch('react firebase')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">react
+                        firebase</button>
+                    <button onclick="setSearch('vue vs react')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-white border border-navy-200 rounded-lg hover:border-navy-400 hover:bg-navy-50 transition-colors">vue
+                        vs react</button>
+                </div>
+            </div>
+
+            <!-- No results state (hidden by default) -->
+            <div id="no-results" class="hidden py-16 text-center">
+                <svg class="w-16 h-16 text-navy-200 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="1">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                <h3 class="text-base font-semibold text-navy-900">Tidak ada hasil ditemukan</h3>
+                <p class="text-sm text-navy-400 mt-1">Coba gunakan kata kunci yang berbeda atau periksa ejaan</p>
+                <div class="flex flex-wrap justify-center gap-2 mt-5">
+                    <button onclick="setSearch('react')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-navy-50 rounded-lg hover:bg-navy-100 transition-colors">react</button>
+                    <button onclick="setSearch('javascript')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-navy-50 rounded-lg hover:bg-navy-100 transition-colors">javascript</button>
+                    <button onclick="setSearch('python')"
+                        class="px-3 py-1.5 text-xs text-navy-600 bg-navy-50 rounded-lg hover:bg-navy-100 transition-colors">python</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+
+<!-- ========== MOBILE SIDEBAR OVERLAY ========== -->
+<div id="mobile-sidebar-overlay" class="hidden fixed inset-0 z-50 lg:hidden">
+    <div class="absolute inset-0 bg-navy-900/40 backdrop-blur-sm" onclick="toggleMobileSidebar()"></div>
+    <div id="mobile-sidebar-panel"
+        class="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl transform -translate-x-full transition-transform duration-300">
+        <div class="flex items-center justify-between p-4 border-b border-navy-100">
+            <h2 class="text-sm font-bold text-navy-900">Filter</h2>
+            <button onclick="toggleMobileSidebar()" class="p-1.5 text-navy-400 hover:text-navy-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-sidebar-content" class="overflow-y-auto h-[calc(100%-57px)] p-4 space-y-5"></div>
+    </div>
+</div>
+
+
+<!-- ========== TOAST ========== -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div class="bg-navy-900 text-white px-5 py-3 rounded-xl shadow-xl shadow-navy-900/20 flex items-center gap-3">
+        <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <span id="toast-text" class="text-sm font-medium"></span>
+    </div>
+</div>
+
+
+<script>
+    // ===== Chip toggle =====
+    function toggleChip(btn) {
+        document.querySelectorAll('.chip').forEach(c => {
+            c.classList.remove('bg-navy-900', 'text-white', 'border-navy-900');
+            c.classList.add('bg-white', 'text-navy-600', 'border-navy-200');
+        });
+        btn.classList.remove('bg-white', 'text-navy-600', 'border-navy-200');
+        btn.classList.add('bg-navy-900', 'text-white', 'border-navy-900');
+    }
+
+    // ===== Search state =====
+    function handleSearchInput(input) {
+        const val = input.value.trim();
+        const resultsArea = document.getElementById('results-area');
+        const recentSearches = document.getElementById('recent-searches');
+
+        if (!val) {
+            resultsArea.classList.add('hidden');
+            recentSearches.classList.remove('hidden');
+        } else {
+            resultsArea.classList.remove('hidden');
+            recentSearches.classList.add('hidden');
+            document.getElementById('query-text').textContent = val;
+            highlightResults(val);
+        }
+    }
+
+    function setSearch(term) {
+        const input = document.getElementById('search-input');
+        input.value = term;
+        handleSearchInput(input);
+        input.focus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        input.value = '';
+        handleSearchInput(input);
+        input.focus();
+    }
+
+    // ===== Highlight matching text =====
+    function highlightResults(query) {
+        const q = query.toLowerCase();
+        // Highlight in titles and descriptions
+        document.querySelectorAll('#course-results h3, #course-results .line-clamp-2').forEach(el => {
+            const original = el.getAttribute('data-original') || el.innerHTML;
+            el.setAttribute('data-original', original);
+            // Strip existing marks
+            const clean = original.replace(/<mark>(.*?)<\/mark>/gi, '$1');
+            if (q.length < 2) {
+                el.innerHTML = clean;
+                return;
+            }
+            const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            el.innerHTML = clean.replace(regex, '<mark>$1</mark>');
+        });
+    }
+
+    // Initial highlight
+    highlightResults('react');
+
+    // ===== Filter collapse =====
+    function toggleFilter(btn) {
+        const body = btn.nextElementSibling;
+        const icon = btn.querySelector('svg');
+        body.classList.toggle('collapsed');
+        icon.style.transform = body.classList.contains('collapsed') ? 'rotate(-90deg)' : '';
+    }
+
+    // ===== Active filter tags =====
+    function updateFilters() {
+        const tags = [];
+        document.querySelectorAll('#sidebar .custom-check:checked').forEach(cb => {
+            const label = cb.closest('label');
+            const text = label?.querySelector('span')?.textContent?.trim();
+            if (text) tags.push({ text, el: cb });
+        });
+        ['sr-price', 'sr-rating'].forEach(name => {
+            const checked = document.querySelector(`#sidebar input[name="${name}"]:checked`);
+            if (checked) {
+                const label = checked.closest('label');
+                const text = label?.querySelector('span')?.textContent?.trim();
+                if (text && text !== 'Semua') tags.push({ text, name, el: checked });
+            }
+        });
+
+        const bar = document.getElementById('active-tags-bar');
+        const container = document.getElementById('active-tags');
+        if (tags.length === 0) {
+            bar.classList.add('hidden');
+            bar.classList.remove('flex');
+        } else {
+            bar.classList.remove('hidden');
+            bar.classList.add('flex');
+            container.innerHTML = tags.map((t, i) => `
+          <button onclick="removeTag(${i})" class="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-navy-50 border border-navy-200 rounded-md text-[11px] font-medium text-navy-700 hover:bg-navy-100 transition-colors">
+            ${t.text}<svg class="w-2.5 h-2.5 text-navy-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+          </button>
+        `).join('');
+            window._tags = tags;
+        }
+    }
+
+    function removeTag(i) {
+        const t = window._tags[i];
+        if (!t) return;
+        if (t.el.type === 'checkbox') t.el.checked = false;
+        else {
+            const first = document.querySelector(`#sidebar input[name="${t.name}"]`);
+            if (first) first.checked = true;
+        }
+        updateFilters();
+    }
+
+    function resetFilters() {
+        document.querySelectorAll('#sidebar .custom-check').forEach(c => c.checked = false);
+        document.querySelectorAll('#sidebar input[name="sr-price"]').forEach((r, i) => r.checked = i === 0);
+        document.querySelectorAll('#sidebar input[name="sr-rating"]').forEach((r, i) => r.checked = i === 0);
+        updateFilters();
+    }
+
+    // ===== Wishlist =====
+    function toggleWishlist(btn) {
+        const icon = btn.querySelector('.heart-icon');
+        const filled = icon.getAttribute('fill') !== 'none';
+        icon.setAttribute('fill', filled ? 'none' : 'currentColor');
+        icon.classList.toggle('text-red-500', !filled);
+        icon.classList.toggle('text-navy-400', filled);
+        if (!filled) showToast('Ditambahkan ke wishlist!');
+    }
+
+    // ===== Toast =====
+    let toastTimer;
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-text').textContent = msg;
+        toast.classList.remove('hidden');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    // ===== Mobile sidebar =====
+    function toggleMobileSidebar() {
+        const overlay = document.getElementById('mobile-sidebar-overlay');
+        const panel = document.getElementById('mobile-sidebar-panel');
+        const isOpen = !overlay.classList.contains('hidden');
+        if (isOpen) {
+            panel.style.transform = 'translateX(-100%)';
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        } else {
+            document.getElementById('mobile-sidebar-content').innerHTML =
+                document.querySelector('#sidebar .sidebar-scroll').innerHTML;
+            overlay.classList.remove('hidden');
+            requestAnimationFrame(() => panel.style.transform = 'translateX(0)');
+        }
+    }
+</script>
+{% endblock content %}

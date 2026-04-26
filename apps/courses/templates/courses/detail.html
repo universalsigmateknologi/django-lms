@@ -1,0 +1,1088 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    * {
+        -webkit-font-smoothing: antialiased;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Custom checkbox for curriculum */
+    .lesson-check {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid #bcccdc;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        transition: all 0.15s;
+    }
+
+    .lesson-check::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 2px;
+        width: 5px;
+        height: 9px;
+        border: solid white;
+        border-width: 0 1.5px 1.5px 0;
+        transform: rotate(45deg);
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+
+    /* Progress bar animation */
+    .progress-fill {
+        transition: width 0.6s ease;
+    }
+</style>
+
+<!-- ========== BREADCRUMB ========== -->
+<div class="border-b border-navy-100">
+    <div class="max-w-[1440px] mx-auto px-6 py-3 flex items-center gap-1.5 text-xs text-navy-400 overflow-x-auto">
+        <a href="#" class="hover:text-navy-700 transition-colors shrink-0">Beranda</a>
+        <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+        <a href="#" class="hover:text-navy-700 transition-colors shrink-0">Web Development</a>
+        <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+        <span class="text-navy-600 font-medium shrink-0">Full-Stack Web Development dari Nol</span>
+    </div>
+</div>
+
+
+<!-- ========== MAIN LAYOUT ========== -->
+<div class="max-w-[1440px] mx-auto px-6 py-8 lg:py-10">
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-10">
+
+        <!-- ===== LEFT CONTENT ===== -->
+        <div class="flex-1 min-w-0">
+
+            <!-- Hero Image (mobile) -->
+            <div class="lg:hidden rounded-xl overflow-hidden mb-6 border border-navy-100">
+                <img src="https://picsum.photos/seed/detail-hero-mobile/800/450.jpg" alt="Course"
+                    class="w-full h-48 sm:h-64 object-cover">
+            </div>
+
+            <!-- Title & Meta -->
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-2 py-0.5 rounded">Web
+                    Development</span>
+                <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Pemula</span>
+                <span
+                    class="text-[10px] font-semibold text-navy-900 bg-navy-900 text-white px-2 py-0.5 rounded">Terpopuler</span>
+            </div>
+
+            <h1 class="text-2xl lg:text-3xl font-bold tracking-tight leading-tight">Full-Stack Web Development dari Nol
+                sampai Deploy</h1>
+
+            <p class="text-sm text-navy-500 mt-2.5 leading-relaxed line-clamp-2">Kuasai HTML, CSS, JavaScript, React,
+                Node.js, dan database. Bangun proyek nyata dan siap kerja sebagai full-stack developer dalam 42 jam.</p>
+
+            <!-- Rating & Stats Row -->
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 pb-5 border-b border-navy-100">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-base font-bold text-navy-900">4.9</span>
+                    <div class="flex gap-0.5">
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                    </div>
+                    <a href="#reviews" class="text-xs font-medium text-navy-600 hover:underline">(2,147 rating)</a>
+                </div>
+                <span class="text-xs text-navy-400">5,823 siswa</span>
+                <span class="text-xs text-navy-400">Dibuat oleh <a href="#instructor"
+                        class="font-medium text-navy-600 hover:underline">Andi Pratama</a></span>
+                <span class="text-xs text-navy-400 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    Terakhir diperbarui 12/2024
+                </span>
+                <span class="text-xs text-navy-400 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" />
+                    </svg>
+                    Bahasa Indonesia
+                </span>
+            </div>
+
+
+            <!-- ===== WHAT YOU'LL LEARN ===== -->
+            <div class="mt-8">
+                <h2 class="text-lg font-bold mb-4">Apa yang akan kamu pelajari</h2>
+                <div class="grid sm:grid-cols-2 gap-x-6 gap-y-2.5 p-5 bg-navy-50/70 rounded-xl border border-navy-100">
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Membangun website responsif dengan HTML5 & CSS3
+                            modern</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Menguasai JavaScript ES6+ secara mendalam</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Membuat SPA dengan React.js dan state management</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Backend API dengan Node.js, Express & REST</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Mengelola database dengan MongoDB & PostgreSQL</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Authentication, authorization & security best
+                            practices</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Deploy aplikasi ke Vercel, Railway & cloud hosting</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-navy-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm text-navy-700">Git workflow, debugging & clean code principles</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ===== CURRICULUM ===== -->
+            <div class="mt-10" id="curriculum">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-lg font-bold">Kurikulum Kursus</h2>
+                    <span class="text-xs text-navy-500">8 bagian · 68 pelajaran · 42j 15m total</span>
+                </div>
+
+                <div class="space-y-2" id="curriculum-accordion">
+
+                    <!-- Section 1 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 1: Pengenalan Web
+                                    Development</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">8 pelajaran · 3j 20m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="divide-y divide-navy-50">
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Apa itu Web Development?</span>
+                                    <span class="text-xs text-navy-400 shrink-0">12:30</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Setup Environment: VS Code &
+                                        Extensions</span>
+                                    <span class="text-xs text-navy-400 shrink-0">18:45</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Cara Kerja Internet & Browser</span>
+                                    <span class="text-xs text-navy-400 shrink-0">22:10</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Dokumentasi & Sumber Belajar</span>
+                                    <span class="text-xs text-navy-400 shrink-0">Artikel</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3 bg-navy-50/40">
+                                    <svg class="w-4 h-4 text-navy-900 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                                    </svg>
+                                    <span class="text-sm text-navy-900 font-medium flex-1">Quiz: Pengenalan Web
+                                        Development</span>
+                                    <span class="text-xs text-navy-400 shrink-0">Quiz</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Struktur Folder Proyek yang Benar</span>
+                                    <span class="text-xs text-navy-400 shrink-0">15:20</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Git & GitHub untuk Pemula</span>
+                                    <span class="text-xs text-navy-400 shrink-0">28:15</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Hello World: File HTML Pertamamu</span>
+                                    <span class="text-xs text-navy-400 shrink-0">25:30</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 2: HTML5 Mendalam</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">10 pelajaran · 5j 45m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="divide-y divide-navy-50">
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Semantic HTML & Struktur Dokumen</span>
+                                    <span class="text-xs text-navy-400 shrink-0">32:00</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Form, Input & Validasi HTML5</span>
+                                    <span class="text-xs text-navy-400 shrink-0">38:15</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Media: Gambar, Video & Audio</span>
+                                    <span class="text-xs text-navy-400 shrink-0">24:40</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <span class="text-xs text-navy-400 font-medium pl-1">+ 7 pelajaran lainnya</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 3: CSS3 & Responsive
+                                    Design</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">12 pelajaran · 7j 10m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="divide-y divide-navy-50">
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Box Model, Display & Positioning</span>
+                                    <span class="text-xs text-navy-400 shrink-0">35:20</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <svg class="w-4 h-4 text-navy-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                                    </svg>
+                                    <span class="text-sm text-navy-700 flex-1">Flexbox & CSS Grid Lengkap</span>
+                                    <span class="text-xs text-navy-400 shrink-0">45:00</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-5 py-3">
+                                    <span class="text-xs text-navy-400 font-medium pl-1">+ 10 pelajaran lainnya</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 4: JavaScript ES6+</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">10 pelajaran · 6j 30m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="px-5 py-3"><span class="text-xs text-navy-400 font-medium pl-1">10 pelajaran
+                                    dalam bagian ini</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 5: React.js & Frontend
+                                    Framework</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">8 pelajaran · 5j 50m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="px-5 py-3"><span class="text-xs text-navy-400 font-medium pl-1">8 pelajaran
+                                    dalam bagian ini</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 6: Node.js & Backend API</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">8 pelajaran · 5j 20m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="px-5 py-3"><span class="text-xs text-navy-400 font-medium pl-1">8 pelajaran
+                                    dalam bagian ini</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 7: Database & Auth</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">6 pelajaran · 4j 00m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="px-5 py-3"><span class="text-xs text-navy-400 font-medium pl-1">6 pelajaran
+                                    dalam bagian ini</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 8 -->
+                    <div class="border border-navy-100 rounded-xl overflow-hidden">
+                        <button onclick="toggleSection(this)"
+                            class="w-full flex items-center justify-between px-5 py-4 hover:bg-navy-50/50 transition-colors text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-navy-900">Bagian 8: Proyek Akhir & Deploy</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-navy-400">6 pelajaran · 4j 20m</span>
+                                <svg class="w-4 h-4 text-navy-400 transition-transform duration-200 section-arrow"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="section-body hidden border-t border-navy-100">
+                            <div class="px-5 py-3"><span class="text-xs text-navy-400 font-medium pl-1">6 pelajaran
+                                    dalam bagian ini</span></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- ===== ABOUT INSTRUCTOR ===== -->
+            <div class="mt-10" id="instructor">
+                <h2 class="text-lg font-bold mb-5">Tentang Instruktur</h2>
+                <div class="flex gap-5 p-5 border border-navy-100 rounded-xl">
+                    <img src="https://picsum.photos/seed/instructor-andi/160/160.jpg" alt="Andi Pratama"
+                        class="w-20 h-20 rounded-xl object-cover shrink-0">
+                    <div class="min-w-0">
+                        <h3 class="text-base font-bold text-navy-900">Andi Pratama</h3>
+                        <p class="text-xs text-navy-500 mt-0.5">Senior Full-Stack Developer · 8+ tahun pengalaman</p>
+                        <div class="flex flex-wrap items-center gap-4 mt-3">
+                            <div class="text-center">
+                                <p class="text-sm font-bold text-navy-900">4.9</p>
+                                <p class="text-[10px] text-navy-400">Rating</p>
+                            </div>
+                            <div class="w-px h-6 bg-navy-100"></div>
+                            <div class="text-center">
+                                <p class="text-sm font-bold text-navy-900">32K</p>
+                                <p class="text-[10px] text-navy-400">Siswa</p>
+                            </div>
+                            <div class="w-px h-6 bg-navy-100"></div>
+                            <div class="text-center">
+                                <p class="text-sm font-bold text-navy-900">5</p>
+                                <p class="text-[10px] text-navy-400">Kursus</p>
+                            </div>
+                            <div class="w-px h-6 bg-navy-100"></div>
+                            <div class="text-center">
+                                <p class="text-sm font-bold text-navy-900">128K</p>
+                                <p class="text-[10px] text-navy-400">Review</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-navy-600 mt-3 leading-relaxed line-clamp-3">Ex-Software Engineer di
+                            Tokopedia dan Gojek. Saat ini berfokus pada edukasi teknologi dan telah membantu ribuan
+                            siswa memulai karier di bidang web development. Spesialisasi di React, Node.js, dan sistem
+                            terdistribusi.</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ===== REVIEWS ===== -->
+            <div class="mt-10" id="reviews">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                    <h2 class="text-lg font-bold">Ulasan Siswa</h2>
+                    <div class="flex items-center gap-3">
+                        <!-- Rating breakdown mini -->
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-2xl font-bold text-navy-900">4.9</span>
+                            <div>
+                                <div class="flex gap-0.5">
+                                    <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                </div>
+                                <p class="text-[10px] text-navy-400">2,147 rating</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating bars -->
+                <div class="flex flex-col sm:flex-row gap-6 mb-8">
+                    <div class="space-y-1.5 w-full sm:w-48 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-navy-500 w-4">5</span>
+                            <div class="flex-1 h-1.5 bg-navy-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-amber-400 rounded-full" style="width:82%"></div>
+                            </div>
+                            <span class="text-[10px] text-navy-400 w-8 text-right">82%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-navy-500 w-4">4</span>
+                            <div class="flex-1 h-1.5 bg-navy-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-amber-400 rounded-full" style="width:13%"></div>
+                            </div>
+                            <span class="text-[10px] text-navy-400 w-8 text-right">13%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-navy-500 w-4">3</span>
+                            <div class="flex-1 h-1.5 bg-navy-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-amber-400 rounded-full" style="width:3%"></div>
+                            </div>
+                            <span class="text-[10px] text-navy-400 w-8 text-right">3%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-navy-500 w-4">2</span>
+                            <div class="flex-1 h-1.5 bg-navy-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-amber-400 rounded-full" style="width:1%"></div>
+                            </div>
+                            <span class="text-[10px] text-navy-400 w-8 text-right">1%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-navy-500 w-4">1</span>
+                            <div class="flex-1 h-1.5 bg-navy-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-amber-400 rounded-full" style="width:1%"></div>
+                            </div>
+                            <span class="text-[10px] text-navy-400 w-8 text-right">1%</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter stars -->
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            class="px-2.5 py-1 text-xs font-medium border border-navy-200 rounded-md text-navy-600 hover:bg-navy-50 transition-colors">Semua</button>
+                        <button
+                            class="px-2.5 py-1 text-xs font-medium border border-navy-200 rounded-md text-navy-600 hover:bg-navy-50 transition-colors">5
+                            <svg class="w-3 h-3 inline text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg></button>
+                        <button
+                            class="px-2.5 py-1 text-xs font-medium border border-navy-200 rounded-md text-navy-600 hover:bg-navy-50 transition-colors">4
+                            <svg class="w-3 h-3 inline text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg></button>
+                        <button
+                            class="px-2.5 py-1 text-xs font-medium border border-navy-200 rounded-md text-navy-600 hover:bg-navy-50 transition-colors">3
+                            <svg class="w-3 h-3 inline text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg></button>
+                    </div>
+                </div>
+
+                <!-- Review cards -->
+                <div class="space-y-5">
+                    <!-- Review 1 -->
+                    <div class="pb-5 border-b border-navy-100">
+                        <div class="flex items-start gap-3">
+                            <img src="https://picsum.photos/seed/rev-rina/80/80.jpg" alt=""
+                                class="w-9 h-9 rounded-full object-cover shrink-0 mt-0.5">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div>
+                                        <p class="text-sm font-semibold text-navy-900">Rina Kartika</p>
+                                        <p class="text-[11px] text-navy-400">3 minggu lalu</p>
+                                    </div>
+                                    <div class="flex gap-0.5">
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-navy-600 mt-2 leading-relaxed">Kursus terbaik yang pernah saya
+                                    ambil! Penjelasannya sangat detail dan terstruktur. Dari nol banget nggak paham
+                                    coding, sekarang sudah bisa bikin website sendiri. Proyek akhirnya juga sangat
+                                    relevan dengan kebutuhan industri. Worth every penny!</p>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <button
+                                        class="flex items-center gap-1 text-xs text-navy-400 hover:text-navy-700 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V3a.75.75 0 0 1 .75-.75A2.25 2.25 0 0 1 16.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m7.598-4.027A9.042 9.042 0 0 0 8.5 11.25H5.904m7.598 4.027h2.737" />
+                                        </svg>
+                                        47
+                                    </button>
+                                    <button
+                                        class="text-xs text-navy-400 hover:text-navy-700 transition-colors">Balas</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="pb-5 border-b border-navy-100">
+                        <div class="flex items-start gap-3">
+                            <img src="https://picsum.photos/seed/rev-fajar/80/80.jpg" alt=""
+                                class="w-9 h-9 rounded-full object-cover shrink-0 mt-0.5">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div>
+                                        <p class="text-sm font-semibold text-navy-900">Fajar Rahman</p>
+                                        <p class="text-[11px] text-navy-400">1 bulan lalu</p>
+                                    </div>
+                                    <div class="flex gap-0.5">
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-navy-600 mt-2 leading-relaxed">Sebagai mahasiswa informatika, ini
+                                    kursus yang melengkapi apa yang saya dapat di kampus. Penjelasan practical dan
+                                    langsung praktek. Satu-satunya saran, mungkin bisa ditambahkan materi tentang
+                                    testing (Jest) dan TypeScript.</p>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <button
+                                        class="flex items-center gap-1 text-xs text-navy-400 hover:text-navy-700 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V3a.75.75 0 0 1 .75-.75A2.25 2.25 0 0 1 16.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m7.598-4.027A9.042 9.042 0 0 0 8.5 11.25H5.904m7.598 4.027h2.737" />
+                                        </svg>
+                                        23
+                                    </button>
+                                    <button
+                                        class="text-xs text-navy-400 hover:text-navy-700 transition-colors">Balas</button>
+                                </div>
+                                <!-- Instructor reply -->
+                                <div class="mt-3 ml-1 pl-3 border-l-2 border-navy-200">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <img src="https://picsum.photos/seed/instructor-andi/80/80.jpg" alt=""
+                                            class="w-5 h-5 rounded-full object-cover">
+                                        <span class="text-xs font-semibold text-navy-900">Andi Pratama</span>
+                                        <span class="text-[10px] text-navy-400">Instruktur</span>
+                                    </div>
+                                    <p class="text-xs text-navy-500 leading-relaxed">Terima kasih masukannya, Fajar!
+                                        Materi TypeScript dan Jest sudah masuk roadmap untuk update berikutnya. Nantikan
+                                        ya 👍</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="pb-5">
+                        <div class="flex items-start gap-3">
+                            <img src="https://picsum.photos/seed/rev-dian/80/80.jpg" alt=""
+                                class="w-9 h-9 rounded-full object-cover shrink-0 mt-0.5">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div>
+                                        <p class="text-sm font-semibold text-navy-900">Dian Safitri</p>
+                                        <p class="text-[11px] text-navy-400">2 bulan lalu</p>
+                                    </div>
+                                    <div class="flex gap-0.5">
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-navy-600 mt-2 leading-relaxed">Switch career dari accounting ke
+                                    tech dan kursus ini jadi starting point terbaik. Penjelasan konsep programming yang
+                                    mudah dipahami oleh orang non-IT. Sekarang sudah 3 bulan selesai kursus dan
+                                    alhamdulillah sudah dapat kerja sebagai junior dev.</p>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <button
+                                        class="flex items-center gap-1 text-xs text-navy-400 hover:text-navy-700 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V3a.75.75 0 0 1 .75-.75A2.25 2.25 0 0 1 16.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m7.598-4.027A9.042 9.042 0 0 0 8.5 11.25H5.904m7.598 4.027h2.737" />
+                                        </svg>
+                                        89
+                                    </button>
+                                    <button
+                                        class="text-xs text-navy-400 hover:text-navy-700 transition-colors">Balas</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Show more -->
+                <button class="mt-6 text-sm font-semibold text-navy-900 hover:underline">Tampilkan semua ulasan</button>
+            </div>
+
+        </div>
+
+
+        <!-- ===== RIGHT SIDEBAR (Sticky) ===== -->
+        <div class="w-full lg:w-[380px] shrink-0">
+            <div class="lg:sticky lg:top-20 space-y-5">
+
+                <!-- Preview Image (desktop) -->
+                <div class="hidden lg:block rounded-xl overflow-hidden border border-navy-100">
+                    <img src="https://picsum.photos/seed/detail-hero-desktop/800/450.jpg" alt="Course"
+                        class="w-full h-52 object-cover">
+                    <div class="relative bg-navy-900 h-10 -mt-10 flex items-end">
+                        <button class="absolute inset-0 flex items-center justify-center group/play"
+                            onclick="showPreviewToast()">
+                            <div
+                                class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover/play:bg-white/30 transition-colors">
+                                <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Price Card -->
+                <div class="bg-white border border-navy-100 rounded-xl p-5 shadow-sm">
+                    <div class="flex items-baseline gap-2.5 mb-1">
+                        <span class="text-2xl font-bold text-navy-900">Rp299K</span>
+                        <span class="text-sm text-navy-400 line-through">Rp799K</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded">63% OFF</span>
+                        <span class="text-[11px] text-navy-400 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            Penawaran berakhir dalam 2 hari
+                        </span>
+                    </div>
+
+                    <button onclick="showBuyToast()"
+                        class="w-full bg-navy-900 hover:bg-navy-950 text-white font-semibold text-sm py-3 rounded-lg transition-colors">
+                        Beli Sekarang
+                    </button>
+                    <button onclick="showWishlistToast()"
+                        class="w-full mt-2 flex items-center justify-center gap-2 border border-navy-200 hover:bg-navy-50 text-navy-700 font-semibold text-sm py-3 rounded-lg transition-colors">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                        </svg>
+                        Tambah ke Wishlist
+                    </button>
+
+                    <p class="text-[11px] text-navy-400 text-center mt-3">Garansi uang kembali 14 hari</p>
+
+                    <!-- Share -->
+                    <div class="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-navy-100">
+                        <button
+                            class="flex items-center gap-1.5 text-xs text-navy-500 hover:text-navy-900 transition-colors">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                            </svg>
+                            Bagikan
+                        </button>
+                        <button
+                            class="flex items-center gap-1.5 text-xs text-navy-500 hover:text-navy-900 transition-colors">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                            </svg>
+                            Hadiahkan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Includes -->
+                <div class="bg-white border border-navy-100 rounded-xl p-5 space-y-3">
+                    <h3 class="text-sm font-bold text-navy-900">Kursus ini mencakup:</h3>
+                    <div class="space-y-2.5">
+                        <div class="flex items-center gap-2.5 text-sm text-navy-600">
+                            <svg class="w-4 h-4 text-navy-500 shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                            </svg>
+                            42 jam video on-demand
+                        </div>
+                        <div class="flex items-center gap-2.5 text-sm text-navy-600">
+                            <svg class="w-4 h-4 text-navy-500 shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                            </svg>
+                            45 artikel & resource
+                        </div>
+                        <div class="flex items-center gap-2.5 text-sm text-navy-600">
+                            <svg class="w-4 h-4 text-navy-500 shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            18 resource downloadable
+                        </div>
+                        <div class="flex items-center gap-2.5 text-sm text-navy-600">
+                            <svg class="w-4 h-4 text-navy-500 shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                            </svg>
+                            Sertifikat penyelesaian
+                        </div>
+                        <div class="flex items-center gap-2.5 text-sm text-navy-600">
+                            <svg class="w-4 h-4 text-navy-500 shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                            </svg>
+                            Akses selamanya
+                        </div>
+                        <div class="flex items-center gap-2.5 text-sm text-navy-600">
+                            <svg class="w-4 h-4 text-navy-500 shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                            </svg>
+                            Akses mobile & TV
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ========== TOAST NOTIFICATION ========== -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div class="bg-navy-900 text-white px-5 py-3 rounded-xl shadow-xl shadow-navy-900/20 flex items-center gap-3">
+        <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <span id="toast-text" class="text-sm font-medium"></span>
+    </div>
+</div>
+
+
+<!-- ========== FOOTER (Mini) ========== -->
+<footer class="border-t border-navy-100 mt-10">
+    <div class="max-w-[1440px] mx-auto px-6 py-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <a href="#" class="flex items-center gap-2.5">
+                <div class="w-7 h-7 bg-navy-900 rounded-lg flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <span class="text-sm font-bold tracking-tight">CourseHub</span>
+            </a>
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-xs text-navy-400 hover:text-navy-700 transition-colors">Syarat Layanan</a>
+                <a href="#" class="text-xs text-navy-400 hover:text-navy-700 transition-colors">Privasi</a>
+                <a href="#" class="text-xs text-navy-400 hover:text-navy-700 transition-colors">Bantuan</a>
+            </div>
+            <p class="text-xs text-navy-400">&copy; 2025 CourseHub</p>
+        </div>
+    </div>
+</footer>
+
+
+<script>
+    // ===== Curriculum accordion =====
+    function toggleSection(btn) {
+        const body = btn.nextElementSibling;
+        const arrow = btn.querySelector('.section-arrow');
+        const isHidden = body.classList.contains('hidden');
+
+        body.classList.toggle('hidden');
+        arrow.style.transform = isHidden ? 'rotate(180deg)' : '';
+    }
+
+    // ===== Toast =====
+    let toastTimeout;
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-text').textContent = message;
+        toast.classList.remove('hidden');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+
+    function showBuyToast() { showToast('Mengarahkan ke halaman pembayaran...'); }
+    function showWishlistToast() { showToast('Ditambahkan ke wishlist!'); }
+    function showPreviewToast() { showToast('Memutar video preview...'); }
+</script>
+{% endblock content %}

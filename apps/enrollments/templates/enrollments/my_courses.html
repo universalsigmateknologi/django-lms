@@ -1,0 +1,827 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    * {
+        -webkit-font-smoothing: antialiased;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .status-btn.active {
+        background: #102a43;
+        color: white;
+        border-color: #102a43;
+    }
+
+    @keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card-anim {
+        animation: cardIn 0.35s ease-out forwards;
+        opacity: 0;
+    }
+
+    .card-anim:nth-child(1) {
+        animation-delay: 0.03s;
+    }
+
+    .card-anim:nth-child(2) {
+        animation-delay: 0.06s;
+    }
+
+    .card-anim:nth-child(3) {
+        animation-delay: 0.09s;
+    }
+
+    .card-anim:nth-child(4) {
+        animation-delay: 0.12s;
+    }
+
+    .card-anim:nth-child(5) {
+        animation-delay: 0.15s;
+    }
+
+    .card-anim:nth-child(6) {
+        animation-delay: 0.18s;
+    }
+
+    .card-anim:nth-child(7) {
+        animation-delay: 0.21s;
+    }
+
+    .card-anim:nth-child(8) {
+        animation-delay: 0.24s;
+    }
+
+    .card-anim:nth-child(9) {
+        animation-delay: 0.27s;
+    }
+
+    /* Dropdown */
+    .dropdown-menu {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.97);
+        pointer-events: none;
+        transition: all 0.15s ease;
+    }
+
+    .dropdown-menu.open {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+</style>
+<!-- ========== COURSES GRID ========== -->
+<div class="flex-1">
+    <div class="max-w-[1440px] mx-auto px-6 py-8">
+
+        <!-- Learning Streak Banner -->
+        <div
+            class="bg-navy-900 rounded-2xl p-5 lg:p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-navy-800 opacity-60"></div>
+            <div class="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-navy-800 opacity-40"></div>
+            <div
+                class="relative z-10 w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center shrink-0 text-2xl">
+                🔥</div>
+            <div class="relative z-10 flex-1">
+                <p class="text-white font-bold text-sm">14 Hari Streak! Luar biasa konsistensinya.</p>
+                <p class="text-navy-300 text-xs mt-0.5">Tetap pertahankan dan raih badge "30 Hari Streak" berikutnya.
+                </p>
+            </div>
+            <div class="relative z-10 flex items-center gap-6 shrink-0">
+                <div class="text-center">
+                    <p class="text-xl font-bold text-white">12.5j</p>
+                    <p class="text-[10px] text-navy-400">Minggu ini</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-xl font-bold text-white">186j</p>
+                    <p class="text-[10px] text-navy-400">Total</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-xl font-bold text-white">5</p>
+                    <p class="text-[10px] text-navy-400">Sertifikat</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Cards Grid -->
+        <div id="course-grid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+
+            <!-- === IN PROGRESS COURSES === -->
+
+            <!-- Course 1 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="progress" data-title="react.js & next.js: aplikasi modern" data-progress="68"
+                data-recent="1">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-react1/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <!-- Play overlay -->
+                    <a href="#"
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div
+                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <!-- Progress bar on image -->
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-white rounded-r" style="width:68%"></div>
+                        </div>
+                    </div>
+                    <!-- Badge -->
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                        Berlangsung
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">React.js
+                        & Next.js: Aplikasi Modern</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Dimas Wibowo</p>
+
+                    <!-- Current lesson -->
+                    <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                        <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Sedang dipelajari</p>
+                        <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">Bagian 5: React Hooks —
+                            useEffect & Custom Hooks</p>
+                    </div>
+
+                    <!-- Stats row -->
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-semibold text-navy-900">68%</span>
+                            <span class="text-[11px] text-navy-400">35/51 pelajaran</span>
+                        </div>
+                        <span class="text-[10px] text-navy-400">2j lalu</span>
+                    </div>
+
+                    <!-- Action -->
+                    <a href="#"
+                        class="mt-3 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg transition-colors">
+                        Lanjutkan Belajar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="progress" data-title="node.js & express: backend api" data-progress="34" data-recent="2">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-node2/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <a href="#"
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div
+                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-white rounded-r" style="width:34%"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>Berlangsung
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">Node.js
+                        & Express: Backend API</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Andi Pratama</p>
+                    <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                        <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Sedang dipelajari</p>
+                        <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">Bagian 3: Middleware —
+                            Authentication & Authorization</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-3"><span
+                                class="text-xs font-semibold text-navy-900">34%</span><span
+                                class="text-[11px] text-navy-400">14/42 pelajaran</span></div>
+                        <span class="text-[10px] text-navy-400">Kemarin</span>
+                    </div>
+                    <a href="#"
+                        class="mt-3 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg transition-colors">Lanjutkan
+                        Belajar</a>
+                </div>
+            </div>
+
+            <!-- Course 3 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="progress" data-title="ui/ux design masterclass: figma" data-progress="12" data-recent="5">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-figma3/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <a href="#"
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div
+                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-white rounded-r" style="width:12%"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>Jeda
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">UI/UX
+                        Design Masterclass: Figma</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Sari Dewi</p>
+                    <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                        <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Terakhir diakses</p>
+                        <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">Bagian 1: Dasar Figma —
+                            Components & Variants</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-3"><span
+                                class="text-xs font-semibold text-navy-900">12%</span><span
+                                class="text-[11px] text-navy-400">3/28 pelajaran</span></div>
+                        <span class="text-[10px] text-navy-400">3 hari lalu</span>
+                    </div>
+                    <a href="#"
+                        class="mt-3 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg transition-colors">Lanjutkan
+                        Belajar</a>
+                </div>
+            </div>
+
+            <!-- Course 4 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="progress" data-title="python untuk data science" data-progress="89" data-recent="3">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-python4/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <a href="#"
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div
+                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-white rounded-r" style="width:89%"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>Berlangsung
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">Python
+                        untuk Data Science</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Budi Santoso</p>
+                    <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                        <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Sedang dipelajari</p>
+                        <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">Bagian 8: Machine Learning —
+                            Supervised Learning</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-3"><span
+                                class="text-xs font-semibold text-navy-900">89%</span><span
+                                class="text-[11px] text-navy-400">50/56 pelajaran</span></div>
+                        <span class="text-[10px] text-navy-400">2 hari lalu</span>
+                    </div>
+                    <a href="#"
+                        class="mt-3 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg transition-colors">Lanjutkan
+                        Belajar</a>
+                </div>
+            </div>
+
+            <!-- Course 5 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="progress" data-title="react native: aplikasi mobile" data-progress="45" data-recent="6">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-rnative5/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <a href="#"
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div
+                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-white rounded-r" style="width:45%"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>Jeda
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">React
+                        Native: Aplikasi Mobile iOS & Android</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Rizal Firmansyah</p>
+                    <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                        <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Terakhir diakses</p>
+                        <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">Bagian 4: Navigation — React
+                            Navigation v6</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-3"><span
+                                class="text-xs font-semibold text-navy-900">45%</span><span
+                                class="text-[11px] text-navy-400">13/29 pelajaran</span></div>
+                        <span class="text-[10px] text-navy-400">5 hari lalu</span>
+                    </div>
+                    <a href="#"
+                        class="mt-3 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg transition-colors">Lanjutkan
+                        Belajar</a>
+                </div>
+            </div>
+
+            <!-- Course 6 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="progress" data-title="docker & ci/cd pipeline" data-progress="21" data-recent="8">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-docker6/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <a href="#"
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div
+                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-white rounded-r" style="width:21%"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>Jeda
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">Docker &
+                        CI/CD Pipeline untuk Production</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Farel Nugraha</p>
+                    <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                        <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Terakhir diakses</p>
+                        <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">Bagian 2: Dockerfile —
+                            Multi-stage Build</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-3"><span
+                                class="text-xs font-semibold text-navy-900">21%</span><span
+                                class="text-[11px] text-navy-400">8/38 pelajaran</span></div>
+                        <span class="text-[10px] text-navy-400">1 minggu lalu</span>
+                    </div>
+                    <a href="#"
+                        class="mt-3 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg transition-colors">Lanjutkan
+                        Belajar</a>
+                </div>
+            </div>
+
+            <!-- Course 7 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="progress" data-title="typescript fundamentals" data-progress="56" data-recent="7">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-ts7/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <a href="#"
+                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div
+                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-white rounded-r" style="width:56%"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>Berlangsung
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">
+                        TypeScript Fundamentals: Types, Interfaces & Generics</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Dimas Wibowo</p>
+                    <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                        <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Sedang dipelajari</p>
+                        <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">Bagian 4: Generics — Generic
+                            Functions & Classes</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-3"><span
+                                class="text-xs font-semibold text-navy-900">56%</span><span
+                                class="text-[11px] text-navy-400">14/25 pelajaran</span></div>
+                        <span class="text-[10px] text-navy-400">6 hari lalu</span>
+                    </div>
+                    <a href="#"
+                        class="mt-3 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg transition-colors">Lanjutkan
+                        Belajar</a>
+                </div>
+            </div>
+
+
+            <!-- === COMPLETED COURSES === -->
+
+            <!-- Course 8 -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="done" data-title="full-stack web development dari nol" data-progress="100" data-recent="4">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-fs8/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        Selesai
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-emerald-400 rounded-r" style="width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">
+                        Full-Stack Web Development dari Nol</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Andi Pratama · Diselesaikan 15 Jan 2025</p>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-navy-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <span class="text-[11px] text-navy-500 font-medium">Sertifikat didapat</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            <span class="text-xs font-semibold text-navy-700">4.9</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <a href="#"
+                            class="flex-1 text-center text-sm font-semibold border border-navy-200 py-2 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors">Lihat
+                            Sertifikat</a>
+                        <div class="relative">
+                            <button onclick="toggleDropdown(event, 'dd8')"
+                                class="px-3 py-2 border border-navy-200 rounded-lg text-navy-500 hover:bg-navy-50 transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                </svg>
+                            </button>
+                            <div id="dd8"
+                                class="dropdown-menu absolute right-0 top-full mt-1 w-40 bg-white border border-navy-100 rounded-xl shadow-xl shadow-navy-900/8 py-1 z-30">
+                                <a href="#"
+                                    class="flex items-center gap-2 px-3 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                                    </svg>Beli Lagi</a>
+                                <button onclick="archiveCourse(this)"
+                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>Arsipkan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 9 — Completed -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="done" data-title="html5 & css3 modern" data-progress="100" data-recent="9">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-html9/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>Selesai
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-emerald-400 rounded-r" style="width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">HTML5 &
+                        CSS3 Modern</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Dimas Wibowo · Diselesaikan 28 Des 2024</p>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-2"><svg class="w-4 h-4 text-navy-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg><span class="text-[11px] text-navy-500 font-medium">Sertifikat didapat</span></div>
+                        <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg><span class="text-xs font-semibold text-navy-700">4.8</span></div>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <a href="#"
+                            class="flex-1 text-center text-sm font-semibold border border-navy-200 py-2 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors">Lihat
+                            Sertifikat</a>
+                        <div class="relative">
+                            <button onclick="toggleDropdown(event, 'dd9')"
+                                class="px-3 py-2 border border-navy-200 rounded-lg text-navy-500 hover:bg-navy-50 transition-colors"><svg
+                                    class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                </svg></button>
+                            <div id="dd9"
+                                class="dropdown-menu absolute right-0 top-full mt-1 w-40 bg-white border border-navy-100 rounded-xl shadow-xl shadow-navy-900/8 py-1 z-30">
+                                <a href="#"
+                                    class="flex items-center gap-2 px-3 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                                    </svg>Beli Lagi</a>
+                                <button onclick="archiveCourse(this)"
+                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>Arsipkan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 10 — Completed -->
+            <div class="course-card card-anim bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300 group"
+                data-status="done" data-title="javascript es6+ mendalam" data-progress="100" data-recent="10">
+                <div class="relative overflow-hidden">
+                    <img src="https://picsum.photos/seed/myc-js10/600/340.jpg" alt=""
+                        class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <div
+                        class="absolute top-2.5 left-2.5 flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>Selesai
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0">
+                        <div class="w-full h-1 bg-white/20">
+                            <div class="progress-fill h-full bg-emerald-400 rounded-r" style="width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">
+                        JavaScript ES6+ Mendalam</h3>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Andi Pratama · Diselesaikan 10 Des 2024</p>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
+                        <div class="flex items-center gap-2"><svg class="w-4 h-4 text-navy-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg><span class="text-[11px] text-navy-500 font-medium">Sertifikat didapat</span></div>
+                        <div class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg><span class="text-xs font-semibold text-navy-700">4.9</span></div>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <a href="#"
+                            class="flex-1 text-center text-sm font-semibold border border-navy-200 py-2 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors">Lihat
+                            Sertifikat</a>
+                        <div class="relative">
+                            <button onclick="toggleDropdown(event, 'dd10')"
+                                class="px-3 py-2 border border-navy-200 rounded-lg text-navy-500 hover:bg-navy-50 transition-colors"><svg
+                                    class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                </svg></button>
+                            <div id="dd10"
+                                class="dropdown-menu absolute right-0 top-full mt-1 w-40 bg-white border border-navy-100 rounded-xl shadow-xl shadow-navy-900/8 py-1 z-30">
+                                <a href="#"
+                                    class="flex items-center gap-2 px-3 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                                    </svg>Beli Lagi</a>
+                                <button onclick="archiveCourse(this)"
+                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>Arsipkan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- No Results State -->
+        <div id="no-results" class="hidden py-20 text-center">
+            <div class="w-20 h-20 mx-auto mb-4 bg-navy-100 rounded-2xl flex items-center justify-center">
+                <svg class="w-10 h-10 text-navy-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="1">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </div>
+            <h3 class="text-base font-semibold text-navy-900" id="no-results-title">Tidak ada kursus ditemukan</h3>
+            <p class="text-sm text-navy-400 mt-1" id="no-results-desc">Coba ubah filter atau kata kunci pencarian.</p>
+            <a href="#"
+                class="inline-flex items-center gap-1.5 mt-5 text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white px-5 py-2.5 rounded-lg transition-colors">
+                Jelajahi Kursus
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Load More -->
+        <div id="load-more" class="mt-8 text-center">
+            <button
+                class="px-6 py-2.5 text-sm font-semibold border border-navy-200 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors">Muat
+                Lebih Banyak</button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ========== TOAST ========== -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div class="bg-navy-900 text-white px-5 py-3 rounded-xl shadow-xl shadow-navy-900/20 flex items-center gap-3">
+        <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <span id="toast-text" class="text-sm font-medium"></span>
+    </div>
+</div>
+
+
+<script>
+    let currentFilter = 'all';
+
+    // ===== Status Filter =====
+    function setStatusFilter(btn, status) {
+        currentFilter = status;
+        document.querySelectorAll('.status-btn').forEach(b => {
+            b.classList.remove('active');
+            b.classList.add('bg-white', 'text-navy-600');
+        });
+        btn.classList.add('active');
+        btn.classList.remove('bg-white', 'text-navy-600');
+        filterMyCourses();
+    }
+
+    // ===== Filter & Search =====
+    function filterMyCourses() {
+        const query = document.getElementById('mycourse-search').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.course-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const status = card.dataset.status;
+            const title = card.dataset.title;
+            const matchStatus = currentFilter === 'all' || status === currentFilter;
+            const matchSearch = !query || title.includes(query);
+            const show = matchStatus && matchSearch;
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        document.getElementById('no-results').classList.toggle('hidden', visible > 0);
+        document.getElementById('load-more').classList.toggle('hidden', visible === 0);
+
+        // Update no-results message based on filter
+        if (visible === 0) {
+            const titles = { all: 'Tidak ada kursus ditemukan', progress: 'Tidak ada kursus yang sedang berlangsung', done: 'Belum ada kursus yang selesai', archived: 'Tidak ada kursus yang diarsipkan' };
+            const descs = { all: 'Coba ubah filter atau kata kunci pencarian.', progress: 'Kursus yang sedang berlangsung akan muncul di sini.', done: 'Selesaikan kursus untuk melihatnya di sini.', archived: 'Arsipkan kursus untuk menyembunyikannya dari daftar utama.' };
+            document.getElementById('no-results-title').textContent = titles[currentFilter] || titles.all;
+            document.getElementById('no-results-desc').textContent = descs[currentFilter] || descs.all;
+        }
+
+        // Re-animate visible cards
+        cards.forEach((card, i) => {
+            if (card.style.display !== 'none') {
+                card.classList.remove('card-anim');
+                void card.offsetWidth;
+                card.classList.add('card-anim');
+            }
+        });
+    }
+
+    // ===== Dropdown =====
+    function toggleDropdown(e, id) {
+        e.stopPropagation();
+        const dd = document.getElementById(id);
+        const isOpen = dd.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
+        if (!isOpen) dd.classList.add('open');
+    }
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
+    });
+
+    // ===== Archive =====
+    function archiveCourse(btn) {
+        const card = btn.closest('.course-card');
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.96)';
+        card.style.transition = 'all 0.3s ease';
+        setTimeout(() => {
+            card.style.display = 'none';
+            showToast('Kursus berhasil diarsipkan');
+        }, 300);
+    }
+
+    // ===== Toast =====
+    let toastTimer;
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-text').textContent = msg;
+        toast.classList.remove('hidden');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+</script>
+{% endblock content %}

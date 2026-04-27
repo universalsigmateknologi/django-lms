@@ -24,6 +24,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("apps.accounts.urls")),
     path("courses/", include("apps.courses.urls")),
+    path("enrollments/", include("apps.enrollments.urls")),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]
 

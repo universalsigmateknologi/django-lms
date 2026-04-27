@@ -1,419 +1,170 @@
-  <!DOCTYPE html>
-  <html lang="id" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn — Dasar Pemrograman Python</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Plus Jakarta Sans', 'sans-serif'],
-            },
-            colors: {
-              navy: {
-                50:  '#f0f4f8',
-                100: '#d9e2ec',
-                200: '#bcccdc',
-                300: '#9fb3c8',
-                400: '#829ab1',
-                500: '#627d98',
-                600: '#486581',
-                700: '#334e68',
-                800: '#243b53',
-                900: '#102a43',
-                950: '#0a1929',
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-  </head>
-  <body class="font-sans bg-navy-50 text-navy-800 antialiased">
+{% extends 'base_learn.html' %}
+{% load static %}
+{% block content %}
+<!-- Breadcrumb -->
+<div class="flex items-center gap-1.5 text-xs text-navy-400 mb-6">
+  <span>Modul 1</span>
+  <i data-lucide="chevron-right" class="w-3 h-3"></i>
+  <span>Pengenalan Python</span>
+  <i data-lucide="chevron-right" class="w-3 h-3"></i>
+  <span class="text-navy-700 font-medium">Hello World</span>
+</div>
 
-    <!-- Top Navigation Bar -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-navy-100">
-      <div class="flex items-center justify-between px-5 h-14">
-        <!-- Left: Logo + Breadcrumb -->
-        <div class="flex items-center gap-4">
-          <button id="sidebarToggle" class="lg:hidden p-1.5 -ml-1.5 rounded-lg hover:bg-navy-50 transition-colors">
-            <i data-lucide="panel-left" class="w-5 h-5 text-navy-600"></i>
-          </button>
-          <a href="#" class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-navy-900 flex items-center justify-center">
-              <i data-lucide="graduation-cap" class="w-4 h-4 text-white"></i>
-            </div>
-            <span class="font-semibold text-navy-900 text-sm hidden sm:inline">Eduka</span>
-          </a>
-          <div class="hidden sm:flex items-center gap-1.5 text-xs text-navy-400">
-            <span>Kursus</span>
-            <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-navy-600 font-medium">Dasar Pemrograman Python</span>
-          </div>
-        </div>
+<!-- Lesson Header -->
+<div class="mb-8">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-navy-100 text-navy-700 text-xs font-medium">
+      <i data-lucide="play-circle" class="w-3 h-3"></i>
+      Video
+    </span>
+    <span class="text-xs text-navy-400">Lesson 4 dari 18</span>
+  </div>
+  <h1 class="text-2xl sm:text-3xl font-semibold text-navy-950 tracking-tight leading-tight">Hello World —
+    Program Pertamamu</h1>
+  <p class="text-navy-500 mt-2 text-sm leading-relaxed max-w-2xl">Pelajari cara menulis program Python pertamamu
+    menggunakan fungsi <code class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-xs font-mono">print()</code>
+    dan memahami cara
+    menjalankannya.</p>
+</div>
 
-        <!-- Right: Actions -->
+<!-- Video Player Placeholder -->
+<div class="relative w-full aspect-video bg-navy-900 rounded-2xl overflow-hidden mb-8 group">
+  <img src="https://picsum.photos/seed/python-hello-world/960/540.jpg" alt="Video thumbnail"
+    class="w-full h-full object-cover opacity-60">
+  <div class="absolute inset-0 flex items-center justify-center">
+    <button
+      class="w-16 h-16 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-105">
+      <i data-lucide="play" class="w-6 h-6 text-navy-900 ml-0.5"></i>
+    </button>
+  </div>
+  <!-- Video duration badge -->
+  <div
+    class="absolute bottom-4 right-4 px-2.5 py-1 rounded-md bg-navy-950/70 backdrop-blur-sm text-white text-xs font-medium">
+    4:20
+  </div>
+</div>
+
+<!-- Lesson Content -->
+<article class="prose-custom space-y-8">
+
+  <!-- Section: Pendahuluan -->
+  <section>
+    <h2 class="text-lg font-semibold text-navy-950 mb-3">Pendahuluan</h2>
+    <p class="text-navy-600 text-sm leading-relaxed">
+      Dalam dunia pemrograman, tradisi "Hello World" telah ada sejak tahun 1970-an. Program ini menjadi langkah
+      pertama bagi hampir semua developer untuk memastikan bahwa lingkungan pengembangan mereka berfungsi dengan
+      baik. Meskipun terlihat sederhana, program ini mengajarkan konsep fundamental tentang bagaimana Python
+      mengeksekusi perintah.
+    </p>
+  </section>
+
+  <!-- Section: Fungsi print() -->
+  <section>
+    <h2 class="text-lg font-semibold text-navy-950 mb-3">Fungsi <code
+        class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-sm font-mono">print()</code></h2>
+    <p class="text-navy-600 text-sm leading-relaxed mb-4">
+      Fungsi <code class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-xs font-mono">print()</code>
+      adalah fungsi bawaan Python yang digunakan untuk menampilkan output ke layar. Berikut adalah cara
+      penulisannya:
+    </p>
+
+    <!-- Code Block -->
+    <div class="rounded-xl bg-navy-950 overflow-hidden mb-4">
+      <div class="flex items-center justify-between px-4 py-2.5 border-b border-navy-800">
         <div class="flex items-center gap-2">
-          <button class="p-2 rounded-lg hover:bg-navy-50 transition-colors">
-            <i data-lucide="message-circle" class="w-4.5 h-4.5 text-navy-500"></i>
-          </button>
-          <button class="p-2 rounded-lg hover:bg-navy-50 transition-colors">
-            <i data-lucide="bookmark" class="w-4.5 h-4.5 text-navy-500"></i>
-          </button>
-          <div class="w-px h-5 bg-navy-100 mx-1 hidden sm:block"></div>
-          <button class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-lg hover:bg-navy-50 transition-colors">
-            <div class="w-7 h-7 rounded-full bg-navy-200 flex items-center justify-center text-xs font-semibold text-navy-700">RA</div>
-            <span class="text-sm font-medium text-navy-700 hidden md:inline">Rizky</span>
-          </button>
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-navy-600"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-navy-700"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-navy-800"></div>
+          </div>
+          <span class="text-navy-400 text-xs ml-2">hello.py</span>
         </div>
+        <button onclick="copyCode(this)"
+          class="flex items-center gap-1.5 text-navy-400 hover:text-navy-200 transition-colors text-xs">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Salin</span>
+        </button>
       </div>
-    </header>
-
-    <div class="flex pt-14">
-
-      <!-- Sidebar -->
-      <aside id="sidebar" class="fixed top-14 left-0 bottom-0 z-40 w-80 bg-white border-r border-navy-100 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
-
-        <!-- Sidebar Header -->
-        <div class="p-4 border-b border-navy-100">
-          <h2 class="text-sm font-semibold text-navy-900 leading-snug">Dasar Pemrograman Python</h2>
-          <p class="text-xs text-navy-400 mt-1">oleh Ahmad Fauzi</p>
-          <!-- Progress -->
-          <div class="mt-3">
-            <div class="flex items-center justify-between text-xs mb-1.5">
-              <span class="text-navy-500">Progress</span>
-              <span class="font-semibold text-navy-800">4 / 18 lesson</span>
-            </div>
-            <div class="w-full h-1.5 bg-navy-100 rounded-full overflow-hidden">
-              <div class="h-full bg-navy-900 rounded-full" style="width: 22%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Module & Lesson List -->
-        <nav class="flex-1 overflow-y-auto">
-          <div class="py-2">
-
-            <!-- Module 1 -->
-            <div class="module-group">
-              <button onclick="toggleModule(this)" class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                  <span class="w-6 h-6 rounded-md bg-navy-900 text-white text-xs font-semibold flex items-center justify-center">1</span>
-                  <span class="text-sm font-semibold text-navy-900 text-left">Pengenalan Python</span>
-                </div>
-                <i data-lucide="chevron-down" class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-              </button>
-              <div class="module-content">
-                <!-- Lesson 1 - Completed -->
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors bg-navy-50/50 border-l-2 border-navy-900">
-                  <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-900 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-900 font-medium">Apa itu Python?</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">5:30</span>
-                </a>
-                <!-- Lesson 2 - Completed -->
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors">
-                  <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Instalasi Python</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:15</span>
-                </a>
-                <!-- Lesson 3 - Completed -->
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors">
-                  <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">IDE & Text Editor</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">6:45</span>
-                </a>
-                <!-- Lesson 4 - Active -->
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 bg-navy-50 border-l-2 border-navy-900 transition-colors">
-                  <i data-lucide="circle" class="w-4 h-4 text-navy-900 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-900 font-medium">Hello World</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">4:20</span>
-                </a>
-                <!-- Lesson 5 - Locked -->
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Quiz: Pengenalan</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10 soal</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Module 2 -->
-            <div class="module-group">
-              <button onclick="toggleModule(this)" class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                  <span class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">2</span>
-                  <span class="text-sm font-semibold text-navy-900 text-left">Tipe Data & Variabel</span>
-                </div>
-                <i data-lucide="chevron-down" class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-              </button>
-              <div class="module-content hidden">
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Tipe Data Dasar</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">12:00</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Variabel & Penugasan</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">9:30</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Type Casting</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">7:15</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Quiz: Tipe Data</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10 soal</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Module 3 -->
-            <div class="module-group">
-              <button onclick="toggleModule(this)" class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                  <span class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">3</span>
-                  <span class="text-sm font-semibold text-navy-900 text-left">Operator & Ekspresi</span>
-                </div>
-                <i data-lucide="chevron-down" class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-              </button>
-              <div class="module-content hidden">
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Operator Aritmatika</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:00</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Operator Perbandingan</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:20</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Operator Logika</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">9:45</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Module 4 -->
-            <div class="module-group">
-              <button onclick="toggleModule(this)" class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                  <span class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">4</span>
-                  <span class="text-sm font-semibold text-navy-900 text-left">Percabangan</span>
-                </div>
-                <i data-lucide="chevron-down" class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-              </button>
-              <div class="module-content hidden">
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">If Statement</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">11:30</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Else & Elif</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:15</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Nested If</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">7:50</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600"> Studi Kasus</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">15:00</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Module 5 -->
-            <div class="module-group">
-              <button onclick="toggleModule(this)" class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                  <span class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">5</span>
-                  <span class="text-sm font-semibold text-navy-900 text-left">Perulangan</span>
-                </div>
-                <i data-lucide="chevron-down" class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-              </button>
-              <div class="module-content hidden">
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">For Loop</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">12:00</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">While Loop</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:00</span>
-                </a>
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                  <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                  <span class="text-sm text-navy-600">Break & Continue</span>
-                  <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:30</span>
-                </a>
-              </div>
-            </div>
-
-          </div>
-        </nav>
-      </aside>
-
-      <!-- Sidebar Overlay (mobile) -->
-      <div id="sidebarOverlay" class="fixed inset-0 bg-navy-950/30 z-30 hidden lg:hidden" onclick="closeSidebar()"></div>
-
-      <!-- Main Content -->
-      <main class="flex-1 lg:ml-80 min-h-screen">
-        <div class="max-w-4xl mx-auto px-5 py-8">
-
-          <!-- Breadcrumb -->
-          <div class="flex items-center gap-1.5 text-xs text-navy-400 mb-6">
-            <span>Modul 1</span>
-            <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span>Pengenalan Python</span>
-            <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-navy-700 font-medium">Hello World</span>
-          </div>
-
-          <!-- Lesson Header -->
-          <div class="mb-8">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-navy-100 text-navy-700 text-xs font-medium">
-                <i data-lucide="play-circle" class="w-3 h-3"></i>
-                Video
-              </span>
-              <span class="text-xs text-navy-400">Lesson 4 dari 18</span>
-            </div>
-            <h1 class="text-2xl sm:text-3xl font-semibold text-navy-950 tracking-tight leading-tight">Hello World — Program Pertamamu</h1>
-            <p class="text-navy-500 mt-2 text-sm leading-relaxed max-w-2xl">Pelajari cara menulis program Python pertamamu menggunakan fungsi <code class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-xs font-mono">print()</code> dan memahami cara menjalankannya.</p>
-          </div>
-
-          <!-- Video Player Placeholder -->
-          <div class="relative w-full aspect-video bg-navy-900 rounded-2xl overflow-hidden mb-8 group">
-            <img src="https://picsum.photos/seed/python-hello-world/960/540.jpg" alt="Video thumbnail" class="w-full h-full object-cover opacity-60">
-            <div class="absolute inset-0 flex items-center justify-center">
-              <button class="w-16 h-16 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-105">
-                <i data-lucide="play" class="w-6 h-6 text-navy-900 ml-0.5"></i>
-              </button>
-            </div>
-            <!-- Video duration badge -->
-            <div class="absolute bottom-4 right-4 px-2.5 py-1 rounded-md bg-navy-950/70 backdrop-blur-sm text-white text-xs font-medium">
-              4:20
-            </div>
-          </div>
-
-          <!-- Lesson Content -->
-          <article class="prose-custom space-y-8">
-
-            <!-- Section: Pendahuluan -->
-            <section>
-              <h2 class="text-lg font-semibold text-navy-950 mb-3">Pendahuluan</h2>
-              <p class="text-navy-600 text-sm leading-relaxed">
-                Dalam dunia pemrograman, tradisi "Hello World" telah ada sejak tahun 1970-an. Program ini menjadi langkah pertama bagi hampir semua developer untuk memastikan bahwa lingkungan pengembangan mereka berfungsi dengan baik. Meskipun terlihat sederhana, program ini mengajarkan konsep fundamental tentang bagaimana Python mengeksekusi perintah.
-              </p>
-            </section>
-
-            <!-- Section: Fungsi print() -->
-            <section>
-              <h2 class="text-lg font-semibold text-navy-950 mb-3">Fungsi <code class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-sm font-mono">print()</code></h2>
-              <p class="text-navy-600 text-sm leading-relaxed mb-4">
-                Fungsi <code class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-xs font-mono">print()</code> adalah fungsi bawaan Python yang digunakan untuk menampilkan output ke layar. Berikut adalah cara penulisannya:
-              </p>
-
-              <!-- Code Block -->
-              <div class="rounded-xl bg-navy-950 overflow-hidden mb-4">
-                <div class="flex items-center justify-between px-4 py-2.5 border-b border-navy-800">
-                  <div class="flex items-center gap-2">
-                    <div class="flex gap-1.5">
-                      <div class="w-2.5 h-2.5 rounded-full bg-navy-600"></div>
-                      <div class="w-2.5 h-2.5 rounded-full bg-navy-700"></div>
-                      <div class="w-2.5 h-2.5 rounded-full bg-navy-800"></div>
-                    </div>
-                    <span class="text-navy-400 text-xs ml-2">hello.py</span>
-                  </div>
-                  <button onclick="copyCode(this)" class="flex items-center gap-1.5 text-navy-400 hover:text-navy-200 transition-colors text-xs">
-                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                    <span>Salin</span>
-                  </button>
-                </div>
-                <pre class="px-4 py-4 text-sm overflow-x-auto"><code class="text-navy-100 font-mono leading-relaxed"><span class="text-navy-400"># Program Hello World pertama</span>
+      <pre class="px-4 py-4 text-sm overflow-x-auto"><code class="text-navy-100 font-mono leading-relaxed"><span class="text-navy-400"># Program Hello World pertama</span>
   <span class="text-green-400">print</span>(<span class="text-amber-300">"Hello, World!"</span>)
   <span class="text-green-400">print</span>(<span class="text-amber-300">"Selamat belajar Python!"</span>)</code></pre>
-              </div>
+    </div>
 
-              <!-- Output Block -->
-              <div class="rounded-xl border border-navy-200 bg-white overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-2 border-b border-navy-100 bg-navy-50/50">
-                  <i data-lucide="terminal" class="w-3.5 h-3.5 text-navy-500"></i>
-                  <span class="text-navy-600 text-xs font-medium">Output</span>
-                </div>
-                <pre class="px-4 py-3 text-sm overflow-x-auto"><code class="text-navy-800 font-mono">Hello, World!
+    <!-- Output Block -->
+    <div class="rounded-xl border border-navy-200 bg-white overflow-hidden">
+      <div class="flex items-center gap-2 px-4 py-2 border-b border-navy-100 bg-navy-50/50">
+        <i data-lucide="terminal" class="w-3.5 h-3.5 text-navy-500"></i>
+        <span class="text-navy-600 text-xs font-medium">Output</span>
+      </div>
+      <pre class="px-4 py-3 text-sm overflow-x-auto"><code class="text-navy-800 font-mono">Hello, World!
   Selamat belajar Python!</code></pre>
-              </div>
-            </section>
+    </div>
+  </section>
 
-            <!-- Section: Penjelasan -->
-            <section>
-              <h2 class="text-lg font-semibold text-navy-950 mb-3">Memahami Kodenya</h2>
-              <p class="text-navy-600 text-sm leading-relaxed mb-4">
-                Mari kita bedah baris kodenya:
-              </p>
-              <div class="space-y-4">
-                <div class="flex gap-3 p-4 rounded-xl bg-white border border-navy-100">
-                  <div class="w-8 h-8 rounded-lg bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span class="text-navy-700 text-xs font-bold">1</span>
-                  </div>
-                  <div>
-                    <p class="text-sm font-medium text-navy-900">Komentar</p>
-                    <p class="text-sm text-navy-500 mt-0.5 leading-relaxed">Baris yang diawali tanda <code class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">#</code> adalah komentar. Komentar tidak dieksekusi oleh Python dan berfungsi sebagai catatan untuk pembaca kode.</p>
-                  </div>
-                </div>
-                <div class="flex gap-3 p-4 rounded-xl bg-white border border-navy-100">
-                  <div class="w-8 h-8 rounded-lg bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span class="text-navy-700 text-xs font-bold">2</span>
-                  </div>
-                  <div>
-                    <p class="text-sm font-medium text-navy-900">Fungsi print()</p>
-                    <p class="text-sm text-navy-500 mt-0.5 leading-relaxed"><code class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">print()</code> adalah fungsi bawaan. Kata "fungsi" berarti ia melakukan tugas tertentu — dalam hal ini, menampilkan teks ke layar.</p>
-                  </div>
-                </div>
-                <div class="flex gap-3 p-4 rounded-xl bg-white border border-navy-100">
-                  <div class="w-8 h-8 rounded-lg bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span class="text-navy-700 text-xs font-bold">3</span>
-                  </div>
-                  <div>
-                    <p class="text-sm font-medium text-navy-900">String</p>
-                    <p class="text-sm text-navy-500 mt-0.5 leading-relaxed">Teks di dalam tanda kutip ganda <code class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">"..."</code> disebut <em>string</em>. Python juga menerima tanda kutip tunggal <code class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">'...'</code>.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
+  <!-- Section: Penjelasan -->
+  <section>
+    <h2 class="text-lg font-semibold text-navy-950 mb-3">Memahami Kodenya</h2>
+    <p class="text-navy-600 text-sm leading-relaxed mb-4">
+      Mari kita bedah baris kodenya:
+    </p>
+    <div class="space-y-4">
+      <div class="flex gap-3 p-4 rounded-xl bg-white border border-navy-100">
+        <div class="w-8 h-8 rounded-lg bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-navy-700 text-xs font-bold">1</span>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-navy-900">Komentar</p>
+          <p class="text-sm text-navy-500 mt-0.5 leading-relaxed">Baris yang diawali tanda <code
+              class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">#</code> adalah komentar.
+            Komentar tidak dieksekusi oleh Python dan berfungsi sebagai catatan untuk pembaca kode.</p>
+        </div>
+      </div>
+      <div class="flex gap-3 p-4 rounded-xl bg-white border border-navy-100">
+        <div class="w-8 h-8 rounded-lg bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-navy-700 text-xs font-bold">2</span>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-navy-900">Fungsi print()</p>
+          <p class="text-sm text-navy-500 mt-0.5 leading-relaxed"><code
+              class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">print()</code> adalah
+            fungsi bawaan. Kata "fungsi" berarti ia melakukan tugas tertentu — dalam hal ini, menampilkan teks
+            ke layar.</p>
+        </div>
+      </div>
+      <div class="flex gap-3 p-4 rounded-xl bg-white border border-navy-100">
+        <div class="w-8 h-8 rounded-lg bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-navy-700 text-xs font-bold">3</span>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-navy-900">String</p>
+          <p class="text-sm text-navy-500 mt-0.5 leading-relaxed">Teks di dalam tanda kutip ganda <code
+              class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">"..."</code> disebut
+            <em>string</em>. Python juga menerima tanda kutip tunggal <code
+              class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">'...'</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            <!-- Section: Variasi -->
-            <section>
-              <h2 class="text-lg font-semibold text-navy-950 mb-3">Beberapa Variasi</h2>
-              <p class="text-navy-600 text-sm leading-relaxed mb-4">
-                Kamu juga bisa menggunakan <code class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-xs font-mono">print()</code> dengan berbagai cara:
-              </p>
-              <div class="rounded-xl bg-navy-950 overflow-hidden">
-                <div class="flex items-center justify-between px-4 py-2.5 border-b border-navy-800">
-                  <span class="text-navy-400 text-xs">contoh.py</span>
-                  <button onclick="copyCode(this)" class="flex items-center gap-1.5 text-navy-400 hover:text-navy-200 transition-colors text-xs">
-                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                    <span>Salin</span>
-                  </button>
-                </div>
-                <pre class="px-4 py-4 text-sm overflow-x-auto"><code class="text-navy-100 font-mono leading-relaxed"><span class="text-navy-400"># Menampilkan angka</span>
+  <!-- Section: Variasi -->
+  <section>
+    <h2 class="text-lg font-semibold text-navy-950 mb-3">Beberapa Variasi</h2>
+    <p class="text-navy-600 text-sm leading-relaxed mb-4">
+      Kamu juga bisa menggunakan <code
+        class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-xs font-mono">print()</code> dengan berbagai
+      cara:
+    </p>
+    <div class="rounded-xl bg-navy-950 overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-2.5 border-b border-navy-800">
+        <span class="text-navy-400 text-xs">contoh.py</span>
+        <button onclick="copyCode(this)"
+          class="flex items-center gap-1.5 text-navy-400 hover:text-navy-200 transition-colors text-xs">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Salin</span>
+        </button>
+      </div>
+      <pre class="px-4 py-4 text-sm overflow-x-auto"><code class="text-navy-100 font-mono leading-relaxed"><span class="text-navy-400"># Menampilkan angka</span>
   <span class="text-green-400">print</span>(<span class="text-purple-400">2025</span>)
 
   <span class="text-navy-400"># Menggabungkan string dengan koma</span>
@@ -422,121 +173,37 @@
   <span class="text-navy-400"># Menggunakan f-string (Python 3.6+)</span>
   nama = <span class="text-amber-300">"Rizky"</span>
   <span class="text-green-400">print</span>(<span class="text-amber-300">f"Halo, {nama}!"</span>)</code></pre>
-              </div>
-            </section>
-
-            <!-- Info Callout -->
-            <div class="flex gap-3 p-4 rounded-xl bg-navy-50 border border-navy-200">
-              <i data-lucide="lightbulb" class="w-5 h-5 text-navy-500 flex-shrink-0 mt-0.5"></i>
-              <div>
-                <p class="text-sm font-medium text-navy-800">Tips</p>
-                <p class="text-sm text-navy-500 mt-0.5 leading-relaxed">Di Python, setiap pernyataan (statement) ditulis dalam satu baris. Tidak perlu titik koma <code class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">;</code> di akhir baris seperti di bahasa lain.</p>
-              </div>
-            </div>
-
-          </article>
-
-          <!-- Bottom Navigation -->
-          <div class="flex items-center justify-between mt-12 pt-8 border-t border-navy-200">
-            <a href="#" class="flex items-center gap-2 text-sm text-navy-500 hover:text-navy-900 transition-colors group">
-              <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
-              <span>IDE & Text Editor</span>
-            </a>
-            <button id="markCompleteBtn" onclick="markComplete(this)" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-navy-900 text-white text-sm font-medium hover:bg-navy-800 transition-colors">
-              <i data-lucide="check" class="w-4 h-4"></i>
-              <span>Tandai Selesai</span>
-            </button>
-            <a href="#" class="flex items-center gap-2 text-sm text-navy-400 cursor-not-allowed">
-              <span>Quiz: Pengenalan</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </a>
-          </div>
-
-        </div>
-      </main>
     </div>
+  </section>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-4 opacity-0 transition-all duration-300 pointer-events-none">
-      <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-900 text-white shadow-lg shadow-navy-900/20">
-        <i data-lucide="check-circle-2" class="w-5 h-5 text-green-400"></i>
-        <span class="text-sm font-medium" id="toastMessage">Lesson ditandai selesai!</span>
-      </div>
+  <!-- Info Callout -->
+  <div class="flex gap-3 p-4 rounded-xl bg-navy-50 border border-navy-200">
+    <i data-lucide="lightbulb" class="w-5 h-5 text-navy-500 flex-shrink-0 mt-0.5"></i>
+    <div>
+      <p class="text-sm font-medium text-navy-800">Tips</p>
+      <p class="text-sm text-navy-500 mt-0.5 leading-relaxed">Di Python, setiap pernyataan (statement) ditulis
+        dalam satu baris. Tidak perlu titik koma <code
+          class="px-1 py-0.5 rounded bg-navy-100 text-navy-700 text-xs font-mono">;</code> di akhir baris
+        seperti di bahasa lain.</p>
     </div>
+  </div>
 
-    <script>
-      // Initialize Lucide icons
-      lucide.createIcons();
+</article>
 
-      // Sidebar toggle (mobile)
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebarOverlay');
-      const toggleBtn = document.getElementById('sidebarToggle');
-
-      toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('-translate-x-full');
-        overlay.classList.toggle('hidden');
-      });
-
-      function closeSidebar() {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-      }
-
-      // Module accordion
-      function toggleModule(btn) {
-        const content = btn.nextElementSibling;
-        const chevron = btn.querySelector('.module-chevron');
-
-        if (content.classList.contains('hidden')) {
-          content.classList.remove('hidden');
-          chevron.style.transform = 'rotate(180deg)';
-        } else {
-          content.classList.add('hidden');
-          chevron.style.transform = 'rotate(0deg)';
-        }
-      }
-
-      // Set first module chevron to rotated (it's open by default)
-      document.querySelector('.module-group .module-chevron').style.transform = 'rotate(180deg)';
-
-      // Copy code
-      function copyCode(btn) {
-        const codeBlock = btn.closest('.rounded-xl').querySelector('code');
-        const text = codeBlock.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-          const span = btn.querySelector('span');
-          span.textContent = 'Tersalin!';
-          btn.classList.add('text-green-400');
-          setTimeout(() => {
-            span.textContent = 'Salin';
-            btn.classList.remove('text-green-400');
-          }, 2000);
-        });
-      }
-
-      // Mark complete
-      function markComplete(btn) {
-        btn.innerHTML = '<span>Tersimpan</span>';
-        btn.classList.remove('bg-navy-900', 'hover:bg-navy-800');
-        btn.classList.add('bg-navy-200', 'text-navy-700');
-        btn.disabled = true;
-        showToast('Lesson ditandai selesai!');
-      }
-
-      // Toast
-      function showToast(message) {
-        const toast = document.getElementById('toast');
-        const msg = document.getElementById('toastMessage');
-        msg.textContent = message;
-        toast.classList.remove('translate-y-4', 'opacity-0', 'pointer-events-none');
-        toast.classList.add('translate-y-0', 'opacity-100');
-        setTimeout(() => {
-          toast.classList.add('translate-y-4', 'opacity-0', 'pointer-events-none');
-          toast.classList.remove('translate-y-0', 'opacity-100');
-        }, 3000);
-      }
-    </script>
-
-  </body>
-  </html>
+<!-- Bottom Navigation -->
+<div class="flex items-center justify-between mt-12 pt-8 border-t border-navy-200">
+  <a href="#" class="flex items-center gap-2 text-sm text-navy-500 hover:text-navy-900 transition-colors group">
+    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
+    <span>IDE & Text Editor</span>
+  </a>
+  <button id="markCompleteBtn" onclick="markComplete(this)"
+    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-navy-900 text-white text-sm font-medium hover:bg-navy-800 transition-colors">
+    <i data-lucide="check" class="w-4 h-4"></i>
+    <span>Tandai Selesai</span>
+  </button>
+  <a href="#" class="flex items-center gap-2 text-sm text-navy-400 cursor-not-allowed">
+    <span>Quiz: Pengenalan</span>
+    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+  </a>
+</div>
+{% endblock content %}

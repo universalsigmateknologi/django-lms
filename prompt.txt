@@ -1,5 +1,3 @@
-pada apps course di file ...
+tolong buatkan views detail course ketika card pada ... di tekan, ia akan redirect ke halaman courses/detail/<slug:slug>/, templatenya adalah
 
-saya telah memiliki tampilan ...
-jadi tolong buatkan saya views dan urlnya dan buat seluruh fitur dan data
-yang ada di tampilan tersebut berfungsi dan tampil, berdasarkan models yang telah ada.
+tampilkan data yang diperlukan yang ada pada file

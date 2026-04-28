@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Course, Category, Tag
-from django.db.models import Q, Count, Sum
+from django.db.models import Q, Count, Sum, ExpressionWrapper, FloatField, F
+from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
 
 def landing_view(request):
@@ -9,9 +10,15 @@ def landing_view(request):
 
 @login_required
 def course_list_view(request):
-    # Base queryset with total duration annotation
+
     courses = Course.objects.filter(is_published=True).annotate(
-        total_duration=Sum('modules__lessons__duration_seconds')
+        total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
+        student_count_ann=Count('enrollments', distinct=True)
+    ).annotate(
+        total_hours_ann=ExpressionWrapper(
+            F('total_duration_sec') / 3600.0,
+            output_field=FloatField()
+        )
     )
     
     categories = Category.objects.annotate(course_count=Count('courses', filter=Q(courses__is_published=True)))
@@ -56,11 +63,11 @@ def course_list_view(request):
         duration_q = Q()
         for d in durations:
             if d == '0-5':
-                duration_q |= Q(total_duration__lte=5*3600)
+                duration_q |= Q(total_duration_sec__lte=5*3600)
             elif d == '5-20':
-                duration_q |= Q(total_duration__gt=5*3600, total_duration__lte=20*3600)
+                duration_q |= Q(total_duration_sec__gt=5*3600, total_duration_sec__lte=20*3600)
             elif d == '20plus':
-                duration_q |= Q(total_duration__gt=20*3600)
+                duration_q |= Q(total_duration_sec__gt=20*3600)
         courses = courses.filter(duration_q)
 
     # Sort
@@ -89,4 +96,32 @@ def course_list_view(request):
         'sort_by': sort_by,
         'course_count': courses.count(),
     }
-    return render(request, 'courses/preview.html', context)
+    return render(request, 'courses/preview.html', context)
+
+
+def course_detail_view(request, slug):
+    course = get_object_or_404(
+        Course.objects.annotate(
+            total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
+            student_count_ann=Count('enrollments', distinct=True)
+        ).annotate(
+            total_hours_ann=ExpressionWrapper(
+                F('total_duration_sec') / 3600.0,
+                output_field=FloatField()
+            )
+        ), 
+        slug=slug
+    )
+    
+    # Prefetch modules and lessons for the curriculum
+    modules = course.modules.all().prefetch_related('lessons')
+    
+    # Calculate stats for curriculum header
+    total_lessons = sum(module.lessons.count() for module in modules)
+    
+    context = {
+        'course': course,
+        'modules': modules,
+        'total_lessons': total_lessons,
+    }
+    return render(request, 'courses/detail.html', context)

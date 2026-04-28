@@ -8,3 +8,9 @@ def url_replace(context, **kwargs):
     for kwarg, value in kwargs.items():
         query[kwarg] = value
     return query.urlencode()
+@register.filter
+def divide(value, arg):
+    try:
+        return float(value) / float(arg)
+    except (ValueError, ZeroDivisionError):
+        return None

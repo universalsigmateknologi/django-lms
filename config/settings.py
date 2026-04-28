@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "apps.discussions",
     "apps.notifications",
     "apps.analytics",
+    "django.contrib.humanize",
     "django_ckeditor_5",
 ]
 

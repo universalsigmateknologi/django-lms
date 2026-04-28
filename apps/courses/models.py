@@ -51,6 +51,18 @@ class Course(models.Model):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
+    @property
+    def student_count(self):
+        return self.enrollments.count()
+
+    @property
+    def total_duration_hours(self):
+        from django.db.models import Sum
+        total_seconds = self.modules.aggregate(
+            total=Sum('lessons__duration_seconds')
+        )['total'] or 0
+        return round(total_seconds / 3600, 1)
+
     def __str__(self):
         return self.title
 

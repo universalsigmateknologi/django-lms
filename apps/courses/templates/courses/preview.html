@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static course_tags %}
+{% load static course_tags humanize %}
 {% block content %}
 <style>
     * {
@@ -211,7 +211,7 @@
             <div id="course-grid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
                 {% for course in page_obj %}
                 <!-- Course Card -->
-                <a href="#"
+                <a href="{% url 'course_detail' course.slug %}"
                     class="group bg-white rounded-xl border border-navy-100 overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 transition-all duration-300">
                     <div class="relative overflow-hidden">
                         <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}"
@@ -240,14 +240,14 @@
                             {{ course.title }}</h3>
                         <p class="text-xs text-navy-400 mt-1">{{ course.instructor.get_full_name|default:course.instructor.username }}</p>
                         <div class="flex items-center gap-3 mt-2.5">
-                            <span class="text-[11px] text-navy-400">42 jam</span>
-                            <span class="text-[11px] text-navy-400">5.8k siswa</span>
+                            <span class="text-[11px] text-navy-400">{{ course.total_hours_ann|floatformat:1 }} jam</span>
+                            <span class="text-[11px] text-navy-400">{{ course.student_count_ann|intcomma }} siswa</span>
                         </div>
                         <div class="flex items-baseline gap-1.5 mt-3">
                             {% if course.price == 0 %}
                             <span class="text-base font-bold text-emerald-600">Gratis</span>
                             {% else %}
-                            <span class="text-base font-bold text-navy-900">Rp{{ course.price|floatformat:0 }}</span>
+                            <span class="text-base font-bold text-navy-900">Rp{{ course.price|intcomma }}</span>
                             {% endif %}
                         </div>
                     </div>

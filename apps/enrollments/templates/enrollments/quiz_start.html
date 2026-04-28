@@ -1,0 +1,151 @@
+{% extends 'base_learn.html' %}
+{% load static %}
+{% block content %}
+<!-- Breadcrumb -->
+<div class="flex items-center gap-1.5 text-xs text-navy-400 mb-6">
+    <span>Modul 1</span>
+    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+    <span>Pengenalan Python</span>
+    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+    <span class="text-navy-700 font-medium">Quiz: Pengenalan</span>
+</div>
+
+<!-- Back Link -->
+<a href="#"
+    class="inline-flex items-center gap-1.5 text-sm text-navy-500 hover:text-navy-900 transition-colors group mb-8">
+    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
+    <span>Kembali ke lesson</span>
+</a>
+
+<!-- Quiz Header -->
+<div class="text-center mb-10">
+    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-100 mb-5">
+        <i data-lucide="file-question" class="w-7 h-7 text-navy-700"></i>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-semibold text-navy-950 tracking-tight">Quiz: Pengenalan Python</h1>
+    <p class="text-navy-500 mt-2 text-sm max-w-md mx-auto leading-relaxed">Uji pemahamanmu tentang materi yang telah
+        dipelajari di Modul 1 sebelum melanjutkan ke modul berikutnya.</p>
+</div>
+
+<!-- Quiz Info Cards -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
+    <div class="p-4 rounded-xl bg-white border border-navy-100 text-center">
+        <div class="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center mx-auto mb-2.5">
+            <i data-lucide="list-checks" class="w-4.5 h-4.5 text-navy-600"></i>
+        </div>
+        <p class="text-lg font-semibold text-navy-900">10</p>
+        <p class="text-xs text-navy-400 mt-0.5">Soal</p>
+    </div>
+    <div class="p-4 rounded-xl bg-white border border-navy-100 text-center">
+        <div class="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center mx-auto mb-2.5">
+            <i data-lucide="timer" class="w-4.5 h-4.5 text-navy-600"></i>
+        </div>
+        <p class="text-lg font-semibold text-navy-900">15</p>
+        <p class="text-xs text-navy-400 mt-0.5">Menit</p>
+    </div>
+    <div class="p-4 rounded-xl bg-white border border-navy-100 text-center">
+        <div class="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center mx-auto mb-2.5">
+            <i data-lucide="target" class="w-4.5 h-4.5 text-navy-600"></i>
+        </div>
+        <p class="text-lg font-semibold text-navy-900">70</p>
+        <p class="text-xs text-navy-400 mt-0.5">Nilai Min.</p>
+    </div>
+    <div class="p-4 rounded-xl bg-white border border-navy-100 text-center">
+        <div class="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center mx-auto mb-2.5">
+            <i data-lucide="repeat" class="w-4.5 h-4.5 text-navy-600"></i>
+        </div>
+        <p class="text-lg font-semibold text-navy-900">3</p>
+        <p class="text-xs text-navy-400 mt-0.5">Kesempatan</p>
+    </div>
+</div>
+
+<!-- Question Types -->
+<div class="mb-10">
+    <h3 class="text-sm font-semibold text-navy-900 mb-3">Tipe Soal</h3>
+    <div class="flex flex-wrap gap-2">
+        <span
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-navy-100 text-xs text-navy-600">
+            <i data-lucide="circle-dot" class="w-3.5 h-3.5 text-navy-400"></i>
+            Pilihan Ganda — 7 soal
+        </span>
+        <span
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-navy-100 text-xs text-navy-600">
+            <i data-lucide="check-square" class="w-3.5 h-3.5 text-navy-400"></i>
+            Pilihan Ganda Kompleks — 2 soal
+        </span>
+        <span
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-navy-100 text-xs text-navy-600">
+            <i data-lucide="toggle-left" class="w-3.5 h-3.5 text-navy-400"></i>
+            Benar/Salah — 1 soal
+        </span>
+    </div>
+</div>
+
+<!-- Rules / Instructions -->
+<div class="p-5 rounded-2xl bg-white border border-navy-100 mb-10">
+    <h3 class="text-sm font-semibold text-navy-900 mb-4 flex items-center gap-2">
+        <i data-lucide="info" class="w-4 h-4 text-navy-500"></i>
+        Ketentuan Quiz
+    </h3>
+    <ul class="space-y-3">
+        <li class="flex items-start gap-3 text-sm text-navy-600 leading-relaxed">
+            <i data-lucide="check" class="w-4 h-4 text-navy-400 flex-shrink-0 mt-0.5"></i>
+            Waktu mulai berjalan sejak kamu menekan tombol "Mulai Quiz".
+        </li>
+        <li class="flex items-start gap-3 text-sm text-navy-600 leading-relaxed">
+            <i data-lucide="check" class="w-4 h-4 text-navy-400 flex-shrink-0 mt-0.5"></i>
+            Kamu bisa berpindah antar soal secara bebas sebelum mengumpulkan.
+        </li>
+        <li class="flex items-start gap-3 text-sm text-navy-600 leading-relaxed">
+            <i data-lucide="check" class="w-4 h-4 text-navy-400 flex-shrink-0 mt-0.5"></i>
+            Jawaban yang belum diisi akan otomatis dianggap salah.
+        </li>
+        <li class="flex items-start gap-3 text-sm text-navy-600 leading-relaxed">
+            <i data-lucide="check" class="w-4 h-4 text-navy-400 flex-shrink-0 mt-0.5"></i>
+            Skor minimal 70 diperlukan untuk membuka modul selanjutnya.
+        </li>
+        <li class="flex items-start gap-3 text-sm text-navy-600 leading-relaxed">
+            <i data-lucide="check" class="w-4 h-4 text-navy-400 flex-shrink-0 mt-0.5"></i>
+            Kamu memiliki 3 kesempatan mengerjakan quiz ini.
+        </li>
+    </ul>
+</div>
+
+<!-- Warning -->
+<div class="flex gap-3 p-4 rounded-xl bg-amber-50 border border-amber-200/60 mb-10">
+    <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5"></i>
+    <div>
+        <p class="text-sm font-medium text-navy-800">Perhatian</p>
+        <p class="text-sm text-navy-500 mt-0.5 leading-relaxed">Pastikan koneksi internetmu stabil sebelum memulai. Jika
+            halaman ditutup atau terputus di tengah quiz, waktu akan terus berjalan dan jawaban yang sudah dipilih
+            <strong class="text-navy-700">tidak akan tersimpan</strong>.</p>
+    </div>
+</div>
+
+<!-- Previous Attempt -->
+<div class="p-4 rounded-xl bg-white border border-navy-100 mb-10 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center">
+            <i data-lucide="history" class="w-4.5 h-4.5 text-navy-500"></i>
+        </div>
+        <div>
+            <p class="text-sm font-medium text-navy-800">Belum ada percobaan sebelumnya</p>
+            <p class="text-xs text-navy-400 mt-0.5">Kamu memiliki 3 dari 3 kesempatan tersisa</p>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row items-center gap-3 sm:justify-center">
+    <button id="startQuizBtn" onclick="startQuiz()"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-navy-900 text-white text-sm font-semibold hover:bg-navy-800 transition-all duration-200 hover:shadow-lg hover:shadow-navy-900/15">
+        <i data-lucide="play" class="w-4 h-4"></i>
+        Mulai Quiz
+    </button>
+    <a href="#"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white border border-navy-200 text-navy-600 text-sm font-medium hover:bg-navy-50 hover:border-navy-300 transition-all duration-200">
+        <i data-lucide="x" class="w-4 h-4"></i>
+        Nanti Saja
+    </a>
+</div>
+{% endblock content %}

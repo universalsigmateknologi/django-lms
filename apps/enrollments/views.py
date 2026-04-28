@@ -6,3 +6,6 @@ def my_course_view(request):
 
 def learn_view(request):
     return render(request, 'enrollments/learn.html')
+
+def i(request):
+    return render(request, 'enrollments/quiz_attempt.html')

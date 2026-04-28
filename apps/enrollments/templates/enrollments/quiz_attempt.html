@@ -1,0 +1,548 @@
+{% extends 'base_learn.html' %}
+{% load static %}
+{% block content %}
+<!-- Timer Bar (sticky) -->
+<div class="sticky top-14 z-20 bg-white/90 backdrop-blur-md border-b border-navy-100">
+    <div class="flex items-center justify-between px-5 h-12 max-w-5xl mx-auto">
+        <div class="flex items-center gap-3">
+            <span class="text-xs text-navy-400 font-medium">Soal <span id="currentQLabel" class="text-navy-800">1</span>
+                dari 10</span>
+            <span class="text-navy-200">·</span>
+            <span id="answeredCount" class="text-xs text-navy-400">0 dijawab</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <i data-lucide="clock" class="w-4 h-4 text-navy-400"></i>
+            <span id="stickyTimer" class="text-sm font-bold text-navy-800 tabular-nums">15:00</span>
+        </div>
+    </div>
+    <!-- Progress bar -->
+    <div class="h-0.5 bg-navy-100">
+        <div id="questionProgress" class="h-full bg-navy-900 transition-all duration-300 rounded-r-full"
+            style="width:10%"></div>
+    </div>
+</div>
+
+<div class="flex gap-6 max-w-5xl mx-auto px-5 pt-6">
+
+    <!-- Questions Area -->
+    <div class="flex-1 min-w-0">
+
+        <!-- Q1 -->
+        <div class="question-panel" data-q="1">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">1</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Siapa pencipta bahasa pemrograman Python?</p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 1)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">James Gosling</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 1)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Guido van Rossum</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 1)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Dennis Ritchie</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 1)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Bjarne Stroustrup</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-panel hidden" data-q="2">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">2</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Python termasuk bahasa pemrograman yang bertipe…
+            </p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 2)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Statically typed</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 2)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Dynamically typed</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 2)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Strongly typed only</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 2)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Weakly typed only</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-panel hidden" data-q="3">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">3</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Apa kepanjangan dari IDE?</p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 3)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Integrated Development Environment</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 3)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Internal Design Engine</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 3)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Intelligent Data Editor</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 3)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Integrated Desktop Environment</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question-panel hidden" data-q="4">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">4</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Fungsi <code
+                    class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-sm font-mono">print()</code> pada Python
+                digunakan untuk…</p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 4)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Membaca input dari user</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 4)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Menampilkan output ke layar</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 4)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Menyimpan data ke file</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 4)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Mengimpor modul</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question-panel hidden" data-q="5">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">5</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Manakah yang <strong>BUKAN</strong> merupakan IDE
+                atau text editor yang umum digunakan untuk Python?</p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 5)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">PyCharm</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 5)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Visual Studio Code</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 5)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Xcode</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 5)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Jupyter Notebook</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q6 — Benar/Salah -->
+        <div class="question-panel hidden" data-q="6">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">6</span>
+                    <span class="text-xs text-navy-400 font-medium">Benar / Salah</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Dalam Python, setiap baris pernyataan harus
+                diakhiri dengan titik koma <code
+                    class="px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 text-sm font-mono">;</code></p>
+            <div class="grid grid-cols-2 gap-3">
+                <label
+                    class="opt-tf flex flex-col items-center gap-2 p-5 rounded-xl border-2 border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectTF(this, 6)">
+                    <i data-lucide="check" class="w-6 h-6 text-navy-300 tf-icon"></i>
+                    <span class="text-sm font-medium text-navy-700">Benar</span>
+                </label>
+                <label
+                    class="opt-tf flex flex-col items-center gap-2 p-5 rounded-xl border-2 border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectTF(this, 6)">
+                    <i data-lucide="x" class="w-6 h-6 text-navy-300 tf-icon"></i>
+                    <span class="text-sm font-medium text-navy-700">Salah</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="question-panel hidden" data-q="7">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">7</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-4">Apa output dari kode berikut?</p>
+            <div class="rounded-xl bg-navy-950 overflow-hidden mb-6">
+                <div class="flex items-center gap-2 px-4 py-2 border-b border-navy-800">
+                    <div class="flex gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-navy-600"></div>
+                        <div class="w-2 h-2 rounded-full bg-navy-700"></div>
+                        <div class="w-2 h-2 rounded-full bg-navy-800"></div>
+                    </div>
+                    <span class="text-navy-400 text-xs ml-2">output.py</span>
+                </div>
+                <pre
+                    class="px-4 py-3 text-sm"><code class="text-navy-100 font-mono"><span class="text-green-400">print</span>(<span class="text-amber-300">"Hello"</span>, <span class="text-amber-300">"World"</span>)</code></pre>
+            </div>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 7)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">HelloWorld</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 7)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">Hello World</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 7)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">"Hello" "World"</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 7)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700">Error</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="question-panel hidden" data-q="8">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">8</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Apa ekstensi file yang digunakan untuk menyimpan
+                kode Python?</p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 8)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">.pyth</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 8)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">.py</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 8)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">.ptn</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 8)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">.python</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q9 — Pilihan Ganda Kompleks (Multiple Answer) -->
+        <div class="question-panel hidden" data-q="9">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">9</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilih Semua yang Benar</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Manakah yang merupakan cara valid untuk menulis
+                string di Python? <span class="text-xs text-navy-400 font-normal">(Pilih semua yang benar)</span></p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-check flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="toggleCheck(this, 9)">
+                    <span class="opt-indicator"><i data-lucide="check"
+                            class="w-3 h-3 text-white hidden check-icon"></i></span>
+                    <span class="text-sm text-navy-700 font-mono">"Hello"</span>
+                </label>
+                <label
+                    class="opt-check flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="toggleCheck(this, 9)">
+                    <span class="opt-indicator"><i data-lucide="check"
+                            class="w-3 h-3 text-white hidden check-icon"></i></span>
+                    <span class="text-sm text-navy-700 font-mono">'Hello'</span>
+                </label>
+                <label
+                    class="opt-check flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="toggleCheck(this, 9)">
+                    <span class="opt-indicator"><i data-lucide="check"
+                            class="w-3 h-3 text-white hidden check-icon"></i></span>
+                    <span class="text-sm text-navy-700 font-mono">(Hello)</span>
+                </label>
+                <label
+                    class="opt-check flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="toggleCheck(this, 9)">
+                    <span class="opt-indicator"><i data-lucide="check"
+                            class="w-3 h-3 text-white hidden check-icon"></i></span>
+                    <span class="text-sm text-navy-700 font-mono">"""Hello"""</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="question-panel hidden" data-q="10">
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold">10</span>
+                    <span class="text-xs text-navy-400 font-medium">Pilihan Ganda</span>
+                </div>
+                <button onclick="toggleFlag(this)" class="p-1.5 rounded-lg hover:bg-navy-100 transition-colors flag-btn"
+                    title="Tandai soal">
+                    <i data-lucide="flag" class="w-4 h-4 text-navy-300"></i>
+                </button>
+            </div>
+            <p class="text-navy-900 font-medium leading-relaxed mb-6">Untuk menjalankan file Python dari terminal,
+                perintah yang digunakan adalah…</p>
+            <div class="space-y-2.5">
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 10)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">python run file.py</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 10)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">python file.py</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 10)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">execute file.py</span>
+                </label>
+                <label
+                    class="opt-radio flex items-center gap-3 p-3.5 rounded-xl border border-navy-200 bg-white cursor-pointer hover:border-navy-300 hover:bg-navy-50/30 transition-all"
+                    onclick="selectRadio(this, 10)">
+                    <span class="opt-indicator"></span>
+                    <span class="text-sm text-navy-700 font-mono">start file.py</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex items-center justify-between mt-8 pt-6 border-t border-navy-200">
+            <button id="prevBtn" onclick="goTo(currentQ - 1)" disabled
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-navy-400 cursor-not-allowed">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Sebelumnya
+            </button>
+            <button id="nextBtn" onclick="goTo(currentQ + 1)"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-navy-900 text-white text-sm font-medium hover:bg-navy-800 transition-colors">
+                Selanjutnya
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Navigator Panel (Desktop) -->
+    <div class="hidden lg:block w-60 flex-shrink-0">
+        <div class="sticky top-[7.5rem]">
+            <div class="p-4 rounded-2xl bg-white border border-navy-100">
+                <h4 class="text-xs font-semibold text-navy-900 uppercase tracking-wider mb-3">Navigasi Soal</h4>
+                <div class="grid grid-cols-5 gap-2 mb-4">
+                    <button onclick="goTo(1)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="1">1</button>
+                    <button onclick="goTo(2)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="2">2</button>
+                    <button onclick="goTo(3)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="3">3</button>
+                    <button onclick="goTo(4)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="4">4</button>
+                    <button onclick="goTo(5)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="5">5</button>
+                    <button onclick="goTo(6)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="6">6</button>
+                    <button onclick="goTo(7)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="7">7</button>
+                    <button onclick="goTo(8)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="8">8</button>
+                    <button onclick="goTo(9)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="9">9</button>
+                    <button onclick="goTo(10)"
+                        class="nav-dot w-full aspect-square rounded-lg border-2 border-navy-200 text-xs font-semibold text-navy-500 hover:border-navy-400 transition-colors relative"
+                        data-nav="10">10</button>
+                </div>
+
+                <!-- Legend -->
+                <div class="space-y-2 mb-4 pb-4 border-b border-navy-100">
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 rounded border-2 border-navy-900 bg-navy-900"></span>
+                        <span class="text-xs text-navy-500">Dijawab</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 rounded border-2 border-navy-900 bg-transparent"></span>
+                        <span class="text-xs text-navy-500">Saat ini</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 rounded border-2 border-navy-200 bg-transparent"></span>
+                        <span class="text-xs text-navy-500">Belum dijawab</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 rounded border-2 border-navy-200 bg-transparent relative"><span
+                                class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400"></span></span>
+                        <span class="text-xs text-navy-500">Ditandai</span>
+                    </div>
+                </div>
+
+                <button onclick="showSubmitModal()"
+                    class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-navy-900 text-white text-sm font-semibold hover:bg-navy-800 transition-colors">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    Kumpulkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

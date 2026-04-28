@@ -26,7 +26,7 @@ def login_view(request):
                 return redirect('login')
 
             login(request, user)
-            return redirect(redirect_user_by_role(user))
+            return redirect("course_preview")
 
     return render(request, 'accounts/auth/login.html')
 

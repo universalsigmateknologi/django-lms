@@ -1,219 +1,221 @@
-<div class="p-4 border-b border-navy-100">
-    <h2 class="text-sm font-semibold text-navy-900 leading-snug">Dasar Pemrograman Python</h2>
-    <p class="text-xs text-navy-400 mt-1">oleh Ahmad Fauzi</p>
-    <!-- Progress -->
-    <div class="mt-3">
-        <div class="flex items-center justify-between text-xs mb-1.5">
-            <span class="text-navy-500">Progress</span>
-            <span class="font-semibold text-navy-800">4 / 18 lesson</span>
-        </div>
-        <div class="w-full h-1.5 bg-navy-100 rounded-full overflow-hidden">
-            <div class="h-full bg-navy-900 rounded-full" style="width: 22%"></div>
+<aside id="sidebar" class="fixed top-14 left-0 bottom-0 z-40 w-80 bg-white border-r border-navy-100 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">    
+    <div class="p-4 border-b border-navy-100">
+        <h2 class="text-sm font-semibold text-navy-900 leading-snug">Dasar Pemrograman Python</h2>
+        <p class="text-xs text-navy-400 mt-1">oleh Ahmad Fauzi</p>
+        <!-- Progress -->
+        <div class="mt-3">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="text-navy-500">Progress</span>
+                <span class="font-semibold text-navy-800">4 / 18 lesson</span>
+            </div>
+            <div class="w-full h-1.5 bg-navy-100 rounded-full overflow-hidden">
+                <div class="h-full bg-navy-900 rounded-full" style="width: 22%"></div>
+            </div>
         </div>
     </div>
-</div>
-
-<!-- Module & Lesson List -->
-<nav class="flex-1 overflow-y-auto">
-    <div class="py-2">
-
-        <!-- Module 1 -->
-        <div class="module-group">
-            <button onclick="toggleModule(this)"
-                class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <span
-                        class="w-6 h-6 rounded-md bg-navy-900 text-white text-xs font-semibold flex items-center justify-center">1</span>
-                    <span class="text-sm font-semibold text-navy-900 text-left">Pengenalan Python</span>
+    
+    <!-- Module & Lesson List -->
+    <nav class="flex-1 overflow-y-auto">
+        <div class="py-2">
+    
+            <!-- Module 1 -->
+            <div class="module-group">
+                <button onclick="toggleModule(this)"
+                    class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-md bg-navy-900 text-white text-xs font-semibold flex items-center justify-center">1</span>
+                        <span class="text-sm font-semibold text-navy-900 text-left">Pengenalan Python</span>
+                    </div>
+                    <i data-lucide="chevron-down"
+                        class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="module-content">
+                    <!-- Lesson 1 - Completed -->
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors bg-navy-50/50 border-l-2 border-navy-900">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-900 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-900 font-medium">Apa itu Python?</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">5:30</span>
+                    </a>
+                    <!-- Lesson 2 - Completed -->
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Instalasi Python</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:15</span>
+                    </a>
+                    <!-- Lesson 3 - Completed -->
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">IDE & Text Editor</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">6:45</span>
+                    </a>
+                    <!-- Lesson 4 - Active -->
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 bg-navy-50 border-l-2 border-navy-900 transition-colors">
+                        <i data-lucide="circle" class="w-4 h-4 text-navy-900 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-900 font-medium">Hello World</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">4:20</span>
+                    </a>
+                    <!-- Lesson 5 - Locked -->
+                    <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Quiz: Pengenalan</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10 soal</span>
+                    </a>
                 </div>
-                <i data-lucide="chevron-down"
-                    class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-            </button>
-            <div class="module-content">
-                <!-- Lesson 1 - Completed -->
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors bg-navy-50/50 border-l-2 border-navy-900">
-                    <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-900 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-900 font-medium">Apa itu Python?</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">5:30</span>
-                </a>
-                <!-- Lesson 2 - Completed -->
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Instalasi Python</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:15</span>
-                </a>
-                <!-- Lesson 3 - Completed -->
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">IDE & Text Editor</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">6:45</span>
-                </a>
-                <!-- Lesson 4 - Active -->
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 bg-navy-50 border-l-2 border-navy-900 transition-colors">
-                    <i data-lucide="circle" class="w-4 h-4 text-navy-900 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-900 font-medium">Hello World</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">4:20</span>
-                </a>
-                <!-- Lesson 5 - Locked -->
-                <a href="#" class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Quiz: Pengenalan</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10 soal</span>
-                </a>
             </div>
-        </div>
-
-        <!-- Module 2 -->
-        <div class="module-group">
-            <button onclick="toggleModule(this)"
-                class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <span
-                        class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">2</span>
-                    <span class="text-sm font-semibold text-navy-900 text-left">Tipe Data & Variabel</span>
+    
+            <!-- Module 2 -->
+            <div class="module-group">
+                <button onclick="toggleModule(this)"
+                    class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">2</span>
+                        <span class="text-sm font-semibold text-navy-900 text-left">Tipe Data & Variabel</span>
+                    </div>
+                    <i data-lucide="chevron-down"
+                        class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="module-content hidden">
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Tipe Data Dasar</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">12:00</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Variabel & Penugasan</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">9:30</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Type Casting</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">7:15</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Quiz: Tipe Data</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10 soal</span>
+                    </a>
                 </div>
-                <i data-lucide="chevron-down"
-                    class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-            </button>
-            <div class="module-content hidden">
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Tipe Data Dasar</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">12:00</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Variabel & Penugasan</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">9:30</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Type Casting</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">7:15</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Quiz: Tipe Data</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10 soal</span>
-                </a>
             </div>
-        </div>
-
-        <!-- Module 3 -->
-        <div class="module-group">
-            <button onclick="toggleModule(this)"
-                class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <span
-                        class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">3</span>
-                    <span class="text-sm font-semibold text-navy-900 text-left">Operator & Ekspresi</span>
+    
+            <!-- Module 3 -->
+            <div class="module-group">
+                <button onclick="toggleModule(this)"
+                    class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">3</span>
+                        <span class="text-sm font-semibold text-navy-900 text-left">Operator & Ekspresi</span>
+                    </div>
+                    <i data-lucide="chevron-down"
+                        class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="module-content hidden">
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Operator Aritmatika</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:00</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Operator Perbandingan</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:20</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Operator Logika</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">9:45</span>
+                    </a>
                 </div>
-                <i data-lucide="chevron-down"
-                    class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-            </button>
-            <div class="module-content hidden">
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Operator Aritmatika</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:00</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Operator Perbandingan</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:20</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Operator Logika</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">9:45</span>
-                </a>
             </div>
-        </div>
-
-        <!-- Module 4 -->
-        <div class="module-group">
-            <button onclick="toggleModule(this)"
-                class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <span
-                        class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">4</span>
-                    <span class="text-sm font-semibold text-navy-900 text-left">Percabangan</span>
+    
+            <!-- Module 4 -->
+            <div class="module-group">
+                <button onclick="toggleModule(this)"
+                    class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">4</span>
+                        <span class="text-sm font-semibold text-navy-900 text-left">Percabangan</span>
+                    </div>
+                    <i data-lucide="chevron-down"
+                        class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="module-content hidden">
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">If Statement</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">11:30</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Else & Elif</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:15</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Nested If</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">7:50</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600"> Studi Kasus</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">15:00</span>
+                    </a>
                 </div>
-                <i data-lucide="chevron-down"
-                    class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-            </button>
-            <div class="module-content hidden">
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">If Statement</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">11:30</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Else & Elif</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:15</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Nested If</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">7:50</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600"> Studi Kasus</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">15:00</span>
-                </a>
             </div>
-        </div>
-
-        <!-- Module 5 -->
-        <div class="module-group">
-            <button onclick="toggleModule(this)"
-                class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <span
-                        class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">5</span>
-                    <span class="text-sm font-semibold text-navy-900 text-left">Perulangan</span>
+    
+            <!-- Module 5 -->
+            <div class="module-group">
+                <button onclick="toggleModule(this)"
+                    class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-navy-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-md bg-navy-200 text-navy-700 text-xs font-semibold flex items-center justify-center">5</span>
+                        <span class="text-sm font-semibold text-navy-900 text-left">Perulangan</span>
+                    </div>
+                    <i data-lucide="chevron-down"
+                        class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="module-content hidden">
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">For Loop</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">12:00</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">While Loop</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:00</span>
+                    </a>
+                    <a href="#"
+                        class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
+                        <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
+                        <span class="text-sm text-navy-600">Break & Continue</span>
+                        <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:30</span>
+                    </a>
                 </div>
-                <i data-lucide="chevron-down"
-                    class="w-4 h-4 text-navy-400 module-chevron transition-transform duration-200"></i>
-            </button>
-            <div class="module-content hidden">
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">For Loop</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">12:00</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">While Loop</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">10:00</span>
-                </a>
-                <a href="#"
-                    class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors opacity-40 cursor-not-allowed">
-                    <i data-lucide="lock" class="w-4 h-4 text-navy-400 flex-shrink-0"></i>
-                    <span class="text-sm text-navy-600">Break & Continue</span>
-                    <span class="text-xs text-navy-400 ml-auto flex-shrink-0">8:30</span>
-                </a>
             </div>
+    
         </div>
-
-    </div>
-</nav>
+    </nav>
+</aside>

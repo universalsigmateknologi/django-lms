@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 def landing_view(request):
     return render(request, 'courses/landing.html')
 
-@login_required(login_url='login')
+@login_required
 def course_list_view(request):
     # Placeholder for course list view
     return render(request, 'courses/preview.html')

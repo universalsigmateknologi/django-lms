@@ -2118,6 +2118,10 @@ video {
   padding-top: 1rem;
 }
 
+.pt-1 {
+  padding-top: 0.25rem;
+}
+
 .text-left {
   text-align: left;
 }

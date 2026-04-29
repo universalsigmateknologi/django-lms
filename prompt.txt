@@ -1,3 +1,1 @@
-tolong buatkan views detail course ketika card pada ... di tekan, ia akan redirect ke halaman courses/detail/<slug:slug>/, templatenya adalah
-
-tampilkan data yang diperlukan yang ada pada file
+pada apps apps.enrollments, saya memiliki templates my_courses.html, jadi tolong buatkan saya view dan urlnya, pastikan semua fitur atau data yang ditampilkan sesuai dengan yang ada pada template tersebut yang di ambil dari models.py

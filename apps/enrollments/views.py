@@ -31,5 +31,6 @@ def my_courses_view(request):
         'enrollments': enrollments,
         'stats': stats,
         'EnrollmentStatus': EnrollmentStatus,
+        'menu' : 'my_courses',
     }
     return render(request, 'enrollments/my_courses.html', context)

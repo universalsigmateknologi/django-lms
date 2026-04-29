@@ -14,9 +14,9 @@
 
         <!-- Center Nav -->
         <div class="hidden md:flex items-center gap-1">
-            <a href="#" class="{% if menu == "browse_course" %}text-sm font-medium text-navy-900 bg-navy-50 px-3 py-1.5 rounded-md{% endif %} text-sm font-medium text-navy-500 hover:text-navy-900 px-3 py-1.5 rounded-md hover:bg-navy-50 transition-colors">Jelajahi</a>
+            <a href="{% url 'course_preview' %}" class="{% if menu == "browse_course" %}text-sm font-medium text-navy-900 bg-navy-50 px-3 py-1.5 rounded-md{% endif %} text-sm font-medium text-navy-500 hover:text-navy-900 px-3 py-1.5 rounded-md hover:bg-navy-50 transition-colors">Jelajahi</a>
             <a href="{% url 'enrollments:my_courses' %}"
-                class="text-sm font-medium text-navy-500 hover:text-navy-900 px-3 py-1.5 rounded-md hover:bg-navy-50 transition-colors">Kursus
+                class="{% if menu == "my_courses" %}text-sm font-medium text-navy-900 bg-navy-50 px-3 py-1.5 rounded-md{% endif %}text-sm font-medium text-navy-500 hover:text-navy-900 px-3 py-1.5 rounded-md hover:bg-navy-50 transition-colors">Kursus
                 Saya</a>
             <a href="#"
                 class="text-sm font-medium text-navy-500 hover:text-navy-900 px-3 py-1.5 rounded-md hover:bg-navy-50 transition-colors">Wishlist</a>

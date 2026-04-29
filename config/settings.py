@@ -157,99 +157,99 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 
-# Jazzmin Settings
-JAZZMIN_SETTINGS = {
-    "site_title": "LMS Admin",
-    "site_header": "LMS Admin",
-    "site_brand": "Sigma LMS",
-    "site_logo": None,
-    "login_logo": None,
-    "login_logo_dark": None,
-    "site_logo_classes": "img-circle",
-    "site_icon": None,
-    "welcome_sign": "Welcome to the Sigma LMS Administration",
-    "copyright": "Universal Sigma Teknologi",
-    "search_model": "accounts.CustomUser",
-    "user_avatar": None, # Field name on user model for avatar
+# # Jazzmin Settings
+# JAZZMIN_SETTINGS = {
+#     "site_title": "LMS Admin",
+#     "site_header": "LMS Admin",
+#     "site_brand": "Sigma LMS",
+#     "site_logo": None,
+#     "login_logo": None,
+#     "login_logo_dark": None,
+#     "site_logo_classes": "img-circle",
+#     "site_icon": None,
+#     "welcome_sign": "Welcome to the Sigma LMS Administration",
+#     "copyright": "Universal Sigma Teknologi",
+#     "search_model": "accounts.CustomUser",
+#     "user_avatar": None, # Field name on user model for avatar
 
-    # Top Menu
-    "topmenu_links": [
-        {"name": "Home", "url": "admin:index", "permissions": ["accounts.view_customuser"]},
-        {"name": "View Site", "url": "/", "new_window": True},
-        {"model": "accounts.CustomUser"},
-    ],
+#     # Top Menu
+#     "topmenu_links": [
+#         {"name": "Home", "url": "admin:index", "permissions": ["accounts.view_customuser"]},
+#         {"name": "View Site", "url": "/", "new_window": True},
+#         {"model": "accounts.CustomUser"},
+#     ],
 
-    # User Menu
-    "usermenu_links": [
-        {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
-        {"model": "accounts.CustomUser"}
-    ],
+#     # User Menu
+#     "usermenu_links": [
+#         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+#         {"model": "accounts.CustomUser"}
+#     ],
 
-    # Side Menu
-    "show_sidebar": True,
-    "navigation_expanded": True,
-    "hide_apps": [],
-    "hide_models": [],
-    "order_with_respect_to": ["accounts", "courses", "enrollments", "quizzes", "payments", "certificates"],
+#     # Side Menu
+#     "show_sidebar": True,
+#     "navigation_expanded": True,
+#     "hide_apps": [],
+#     "hide_models": [],
+#     "order_with_respect_to": ["accounts", "courses", "enrollments", "quizzes", "payments", "certificates"],
     
-    # Custom Icons
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "accounts.CustomUser": "fas fa-user-graduate",
-        "courses.Course": "fas fa-book",
-        "courses.Category": "fas fa-tags",
-        "enrollments.Enrollment": "fas fa-user-plus",
-        "quizzes.Quiz": "fas fa-question-circle",
-        "payments.Payment": "fas fa-credit-card",
-        "certificates.Certificate": "fas fa-certificate",
-        "discussions.Discussion": "fas fa-comments",
-        "notifications.Notification": "fas fa-bell",
-        "analytics.Analytics": "fas fa-chart-line",
-    },
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
+#     # Custom Icons
+#     "icons": {
+#         "auth": "fas fa-users-cog",
+#         "accounts.CustomUser": "fas fa-user-graduate",
+#         "courses.Course": "fas fa-book",
+#         "courses.Category": "fas fa-tags",
+#         "enrollments.Enrollment": "fas fa-user-plus",
+#         "quizzes.Quiz": "fas fa-question-circle",
+#         "payments.Payment": "fas fa-credit-card",
+#         "certificates.Certificate": "fas fa-certificate",
+#         "discussions.Discussion": "fas fa-comments",
+#         "notifications.Notification": "fas fa-bell",
+#         "analytics.Analytics": "fas fa-chart-line",
+#     },
+#     "default_icon_parents": "fas fa-chevron-circle-right",
+#     "default_icon_children": "fas fa-circle",
 
-    # Related Modal
-    "related_modal_active": True,
+#     # Related Modal
+#     "related_modal_active": True,
 
-    # UI Customizer
-    "custom_css": None,
-    "custom_js": None,
-    "show_ui_builder": True,
+#     # UI Customizer
+#     "custom_css": None,
+#     "custom_js": None,
+#     "show_ui_builder": True,
 
-    # Change View
-    "changeform_format": "horizontal_tabs",
-    "changeform_format_overrides": {"auth.user": "collapsible_list", "auth.group": "vertical_tabs"},
-}
+#     # Change View
+#     "changeform_format": "horizontal_tabs",
+#     "changeform_format_overrides": {"auth.user": "collapsible_list", "auth.group": "vertical_tabs"},
+# }
 
-JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": False,
-    "footer_small_text": False,
-    "body_small_text": False,
-    "brand_small_text": False,
-    "brand_colour": "navbar-primary",
-    "accent": "accent-primary",
-    "navbar": "navbar-white navbar-light",
-    "no_navbar_border": True,
-    "navbar_fixed": True,
-    "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": True,
-    "sidebar": "sidebar-light-primary",
-    "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": False,
-    "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": False,
-    "theme": "flatly",
-    "dark_mode_theme": None,
-    "button_classes": {
-        "primary": "btn-outline-primary",
-        "secondary": "btn-outline-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success"
-    }
-}
+# JAZZMIN_UI_TWEAKS = {
+#     "navbar_small_text": False,
+#     "footer_small_text": False,
+#     "body_small_text": False,
+#     "brand_small_text": False,
+#     "brand_colour": "navbar-primary",
+#     "accent": "accent-primary",
+#     "navbar": "navbar-white navbar-light",
+#     "no_navbar_border": True,
+#     "navbar_fixed": True,
+#     "layout_boxed": False,
+#     "footer_fixed": False,
+#     "sidebar_fixed": True,
+#     "sidebar": "sidebar-light-primary",
+#     "sidebar_nav_small_text": False,
+#     "sidebar_disable_expand": False,
+#     "sidebar_nav_child_indent": True,
+#     "sidebar_nav_compact_style": False,
+#     "sidebar_nav_legacy_style": False,
+#     "sidebar_nav_flat_style": False,
+#     "theme": "flatly",
+#     "dark_mode_theme": None,
+#     "button_classes": {
+#         "primary": "btn-outline-primary",
+#         "secondary": "btn-outline-secondary",
+#         "info": "btn-info",
+#         "warning": "btn-warning",
+#         "danger": "btn-danger",
+#         "success": "btn-success"
+#     }
+# }

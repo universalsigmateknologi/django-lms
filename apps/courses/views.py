@@ -95,6 +95,7 @@ def course_list_view(request):
         'search_query': search_query,
         'sort_by': sort_by,
         'course_count': courses.count(),
+        'menu' : 'browse_course',
     }
     return render(request, 'courses/preview.html', context)
 

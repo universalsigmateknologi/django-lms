@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <!-- Quiz Start Screen -->
-<div class="max-w-2xl mx-auto">
+<div class="max-w-6xl mx-auto">
 
     <!-- Back Link -->
     <a href="{% url 'enrollments:learn' course.slug quiz.lesson.id %}" class="inline-flex items-center gap-2 text-sm text-navy-500 hover:text-navy-800 transition-colors mb-10">
@@ -131,4 +131,4 @@
     {% endif %}
 
 </div>
-{% endblock content %}
+{% endblock %}

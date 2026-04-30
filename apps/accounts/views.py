@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib import messages
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode
@@ -14,6 +14,8 @@ User = get_user_model()
 
 # Create your views here.
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("course_preview")
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -84,3 +86,7 @@ def verify_email(request, uidb64, token):
     else:
         messages.error(request, 'Link tidak valid atau expired!')
         return redirect('register')
+    
+def logout_view(request):
+    logout(request)
+    return redirect('login')

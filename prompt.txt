@@ -1,6 +1,3 @@
-pada halaman learn.html saya ingin:
+saya mempunyai halaman quizz_start.html, quizz_attempt.html, dan quizz_result.html.
 
-1. content support tampilan markdown
-2. saya ingin ketika tombol tandai selesai di klik, maka progres untuk lesson tersebut selesai, dan pada sidebar tercentang
-3. saya ingin pada sidebar_learn, jika lesson atau module saat ini belum selesai maka seterusnya akan terdisabled
-4. untuk tampilan mobile beri tombol untuk memunculkan sidebar
+tolong buatkan saya view dan urlnya, tolong integrasikan dengan models yang sudah ada, anda diperbolehkan mengedit tampilan quizz_start, quizz_attempt, dan quizz_result.html agar sesuai dengan kebutuhan atau alur dari models yang sudah ada.

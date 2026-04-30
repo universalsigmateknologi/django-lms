@@ -5,7 +5,8 @@ from django.utils import timezone
 from .models import Enrollment, EnrollmentStatus, LessonProgress, QuizAttempt, QuizAnswerRecord
 from apps.courses.models import Course, Lesson, Module
 from apps.quizzes.models import Quiz, Question, Answer, QuestionType
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Max
+import random
 
 @login_required
 def my_courses_view(request):
@@ -158,3 +159,161 @@ def learn_view(request, course_slug, lesson_id):
     context['youtube_id'] = youtube_id
     
     return render(request, 'enrollments/learn.html', context)
+
+
+@login_required
+def quiz_start_view(request, course_slug, quiz_id):
+    course = get_object_or_404(Course, slug=course_slug)
+    enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
+    quiz = get_object_or_404(Quiz, id=quiz_id, lesson__module__course=course)
+    
+    # Get previous attempts
+    attempts = QuizAttempt.objects.filter(enrollment=enrollment, quiz=quiz).order_by('-started_at')
+    attempt_count = attempts.count()
+    
+    can_attempt = True
+    if quiz.max_attempts > 0 and attempt_count >= quiz.max_attempts:
+        can_attempt = False
+    
+    # Calculate best score
+    best_score = attempts.aggregate(Max('score'))['score__max'] or 0
+    
+    context = get_sidebar_context(enrollment, quiz.lesson)
+    context.update({
+        'quiz': quiz,
+        'attempts': attempts,
+        'attempt_count': attempt_count,
+        'can_attempt': can_attempt,
+        'best_score': best_score,
+    })
+    return render(request, 'enrollments/quiz_start.html', context)
+
+
+@login_required
+def quiz_attempt_view(request, course_slug, quiz_id):
+    course = get_object_or_404(Course, slug=course_slug)
+    enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
+    quiz = get_object_or_404(Quiz, id=quiz_id, lesson__module__course=course)
+    
+    # Check if student can still attempt
+    attempt_count = QuizAttempt.objects.filter(enrollment=enrollment, quiz=quiz).count()
+    if quiz.max_attempts > 0 and attempt_count >= quiz.max_attempts:
+        from django.contrib import messages
+        messages.error(request, "Kamu telah mencapai batas maksimal percobaan untuk quiz ini.")
+        return redirect('enrollments:quiz_start', course_slug=course.slug, quiz_id=quiz.id)
+
+    if request.method == 'POST':
+        # Process quiz submission
+        with transaction.atomic():
+            attempt = QuizAttempt.objects.create(
+                enrollment=enrollment,
+                quiz=quiz,
+                status=QuizAttempt.AttemptStatus.IN_PROGRESS
+            )
+            
+            total_points = 0
+            earned_points = 0
+            
+            questions = quiz.questions.all().prefetch_related('answers')
+            for question in questions:
+                total_points += question.points
+                
+                # Get submitted answer
+                # Field name in form will be like 'question_{uuid}'
+                answer_id = request.POST.get(f'question_{question.id}')
+                text_answer = request.POST.get(f'text_question_{question.id}', '')
+                
+                record = QuizAnswerRecord(
+                    attempt=attempt,
+                    question=question
+                )
+                
+                if question.question_type in [QuestionType.MULTIPLE_CHOICE, QuestionType.TRUE_FALSE]:
+                    if answer_id:
+                        try:
+                            selected_answer = Answer.objects.get(id=answer_id, question=question)
+                            record.selected_answer = selected_answer
+                            if selected_answer.is_correct:
+                                record.is_correct = True
+                                earned_points += question.points
+                        except Answer.DoesNotExist:
+                            pass
+                else:
+                    # Essay/Code - require manual grading or simple check (defaulting to False for now)
+                    record.text_answer = text_answer
+                    record.is_correct = False
+                
+                record.save()
+            
+            # Calculate final score
+            score_pct = (earned_points / total_points * 100) if total_points > 0 else 0
+            attempt.score = score_pct
+            
+            if score_pct >= quiz.pass_score:
+                attempt.status = QuizAttempt.AttemptStatus.PASSED
+                # Mark lesson as complete
+                progress, _ = LessonProgress.objects.get_or_create(
+                    enrollment=enrollment,
+                    lesson=quiz.lesson
+                )
+                progress.mark_complete()
+            else:
+                attempt.status = QuizAttempt.AttemptStatus.FAILED
+            
+            attempt.submitted_at = timezone.now()
+            # Calculate time spent
+            time_spent = (attempt.submitted_at - attempt.started_at).total_seconds()
+            attempt.time_spent = int(time_spent)
+            attempt.save()
+            
+            return redirect('enrollments:quiz_result', course_slug=course.slug, quiz_id=quiz.id, attempt_id=attempt.id)
+            
+    # GET Request: Prepare quiz questions
+    questions = list(quiz.questions.all().prefetch_related('answers'))
+    if quiz.randomize_questions:
+        random.shuffle(questions)
+    
+    # If randomize answers
+    if quiz.randomize_answers:
+        for q in questions:
+            q.shuffled_answers = list(q.answers.all())
+            random.shuffle(q.shuffled_answers)
+    else:
+        for q in questions:
+            q.shuffled_answers = q.answers.all()
+
+    context = get_sidebar_context(enrollment, quiz.lesson)
+    context.update({
+        'quiz': quiz,
+        'questions': questions,
+        'time_limit_ms': quiz.time_limit * 1000 if quiz.time_limit > 0 else 0,
+    })
+    return render(request, 'enrollments/quiz_attempt.html', context)
+
+
+@login_required
+def quiz_result_view(request, course_slug, quiz_id, attempt_id):
+    course = get_object_or_404(Course, slug=course_slug)
+    enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
+    quiz = get_object_or_404(Quiz, id=quiz_id, lesson__module__course=course)
+    attempt = get_object_or_404(QuizAttempt, id=attempt_id, enrollment=enrollment, quiz=quiz)
+    
+    # Get answer records for review
+    answer_records = attempt.answer_records.all().select_related('question', 'selected_answer').order_by('question__order')
+    
+    # Calculate stats
+    correct_count = answer_records.filter(is_correct=True).count()
+    wrong_count = answer_records.filter(is_correct=False).exclude(selected_answer__isnull=True, text_answer='').count()
+    unanswered_count = quiz.question_count - (correct_count + wrong_count)
+    
+    context = get_sidebar_context(enrollment, quiz.lesson)
+    context.update({
+        'quiz': quiz,
+        'attempt': attempt,
+        'answer_records': answer_records,
+        'correct_count': correct_count,
+        'wrong_count': wrong_count,
+        'unanswered_count': unanswered_count,
+        'time_spent_str': f"{attempt.time_spent // 60:02d}:{attempt.time_spent % 60:02d}",
+    })
+    return render(request, 'enrollments/quiz_result.html', context)

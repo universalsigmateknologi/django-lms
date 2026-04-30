@@ -52,7 +52,7 @@
     </div>
     <h3 class="text-xl font-semibold text-navy-950 mb-2">Siap untuk Uji Pemahaman?</h3>
     <p class="text-navy-500 text-sm mb-6 max-w-sm mx-auto">Selesaikan quiz ini untuk mengukur pemahamanmu tentang materi {{ lesson.module.title }}.</p>
-    <a href="{% url 'enrollments:quiz_start' lesson.quiz.id %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-navy-900 text-white font-medium hover:bg-navy-800 transition-colors">
+    <a href="{% url 'enrollments:quiz_start' course.slug lesson.quiz.id %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-navy-900 text-white font-medium hover:bg-navy-800 transition-colors">
         Mulai Quiz
         <i data-lucide="arrow-right" class="w-4 h-4"></i>
     </a>

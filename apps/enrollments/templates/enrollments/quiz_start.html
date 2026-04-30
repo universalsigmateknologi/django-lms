@@ -5,7 +5,7 @@
 <div class="max-w-2xl mx-auto">
 
     <!-- Back Link -->
-    <a href="#" class="inline-flex items-center gap-2 text-sm text-navy-500 hover:text-navy-800 transition-colors mb-10">
+    <a href="{% url 'enrollments:learn' course.slug quiz.lesson.id %}" class="inline-flex items-center gap-2 text-sm text-navy-500 hover:text-navy-800 transition-colors mb-10">
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
         <span>Kembali ke materi</span>
     </a>
@@ -17,10 +17,10 @@
             Quiz
         </div>
         <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight leading-tight mb-3">
-            Dasar Pemrograman Python
+            {{ quiz.title }}
         </h1>
         <p class="text-navy-500 text-base leading-relaxed max-w-lg">
-            Uji pemahaman kamu tentang variabel, tipe data, operator, dan struktur kontrol dasar dalam Python.
+            {{ quiz.description|default:"Uji pemahaman kamu tentang materi ini." }}
         </p>
     </div>
 
@@ -32,7 +32,7 @@
                     <i data-lucide="list-checks" class="w-4 h-4 text-navy-600"></i>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-navy-900">10</p>
+            <p class="text-2xl font-bold text-navy-900">{{ quiz.question_count }}</p>
             <p class="text-xs text-navy-400 mt-0.5">Soal</p>
         </div>
         <div class="bg-white border border-navy-100 rounded-2xl p-4 sm:p-5 text-center">
@@ -41,7 +41,7 @@
                     <i data-lucide="clock" class="w-4 h-4 text-navy-600"></i>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-navy-900">15</p>
+            <p class="text-2xl font-bold text-navy-900">{% if quiz.time_limit %}{% widthratio quiz.time_limit 60 1 %}{% else %}∞{% endif %}</p>
             <p class="text-xs text-navy-400 mt-0.5">Menit</p>
         </div>
         <div class="bg-white border border-navy-100 rounded-2xl p-4 sm:p-5 text-center">
@@ -50,7 +50,7 @@
                     <i data-lucide="signal" class="w-4 h-4 text-navy-600"></i>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-navy-900">Dasar</p>
+            <p class="text-2xl font-bold text-navy-900">{{ course.get_level_display }}</p>
             <p class="text-xs text-navy-400 mt-0.5">Level</p>
         </div>
     </div>
@@ -63,47 +63,72 @@
                 <div class="w-5 h-5 rounded-full bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <i data-lucide="check" class="w-3 h-3 text-navy-600"></i>
                 </div>
-                <p class="text-sm text-navy-600 leading-relaxed">Pilih satu jawaban yang paling tepat dari setiap soal.</p>
+                <p class="text-sm text-navy-600 leading-relaxed">Pilih jawaban yang paling tepat dari setiap soal.</p>
             </li>
             <li class="flex items-start gap-3">
                 <div class="w-5 h-5 rounded-full bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <i data-lucide="check" class="w-3 h-3 text-navy-600"></i>
                 </div>
-                <p class="text-sm text-navy-600 leading-relaxed">Waktu akan dimulai setelah kamu menekan tombol mulai.</p>
+                <p class="text-sm text-navy-600 leading-relaxed">
+                    {% if quiz.time_limit %}
+                    Waktu pengerjaan adalah {% widthratio quiz.time_limit 60 1 %} menit.
+                    {% else %}
+                    Tidak ada batasan waktu pengerjaan.
+                    {% endif %}
+                </p>
             </li>
             <li class="flex items-start gap-3">
                 <div class="w-5 h-5 rounded-full bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <i data-lucide="check" class="w-3 h-3 text-navy-600"></i>
                 </div>
-                <p class="text-sm text-navy-600 leading-relaxed">Jawaban tidak dapat diubah setelah berpindah ke soal berikutnya.</p>
+                <p class="text-sm text-navy-600 leading-relaxed">Skor minimal {{ quiz.pass_score }}% untuk dinyatakan lulus.</p>
             </li>
+            {% if quiz.max_attempts %}
             <li class="flex items-start gap-3">
                 <div class="w-5 h-5 rounded-full bg-navy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <i data-lucide="check" class="w-3 h-3 text-navy-600"></i>
                 </div>
-                <p class="text-sm text-navy-600 leading-relaxed">Skor minimal 70 untuk dinyatakan lulus.</p>
+                <p class="text-sm text-navy-600 leading-relaxed">Maksimal percobaan: {{ quiz.max_attempts }} kali. Kamu sudah mencoba {{ attempt_count }} kali.</p>
             </li>
+            {% endif %}
         </ul>
     </div>
 
-    <!-- Topics Covered -->
-    <div class="mb-10">
-        <h2 class="text-sm font-semibold text-navy-900 mb-3">Topik yang dicakup</h2>
-        <div class="flex flex-wrap gap-2">
-            <span class="px-3.5 py-1.5 bg-navy-100 text-navy-700 text-xs font-medium rounded-lg">Variabel</span>
-            <span class="px-3.5 py-1.5 bg-navy-100 text-navy-700 text-xs font-medium rounded-lg">Tipe Data</span>
-            <span class="px-3.5 py-1.5 bg-navy-100 text-navy-700 text-xs font-medium rounded-lg">Operator</span>
-            <span class="px-3.5 py-1.5 bg-navy-100 text-navy-700 text-xs font-medium rounded-lg">If-Else</span>
-            <span class="px-3.5 py-1.5 bg-navy-100 text-navy-700 text-xs font-medium rounded-lg">Looping</span>
-            <span class="px-3.5 py-1.5 bg-navy-100 text-navy-700 text-xs font-medium rounded-lg">Input / Output</span>
-        </div>
-    </div>
-
     <!-- Start Button -->
-    <button class="w-full bg-navy-900 hover:bg-navy-800 text-white font-semibold text-base py-4 rounded-2xl transition-colors duration-200 flex items-center justify-center gap-2.5">
+    {% if can_attempt %}
+    <a href="{% url 'enrollments:quiz_attempt' course.slug quiz.id %}" class="w-full bg-navy-900 hover:bg-navy-800 text-white font-semibold text-base py-4 rounded-2xl transition-colors duration-200 flex items-center justify-center gap-2.5">
         <span>Mulai Quiz</span>
         <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
-    </button>
+    </a>
+    {% else %}
+    <div class="w-full bg-navy-100 text-navy-400 font-semibold text-base py-4 rounded-2xl text-center cursor-not-allowed">
+        Batas Percobaan Habis
+    </div>
+    {% endif %}
+
+    {% if attempts %}
+    <div class="mt-12">
+        <h2 class="text-sm font-semibold text-navy-900 mb-4">Riwayat Percobaan</h2>
+        <div class="space-y-3">
+            {% for attempt in attempts %}
+            <div class="bg-white border border-navy-100 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-navy-800">{{ attempt.started_at|date:"d M Y, H:i" }}</p>
+                    <p class="text-xs text-navy-400">Skor: {{ attempt.score }}%</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-2.5 py-1 rounded-md text-xs font-medium {% if attempt.status == 'passed' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                        {{ attempt.get_status_display }}
+                    </span>
+                    <a href="{% url 'enrollments:quiz_result' course.slug quiz.id attempt.id %}" class="text-navy-600 hover:text-navy-900">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
 </div>
 {% endblock content %}

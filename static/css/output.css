@@ -804,6 +804,10 @@ video {
   top: 100%;
 }
 
+.top-\[56px\] {
+  top: 56px;
+}
+
 .-z-10 {
   z-index: -10;
 }
@@ -1346,6 +1350,10 @@ video {
 
 .max-w-none {
   max-width: none;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
 }
 
 .flex-1 {
@@ -3047,6 +3055,11 @@ video {
 
   .sm\:p-5 {
     padding: 1.25rem;
+  }
+
+  .sm\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
   .sm\:text-2xl {

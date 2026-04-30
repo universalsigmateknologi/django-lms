@@ -78,6 +78,93 @@
     #lessonContent li {
         margin-bottom: 0.5rem !important;
     }
+
+    /* ChatGPT-style Code Styling */
+    article#lessonContent code:not(pre code) {
+        background-color: #e2e8f0 !important; /* Slate-200 (Lebih terlihat) */
+        color: #1e293b !important; /* Slate-800 */
+        padding: 0.2rem 0.4rem !important;
+        border-radius: 8px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.9em !important;
+        border: 1px solid #cbd5e1 !important; /* Border tipis agar lebih tegas */
+        display: inline !important;
+        word-break: break-word !important;
+    }
+
+    /* Hilangkan backticks bawaan Tailwind */
+    article#lessonContent code::before,
+    article#lessonContent code::after {
+        content: "" !important;
+    }
+
+    article#lessonContent pre {
+        background-color: #0f172a !important; /* Navy Gelap */
+        color: #f8fafc !important;
+        padding: 1.5rem !important;
+        border-radius: 16px !important;
+        overflow-x: auto;
+        margin: 1.5rem 0 !important;
+        border: 1px solid #1e293b !important;
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+        display: block !important;
+        position: relative !important; /* Penting untuk posisi tombol copy */
+    }
+
+    /* Styling tombol Copy */
+    .copy-code-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.7);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        z-index: 10;
+        display: flex;
+        items: center;
+        gap: 4px;
+    }
+
+    .copy-code-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .copy-code-btn.copied {
+        background: #10b981; /* Emerald-500 */
+        color: white;
+        border-color: #10b981;
+    }
+
+    article#lessonContent pre code {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        font-size: 0.9em !important;
+        color: inherit !important;
+    }
+
+    /* Scrollbar untuk blok kode */
+    #lessonContent pre::-webkit-scrollbar {
+        height: 8px;
+    }
+    #lessonContent pre::-webkit-scrollbar-track {
+        background: #1e293b;
+        border-radius: 0 0 12px 12px;
+    }
+    #lessonContent pre::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 10px;
+    }
+    #lessonContent pre::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
 </style>
 
 <article id="lessonContent" class="prose prose-navy max-w-none prose-slate prose-p:leading-relaxed prose-headings:text-navy-950 prose-a:text-navy-600 prose-img:rounded-2xl">
@@ -93,22 +180,54 @@
             let htmlContent = contentEl.innerHTML.trim();
             let textContent = contentEl.textContent.trim();
             
-            // Perbaikan deteksi: Jika ada simbol markdown atau jika konten terlihat seperti teks polos
-            const markdownSymbols = /^#|^\*|^-|^\[|^>|^\d\./m;
-            const hasMarkdown = markdownSymbols.test(textContent);
+            // Perbaikan deteksi: Tambahkan triple backticks (```) ke dalam deteksi
+            const markdownSymbols = /^#|^\*|^-|^\[|^>|^\d\.|\`{3}/m;
+            const hasMarkdown = markdownSymbols.test(textContent) || htmlContent.includes('```');
             
-            // Jika ada markdown, kita ubah struktur <p> CKEditor kembali ke format baris
             if (hasMarkdown) {
-                // Ganti </p><p> dengan double newline agar marked mengenalinya sebagai paragraf
+                // Bersihkan konten dari pembungkus CKEditor
+                // Kita harus hati-hati agar tidak merusak baris baru di dalam blok kode
                 let cleanContent = htmlContent
-                    .replace(/<\/p>\s*<p>/gi, '\n\n')
-                    .replace(/<p>/gi, '')
-                    .replace(/<\/p>/gi, '')
+                    .replace(/<p>\s*&nbsp;\s*<\/p>/gi, '\n\n') // Tangani baris kosong
+                    .replace(/<\/p>\s*<p>/gi, '\n')           // Gabungkan paragraf jadi baris baru
+                    .replace(/<p>/gi, '')                      // Hapus tag pembuka
+                    .replace(/<\/p>/gi, '\n')                  // Ganti tag penutup jadi baris baru
                     .replace(/&nbsp;/g, ' ')
-                    .replace(/<br\s*\/?>/gi, '\n');
+                    .replace(/<br\s*\/?>/gi, '\n')
+                    .replace(/&gt;/g, '>')                      // Penting untuk simbol command line
+                    .replace(/&lt;/g, '<')
+                    .replace(/&amp;/g, '&');
                 
-                contentEl.innerHTML = marked.parse(cleanContent);
+                contentEl.innerHTML = marked.parse(cleanContent.trim());
             }
+
+            // Tambahkan Tombol Copy pada setiap blok kode <pre>
+            contentEl.querySelectorAll('pre').forEach(pre => {
+                const button = document.createElement('button');
+                button.className = 'copy-code-btn';
+                button.innerHTML = '<i data-lucide="copy" class="w-3 h-3"></i><span>Copy</span>';
+                pre.appendChild(button);
+
+                button.addEventListener('click', async () => {
+                    const code = pre.querySelector('code').textContent;
+                    try {
+                        await navigator.clipboard.writeText(code);
+                        button.classList.add('copied');
+                        button.innerHTML = '<i data-lucide="check" class="w-3 h-3"></i><span>Copied!</span>';
+                        
+                        setTimeout(() => {
+                            button.classList.remove('copied');
+                            button.innerHTML = '<i data-lucide="copy" class="w-3 h-3"></i><span>Copy</span>';
+                            if (window.lucide) lucide.createIcons();
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Gagal menyalin:', err);
+                    }
+                });
+            });
+            
+            // Re-initialize Lucide icons for the new buttons
+            if (window.lucide) lucide.createIcons();
             
             // Pastikan semua gambar di dalam konten responsif dan cantik
             contentEl.querySelectorAll('img').forEach(img => {
@@ -130,7 +249,7 @@
 </script>
 
 <!-- Bottom Navigation -->
-<div class="flex items-center justify-between mt-12 pt-8 border-t border-navy-200">
+<div class="flex items-center justify-between mt-12 pt-8 border-t border-navy-200 mb-8">
   {% if prev_lesson %}
   <a href="{% url 'enrollments:learn' course.slug prev_lesson.id %}" class="flex items-center gap-2 text-sm text-navy-500 hover:text-navy-900 transition-colors group">
     <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>

@@ -179,15 +179,25 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                     
                     <!-- Play overlay -->
-                    <a href="#"
-                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div
-                            class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
-                            <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z" />
-                            </svg>
-                        </div>
-                    </a>
+                    {% if enrollment.latest_progress %}
+                        <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.latest_progress.lesson.id %}"
+                            class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                                <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                            </div>
+                        </a>
+                    {% elif enrollment.first_lesson %}
+                        <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.first_lesson.id %}"
+                            class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                                <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                            </div>
+                        </a>
+                    {% endif %}
 
                     <!-- Progress bar on image -->
                     <div class="absolute bottom-0 left-0 right-0">
@@ -216,7 +226,13 @@
 
                 <div class="p-4">
                     <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">
-                        {{ enrollment.course.title }}
+                        {% if enrollment.latest_progress %}
+                            <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.latest_progress.lesson.id %}">{{ enrollment.course.title }}</a>
+                        {% elif enrollment.first_lesson %}
+                            <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.first_lesson.id %}">{{ enrollment.course.title }}</a>
+                        {% else %}
+                            {{ enrollment.course.title }}
+                        {% endif %}
                     </h3>
                     <p class="text-[11px] text-navy-400 mt-0.5">
                         {{ enrollment.course.instructor.get_full_name|default:enrollment.course.instructor.username }}
@@ -238,6 +254,20 @@
                             </p>
                         </div>
                     {% endif %}
+                    {% if enrollment.status == EnrollmentStatus.COMPLETED %}
+                        <!-- Current lesson -->
+                        <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
+                            <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Sudah Dipelajari</p>
+                            <p class="text-xs text-navy-700 mt-0.5 font-medium leading-snug">
+                                {% if enrollment.latest_progress %}
+                                    {{ enrollment.latest_progress.lesson.title }}
+                                {% else %}
+                                    Belum ada pelajaran yang diakses
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% endif %}
+
 
                     <!-- Stats row -->
                     <div class="flex items-center justify-between mt-3 pt-3 border-t border-navy-100">
@@ -271,8 +301,11 @@
                                 </span>
                             {% endif %}
                         {% elif enrollment.status == EnrollmentStatus.COMPLETED %}
-                            <a href="#" class="flex-1 text-center text-sm font-semibold border border-navy-200 py-2 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors">
-                                Lihat Sertifikat
+                            <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.first_lesson.id %}" class="flex-1 text-center text-sm font-semibold bg-navy-50 py-2.5 rounded-lg text-navy-700 hover:bg-navy-100 transition-colors">
+                                Pelajari Lagi
+                            </a>
+                            <a href="#" class="flex-1 text-center text-sm font-semibold border border-navy-200 py-2.5 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors">
+                                Sertifikat
                             </a>
                             <div class="relative">
                                 <button onclick="toggleDropdown(event, 'dd{{ enrollment.id }}')"

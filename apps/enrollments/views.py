@@ -48,13 +48,33 @@ def get_sidebar_context(enrollment, current_lesson=None):
     completed_lesson_ids = set(enrollment.lesson_progresses.filter(is_completed=True).values_list('lesson_id', flat=True))
     all_lessons = list(Lesson.objects.filter(module__course=course).order_by('module__order', 'order'))
     
+    # Determine which lessons are unlocked (sequential)
+    unlocked_lesson_ids = set()
+    last_completed = True # First lesson is always unlocked
+    
+    first_locked_lesson = None
+    
+    for l in all_lessons:
+        if last_completed:
+            unlocked_lesson_ids.add(l.id)
+        elif first_locked_lesson is None:
+            first_locked_lesson = l
+        
+        # Current lesson is also unlocked for viewing (this part is for the sidebar context)
+        # However, for access control, we need to be stricter.
+        # Let's keep this as is for the sidebar, but we'll use it in learn_view.
+            
+        last_completed = l.id in completed_lesson_ids
+
     context = {
         'course': course,
         'enrollment': enrollment,
         'modules': modules,
         'completed_lesson_ids': completed_lesson_ids,
+        'unlocked_lesson_ids': unlocked_lesson_ids,
         'total_lessons_count': len(all_lessons),
         'completed_count': len(completed_lesson_ids),
+        'first_locked_lesson': first_locked_lesson,
     }
     
     if current_lesson:
@@ -74,10 +94,47 @@ def get_sidebar_context(enrollment, current_lesson=None):
     return context
 
 @login_required
+def mark_lesson_complete_view(request, lesson_id):
+    if request.method == 'POST':
+        lesson = get_object_or_404(Lesson, id=lesson_id)
+        enrollment = get_object_or_404(Enrollment, course=lesson.module.course, student=request.user)
+        
+        progress, created = LessonProgress.objects.get_or_create(
+            enrollment=enrollment,
+            lesson=lesson
+        )
+        
+        progress.mark_complete()
+        
+        # Redirect kembali ke halaman belajar (ini akan otomatis memperbarui sidebar/progress)
+        from django.contrib import messages
+        messages.success(request, "Materi berhasil ditandai selesai!")
+        return redirect('enrollments:learn', course_slug=lesson.module.course.slug, lesson_id=lesson.id)
+    
+    return redirect('enrollments:my_courses')
+
+@login_required
 def learn_view(request, course_slug, lesson_id):
     course = get_object_or_404(Course, slug=course_slug)
     enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
     lesson = get_object_or_404(Lesson, id=lesson_id, module__course=course)
+
+    # Security Check: Ensure lesson is unlocked
+    sidebar_context = get_sidebar_context(enrollment, lesson)
+    if lesson.id not in sidebar_context['unlocked_lesson_ids']:
+        from django.contrib import messages
+        messages.warning(request, "Selesaikan materi sebelumnya terlebih dahulu untuk mengakses materi ini.")
+        
+        # Find the last unlocked lesson to redirect to
+        all_lessons = list(Lesson.objects.filter(module__course=course).order_by('module__order', 'order'))
+        last_unlocked_id = all_lessons[0].id
+        for l in all_lessons:
+            if l.id in sidebar_context['unlocked_lesson_ids']:
+                last_unlocked_id = l.id
+            else:
+                break
+        
+        return redirect('enrollments:learn', course_slug=course.slug, lesson_id=last_unlocked_id)
 
     # Mark lesson as visited/in progress
     progress, created = LessonProgress.objects.get_or_create(
@@ -85,7 +142,7 @@ def learn_view(request, course_slug, lesson_id):
         lesson=lesson
     )
     
-    context = get_sidebar_context(enrollment, lesson)
+    context = sidebar_context
     context['progress'] = progress
 
     # Handle YouTube URL transformation
@@ -107,6 +164,21 @@ def quiz_start_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     enrollment = get_object_or_404(Enrollment, course=quiz.lesson.module.course, student=request.user)
     
+    # Security Check: Ensure lesson is unlocked
+    sidebar_context = get_sidebar_context(enrollment, quiz.lesson)
+    if quiz.lesson.id not in sidebar_context['unlocked_lesson_ids']:
+        from django.contrib import messages
+        messages.warning(request, "Selesaikan materi sebelumnya terlebih dahulu.")
+        # Find the last unlocked lesson id
+        all_lessons = list(Lesson.objects.filter(module__course=enrollment.course).order_by('module__order', 'order'))
+        last_unlocked_id = all_lessons[0].id
+        for l in all_lessons:
+            if l.id in sidebar_context['unlocked_lesson_ids']:
+                last_unlocked_id = l.id
+            else:
+                break
+        return redirect('enrollments:learn', course_slug=enrollment.course.slug, lesson_id=last_unlocked_id)
+
     previous_attempts = QuizAttempt.objects.filter(
         enrollment=enrollment,
         quiz=quiz
@@ -115,7 +187,7 @@ def quiz_start_view(request, quiz_id):
     last_attempt = previous_attempts.first()
     attempts_count = previous_attempts.count()
     
-    context = get_sidebar_context(enrollment, quiz.lesson)
+    context = sidebar_context
     context.update({
         'quiz': quiz,
         'last_attempt': last_attempt,
@@ -129,6 +201,11 @@ def quiz_attempt_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     enrollment = get_object_or_404(Enrollment, course=quiz.lesson.module.course, student=request.user)
     
+    # Security Check
+    sidebar_context = get_sidebar_context(enrollment, quiz.lesson)
+    if quiz.lesson.id not in sidebar_context['unlocked_lesson_ids']:
+        return redirect('enrollments:quiz_start', quiz_id=quiz.id)
+
     attempt = QuizAttempt.objects.filter(
         enrollment=enrollment,
         quiz=quiz,

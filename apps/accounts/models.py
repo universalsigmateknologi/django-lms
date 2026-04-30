@@ -60,6 +60,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def is_student(self):
         return self.role == 'student'
 
+    def get_full_name(self):
+        return self.username
+
+    def get_short_name(self):
+        return self.username
+
     def __str__(self):
         return self.email
     

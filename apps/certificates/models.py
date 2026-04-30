@@ -114,14 +114,12 @@ class Certificate(models.Model):
             self.certificate_number = self._generate_cert_number()
         # Auto-snapshot data
         if not self.student_name_snapshot:
-            self.student_name_snapshot = self.student.full_name or self.student.username
+            # Menggunakan get_full_name() atau username jika tidak tersedia
+            self.student_name_snapshot = getattr(self.student, 'get_full_name', lambda: self.student.username)()
         if not self.course_title_snapshot:
             self.course_title_snapshot = self.course.title
         if not self.instructor_name_snapshot:
-            self.instructor_name_snapshot = (
-                self.course.instructor.full_name or
-                self.course.instructor.username
-            )
+            self.instructor_name_snapshot = getattr(self.course.instructor, 'get_full_name', lambda: self.course.instructor.username)()
         super().save(*args, **kwargs)
 
     @staticmethod

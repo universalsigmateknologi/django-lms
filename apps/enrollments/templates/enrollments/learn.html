@@ -60,9 +60,74 @@
 {% endif %}
 
 <!-- Lesson Content -->
-<article class="prose-custom space-y-8">
+<style>
+    #lessonContent p {
+        margin-bottom: 1.5rem !important;
+        line-height: 1.75;
+    }
+    #lessonContent h1, #lessonContent h2, #lessonContent h3 {
+        margin-top: 2rem !important;
+        margin-bottom: 1rem !important;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    #lessonContent ul, #lessonContent ol {
+        margin-bottom: 1.5rem !important;
+        padding-left: 1.5rem !important;
+    }
+    #lessonContent li {
+        margin-bottom: 0.5rem !important;
+    }
+</style>
+
+<article id="lessonContent" class="prose prose-navy max-w-none prose-slate prose-p:leading-relaxed prose-headings:text-navy-950 prose-a:text-navy-600 prose-img:rounded-2xl">
     {{ lesson.content|safe }}
 </article>
+
+<!-- Markdown/HTML Rendering Handler -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contentEl = document.getElementById('lessonContent');
+        if (contentEl) {
+            let htmlContent = contentEl.innerHTML.trim();
+            let textContent = contentEl.textContent.trim();
+            
+            // Perbaikan deteksi: Jika ada simbol markdown atau jika konten terlihat seperti teks polos
+            const markdownSymbols = /^#|^\*|^-|^\[|^>|^\d\./m;
+            const hasMarkdown = markdownSymbols.test(textContent);
+            
+            // Jika ada markdown, kita ubah struktur <p> CKEditor kembali ke format baris
+            if (hasMarkdown) {
+                // Ganti </p><p> dengan double newline agar marked mengenalinya sebagai paragraf
+                let cleanContent = htmlContent
+                    .replace(/<\/p>\s*<p>/gi, '\n\n')
+                    .replace(/<p>/gi, '')
+                    .replace(/<\/p>/gi, '')
+                    .replace(/&nbsp;/g, ' ')
+                    .replace(/<br\s*\/?>/gi, '\n');
+                
+                contentEl.innerHTML = marked.parse(cleanContent);
+            }
+            
+            // Pastikan semua gambar di dalam konten responsif dan cantik
+            contentEl.querySelectorAll('img').forEach(img => {
+                img.classList.add('rounded-2xl', 'max-w-full', 'h-auto', 'shadow-lg', 'my-8', 'block', 'mx-auto');
+            });
+            
+            // Tambahkan styling untuk tabel jika ada
+            contentEl.querySelectorAll('table').forEach(table => {
+                table.classList.add('w-full', 'border-collapse', 'my-6', 'overflow-hidden', 'rounded-xl', 'border', 'border-navy-100');
+                table.querySelectorAll('th').forEach(th => {
+                    th.classList.add('bg-navy-50', 'p-3', 'text-left', 'font-semibold', 'text-navy-900', 'border-b', 'border-navy-100');
+                });
+                table.querySelectorAll('td').forEach(td => {
+                    td.classList.add('p-3', 'border-b', 'border-navy-50', 'text-navy-600');
+                });
+            });
+        }
+    });
+</script>
 
 <!-- Bottom Navigation -->
 <div class="flex items-center justify-between mt-12 pt-8 border-t border-navy-200">
@@ -76,13 +141,15 @@
   {% endif %}
 
   {% if lesson.lesson_type != 'quiz' %}
-  <button id="markCompleteBtn" 
-    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl {% if progress.is_completed %}bg-navy-200 text-navy-700{% else %}bg-navy-900 text-white hover:bg-navy-800{% endif %} text-sm font-medium transition-colors"
-    {% if progress.is_completed %}disabled{% endif %}
-    onclick="handleMarkComplete(this, '{{ lesson.id }}')">
-    <i data-lucide="check" class="w-4 h-4"></i>
-    <span>{% if progress.is_completed %}Selesai{% else %}Tandai Selesai{% endif %}</span>
-  </button>
+  <form action="{% url 'enrollments:mark_lesson_complete' lesson.id %}" method="POST">
+      {% csrf_token %}
+      <button type="submit" id="markCompleteBtn" 
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl {% if progress.is_completed %}bg-navy-200 text-navy-700{% else %}bg-navy-900 text-white hover:bg-navy-800{% endif %} text-sm font-medium transition-colors"
+        {% if progress.is_completed %}disabled{% endif %}>
+        <i data-lucide="check" class="w-4 h-4"></i>
+        <span>{% if progress.is_completed %}Selesai{% else %}Tandai Selesai{% endif %}</span>
+      </button>
+  </form>
   {% endif %}
 
   {% if next_lesson %}
@@ -95,23 +162,5 @@
   {% endif %}
 </div>
 
-<script>
-function handleMarkComplete(btn, lessonId) {
-    // Basic implementation for now, should ideally use an API call
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Loading...</span>';
-    lucide.createIcons();
-    
-    // Mocking the completion for now as we don't have the API endpoint yet, 
-    // but the backend logic is in place in learn_view to mark as visited.
-    // In a real app, this would be a POST request to a mark_complete view.
-    setTimeout(() => {
-        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i><span>Selesai</span>';
-        btn.classList.remove('bg-navy-900', 'hover:bg-navy-800');
-        btn.classList.add('bg-navy-200', 'text-navy-700');
-        btn.disabled = true;
-        lucide.createIcons();
-        if (typeof showToast === 'function') showToast('Materi ditandai selesai!');
-    }, 500);
-}
-</script>
+<!-- Script untuk Markdown tetap dipertahankan karena untuk tampilan -->
 {% endblock content %}

@@ -1,1 +1,6 @@
-saya telah memiliki halaman learn.html dan pada sidebar modulenya terdapat menu quizz yang dimana tampilan dari quizz tersebut adalah quiz_start.html, quiz_attempt.html dan quiz_result.html, jadi saya ingin ketika user mengklik menu quizz, maka akan diarahkan ke halaman quiz_start.html, dan ketika user mengklik tombol mulai pada halaman quiz_start.html, maka akan diarahkan ke halaman quiz_attempt.html yang dimana pada halaman tersebut terdapat soal-soal yang akan dijawab oleh user, dan ketika user mengklik tombol selesai pada halaman quiz_attempt.html, maka akan diarahkan ke halaman quiz_result.html, tolong buatkan view, url dan logicnya, gunakan model yang telah ada
+pada halaman learn.html saya ingin:
+
+1. content support tampilan markdown
+2. saya ingin ketika tombol tandai selesai di klik, maka progres untuk lesson tersebut selesai, dan pada sidebar tercentang
+3. saya ingin pada sidebar_learn, jika lesson atau module saat ini belum selesai maka seterusnya akan terdisabled
+4. untuk tampilan mobile beri tombol untuk memunculkan sidebar

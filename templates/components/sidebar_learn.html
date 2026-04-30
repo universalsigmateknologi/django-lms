@@ -33,13 +33,17 @@
                 </button>
                 <div class="module-content {% if lesson.module != mod %}hidden{% endif %}">
                     {% for les in mod.lessons.all %}
-                        <a href="{% if les.lesson_type == 'quiz' %}{% url 'enrollments:quiz_start' les.quiz.id %}{% else %}{% url 'enrollments:learn' course.slug les.id %}{% endif %}"
-                            class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 hover:bg-navy-50 transition-colors {% if lesson == les %}bg-navy-50 border-l-2 border-navy-900{% endif %}">
+                        <a {% if les.id in unlocked_lesson_ids %}href="{% if les.lesson_type == 'quiz' %}{% url 'enrollments:quiz_start' les.quiz.id %}{% else %}{% url 'enrollments:learn' course.slug les.id %}{% endif %}"{% endif %}
+                            class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 transition-colors 
+                            {% if lesson == les %}bg-navy-50 border-l-2 border-navy-900{% elif les.id in unlocked_lesson_ids %}hover:bg-navy-50{% else %}opacity-50 cursor-not-allowed{% endif %}"
+                            {% if les.id not in unlocked_lesson_ids %}onclick="return false;"{% endif %}>
                             
-                            {% if les.lesson_type == 'quiz' %}
+                            {% if les.id in completed_lesson_ids %}
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-green-600 flex-shrink-0"></i>
+                            {% elif les.lesson_type == 'quiz' %}
                                 <i data-lucide="file-question" class="w-4 h-4 {% if lesson == les %}text-navy-900{% else %}text-navy-400{% endif %} flex-shrink-0"></i>
-                            {% elif les.id in completed_lesson_ids %}
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-navy-900 flex-shrink-0"></i>
+                            {% elif les.id not in unlocked_lesson_ids %}
+                                <i data-lucide="lock" class="w-4 h-4 text-navy-300 flex-shrink-0"></i>
                             {% else %}
                                 <i data-lucide="circle" class="w-4 h-4 {% if lesson == les %}text-navy-900{% else %}text-navy-400{% endif %} flex-shrink-0"></i>
                             {% endif %}

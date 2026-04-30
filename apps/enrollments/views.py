@@ -287,6 +287,7 @@ def quiz_attempt_view(request, course_slug, quiz_id):
         'quiz': quiz,
         'questions': questions,
         'time_limit_ms': quiz.time_limit * 1000 if quiz.time_limit > 0 else 0,
+        'menu': 'quiz_attempt',
     })
     return render(request, 'enrollments/quiz_attempt.html', context)
 

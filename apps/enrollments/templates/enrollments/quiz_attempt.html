@@ -1,117 +1,150 @@
 {% extends 'base_learn.html' %}
 {% load static %}
-{% block content %}
+{% block content2 %}
 <!-- Quiz Attempt -->
-<div class="max-w-3xl mx-auto">
+<div class="max-w-6xl mx-auto pt-8 px-5">
     <form id="quizForm" method="POST">
         {% csrf_token %}
         
-        <!-- Top Bar: Timer & Progress -->
-        <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center gap-2 text-sm text-navy-500">
-                <i data-lucide="help-circle" class="w-4 h-4"></i>
-                <span>{{ quiz.title }}</span>
-            </div>
-            {% if quiz.time_limit %}
-            <div class="flex items-center gap-2 bg-white border border-navy-100 rounded-full px-4 py-2">
-                <i data-lucide="clock" class="w-4 h-4 text-navy-400"></i>
-                <span id="quizTimer" class="text-sm font-semibold text-navy-800 tabular-nums">--:--</span>
-            </div>
-            {% endif %}
-        </div>
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
+            
+            <!-- Left Column: Questions -->
+            <div class="lg:col-span-8">
+                <!-- Top Bar: Title (Mobile only Timer) -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2 text-sm text-navy-500">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                        <span class="font-medium">{{ quiz.title }}</span>
+                    </div>
+                    {% if quiz.time_limit %}
+                    <div class="lg:hidden flex items-center gap-2 bg-white border border-navy-100 rounded-full px-4 py-2">
+                        <i data-lucide="clock" class="w-4 h-4 text-navy-400"></i>
+                        <span id="quizTimerMobile" class="text-sm font-semibold text-navy-800 tabular-nums">--:--</span>
+                    </div>
+                    {% endif %}
+                </div>
 
-        <!-- Progress Bar -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-navy-500">Soal <span id="currentQuestionNum">1</span> dari {{ quiz.question_count }}</span>
-                <span class="text-xs font-medium text-navy-500" id="progressPct">0%</span>
-            </div>
-            <div class="w-full h-1.5 bg-navy-100 rounded-full overflow-hidden">
-                <div id="progressBar" class="h-full bg-navy-900 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-        </div>
+                <!-- Questions Container -->
+                <div id="questionsContainer">
+                    {% for question in questions %}
+                    <div class="question-slide {% if not forloop.first %}hidden{% endif %}" data-question-index="{{ forloop.counter }}">
+                        <div class="bg-white border border-navy-100 rounded-2xl p-5 sm:p-7 mb-6 shadow-sm">
+                            <div class="flex items-center gap-2 mb-5">
+                                <span class="w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold flex items-center justify-center">{{ forloop.counter }}</span>
+                                <span class="text-xs font-medium text-navy-400 uppercase tracking-wide">{{ question.get_question_type_display }}</span>
+                            </div>
 
-        <!-- Questions Container -->
-        <div id="questionsContainer">
-            {% for question in questions %}
-            <div class="question-slide {% if not forloop.first %}hidden{% endif %}" data-question-index="{{ forloop.counter }}">
-                <div class="bg-white border border-navy-100 rounded-2xl p-6 sm:p-8 mb-6">
-                    <div class="flex items-center gap-2 mb-5">
-                        <span class="w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold flex items-center justify-center">{{ forloop.counter }}</span>
-                        <span class="text-xs font-medium text-navy-400 uppercase tracking-wide">{{ question.get_question_type_display }}</span>
+                            <h2 class="text-lg sm:text-xl font-semibold text-navy-900 leading-relaxed mb-6">
+                                {{ question.text }}
+                            </h2>
+
+                            {% if question.image %}
+                            <img src="{{ question.image.url }}" alt="Question Image" class="rounded-xl mb-6 max-h-64 object-contain">
+                            {% endif %}
+
+                            {% if question.question_type == 'multiple_choice' or question.question_type == 'true_false' %}
+                            <div class="space-y-3">
+                                {% for answer in question.shuffled_answers %}
+                                <label class="quiz-option flex items-start gap-4 p-4 rounded-xl border-2 border-navy-100 cursor-pointer hover:border-navy-300 hover:bg-navy-50/50 transition-all duration-150 has-[:checked]:border-navy-900 has-[:checked]:bg-navy-50">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}" class="mt-0.5 w-4 h-4 text-navy-900 border-navy-300 focus:ring-navy-900 focus:ring-offset-0 accent-navy-900" onchange="markAnswered({{ forloop.parentloop.counter }})">
+                                    <span class="text-sm text-navy-700">{{ answer.text }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                            {% elif question.question_type == 'essay' or question.question_type == 'code' %}
+                            <textarea name="text_question_{{ question.id }}" rows="8" class="w-full p-4 rounded-xl border-2 border-navy-100 focus:border-navy-900 focus:ring-navy-900 transition-all outline-none text-sm font-mono" placeholder="Ketik jawabanmu di sini..." oninput="markAnswered({{ forloop.counter }})"></textarea>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Bottom Actions -->
+                <div class="flex items-center justify-between gap-4 mt-2">
+                    <button type="button" onclick="prevQuestion()" id="prevBtn" class="flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-navy-200 text-navy-600 font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span>Sebelumnya</span>
+                    </button>
+
+                    <button type="button" onclick="nextQuestion()" id="nextBtn" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-semibold text-sm transition-colors">
+                        <span>Selanjutnya</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+
+                    <button type="submit" id="submitBtn" class="hidden flex items-center gap-2 px-8 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-sm transition-colors">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span>Kumpulkan Jawaban</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Info & Navigation -->
+            <div class="hidden lg:block lg:col-span-4 sticky top-8">
+                <!-- Timer Card -->
+                {% if quiz.time_limit %}
+                <div class="bg-white border border-navy-100 rounded-2xl p-6 mb-6 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4 text-navy-400">
+                        <i data-lucide="clock" class="w-5 h-5"></i>
+                        <span class="text-sm font-medium">Sisa Waktu</span>
+                    </div>
+                    <div id="quizTimer" class="text-4xl font-bold text-navy-900 tabular-nums">--:--</div>
+                </div>
+                {% endif %}
+
+                <!-- Progress & Navigation Card -->
+                <div class="bg-white border border-navy-100 rounded-2xl p-6 shadow-sm">
+                    <!-- Progress Bar -->
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-2.5">
+                            <span class="text-xs font-bold text-navy-900 uppercase">Progres</span>
+                            <span class="text-xs font-bold text-navy-900" id="progressPct">0%</span>
+                        </div>
+                        <div class="w-full h-2 bg-navy-50 rounded-full overflow-hidden">
+                            <div id="progressBar" class="h-full bg-navy-900 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <p class="text-[10px] text-navy-400 mt-2">Soal <span id="currentQuestionNum">1</span> dari {{ quiz.question_count }}</p>
                     </div>
 
-                    <h2 class="text-lg sm:text-xl font-semibold text-navy-900 leading-relaxed mb-6">
-                        {{ question.text }}
-                    </h2>
-
-                    {% if question.image %}
-                    <img src="{{ question.image.url }}" alt="Question Image" class="rounded-xl mb-6 max-h-64 object-contain">
-                    {% endif %}
-
-                    {% if question.question_type == 'multiple_choice' or question.question_type == 'true_false' %}
-                    <!-- Options -->
-                    <div class="space-y-3">
-                        {% for answer in question.shuffled_answers %}
-                        <label class="quiz-option flex items-start gap-4 p-4 rounded-xl border-2 border-navy-100 cursor-pointer hover:border-navy-300 hover:bg-navy-50/50 transition-all duration-150 has-[:checked]:border-navy-900 has-[:checked]:bg-navy-50">
-                            <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}" class="mt-0.5 w-4 h-4 text-navy-900 border-navy-300 focus:ring-navy-900 focus:ring-offset-0 accent-navy-900" onchange="markAnswered({{ forloop.parentloop.counter }})">
-                            <div>
-                                <span class="text-sm text-navy-700">{{ answer.text }}</span>
+                    <!-- Navigator -->
+                    <div>
+                        <span class="text-xs font-bold text-navy-900 uppercase block mb-4">Navigasi Soal</span>
+                        <div class="grid grid-cols-5 gap-2">
+                            {% for question in questions %}
+                            <button type="button" onclick="goToQuestion({{ forloop.counter }})" id="navBtn_{{ forloop.counter }}" class="nav-btn aspect-square rounded-lg {% if forloop.first %}bg-navy-900/10 border-2 border-navy-900 text-navy-900{% else %}bg-navy-50 border border-navy-100 text-navy-400{% endif %} text-xs font-bold flex items-center justify-center hover:bg-navy-100 transition-colors">
+                                {{ forloop.counter }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Legend -->
+                        <div class="mt-6 pt-6 border-t border-navy-50 space-y-2">
+                            <div class="flex items-center gap-2.5 text-[10px] text-navy-500">
+                                <span class="w-2.5 h-2.5 rounded bg-navy-900"></span>
+                                <span>Sudah dijawab</span>
                             </div>
-                        </label>
+                            <div class="flex items-center gap-2.5 text-[10px] text-navy-500">
+                                <span class="w-2.5 h-2.5 rounded bg-navy-50 border border-navy-100"></span>
+                                <span>Belum dijawab</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Navigator (Only visible on mobile) -->
+            <div class="lg:hidden mt-8">
+                <div class="bg-white border border-navy-100 rounded-2xl p-5 mb-6">
+                    <span class="text-xs font-bold text-navy-900 uppercase block mb-4 text-center">Navigasi Soal</span>
+                    <div class="grid grid-cols-5 gap-2">
+                        {% for question in questions %}
+                        <button type="button" onclick="goToQuestion({{ forloop.counter }})" id="navBtnMobile_{{ forloop.counter }}" class="nav-btn aspect-square rounded-lg {% if forloop.first %}bg-navy-900/10 border-2 border-navy-900 text-navy-900{% else %}bg-navy-50 border border-navy-100 text-navy-400{% endif %} text-xs font-bold flex items-center justify-center">
+                            {{ forloop.counter }}
+                        </button>
                         {% endfor %}
                     </div>
-                    {% elif question.question_type == 'essay' or question.question_type == 'code' %}
-                    <div class="space-y-3">
-                        <textarea name="text_question_{{ question.id }}" rows="6" class="w-full p-4 rounded-xl border-2 border-navy-100 focus:border-navy-900 focus:ring-navy-900 transition-all outline-none text-sm font-mono" placeholder="Ketik jawabanmu di sini..." oninput="markAnswered({{ forloop.counter }})"></textarea>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
-            {% endfor %}
-        </div>
 
-        <!-- Question Navigator -->
-        <div class="bg-white border border-navy-100 rounded-2xl p-5 mb-6">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-medium text-navy-500">Navigasi Soal</span>
-                <div class="flex items-center gap-4 text-xs text-navy-400">
-                    <span class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded bg-navy-900"></span>Dijawab
-                    </span>
-                    <span class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded bg-navy-100 border border-navy-200"></span>Belum
-                    </span>
-                    <span class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded bg-navy-900/20 border-2 border-navy-900"></span>Aktif
-                    </span>
-                </div>
-            </div>
-            <div class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 sm:gap-2">
-                {% for question in questions %}
-                <button type="button" onclick="goToQuestion({{ forloop.counter }})" id="navBtn_{{ forloop.counter }}" class="nav-btn w-full aspect-square rounded-lg {% if forloop.first %}bg-navy-900/20 border-2 border-navy-900 text-navy-900{% else %}bg-navy-50 border border-navy-200 text-navy-500{% endif %} text-xs font-bold flex items-center justify-center hover:bg-navy-100 transition-colors">
-                    {{ forloop.counter }}
-                </button>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Bottom Actions -->
-        <div class="flex items-center justify-between gap-4">
-            <button type="button" onclick="prevQuestion()" id="prevBtn" class="flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-navy-200 text-navy-400 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled>
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>Sebelumnya</span>
-            </button>
-
-            <button type="button" onclick="nextQuestion()" id="nextBtn" class="flex items-center gap-2 px-5 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-medium text-sm transition-colors">
-                <span>Selanjutnya</span>
-                <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-
-            <button type="submit" id="submitBtn" class="hidden flex items-center gap-2 px-6 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition-colors">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span>Selesai</span>
-            </button>
         </div>
     </form>
 </div>
@@ -124,31 +157,40 @@
 
     function updateProgress() {
         const pct = Math.round(((currentIdx - 1) / totalQuestions) * 100);
-        document.getElementById('progressPct').innerText = pct + '%';
-        document.getElementById('progressBar').style.width = pct + '%';
-        document.getElementById('currentQuestionNum').innerText = currentIdx;
+        const progressPctEl = document.getElementById('progressPct');
+        const progressBarEl = document.getElementById('progressBar');
+        const currentNumEl = document.getElementById('currentQuestionNum');
+        
+        if(progressPctEl) progressPctEl.innerText = pct + '%';
+        if(progressBarEl) progressBarEl.style.width = pct + '%';
+        if(currentNumEl) currentNumEl.innerText = currentIdx;
     }
 
     function goToQuestion(idx) {
         document.querySelectorAll('.question-slide').forEach(s => s.classList.add('hidden'));
         document.querySelector(`.question-slide[data-question-index="${idx}"]`).classList.remove('hidden');
         
-        // Update nav buttons
+        // Update nav buttons (both desktop and mobile)
         document.querySelectorAll('.nav-btn').forEach(btn => {
             if (!btn.classList.contains('bg-navy-900')) {
-                 btn.classList.remove('bg-navy-900/20', 'border-2', 'border-navy-900', 'text-navy-900');
-                 btn.classList.add('bg-navy-50', 'border', 'border-navy-200', 'text-navy-500');
+                 btn.classList.remove('bg-navy-900/10', 'border-2', 'border-navy-900', 'text-navy-900');
+                 btn.classList.add('bg-navy-50', 'border', 'border-navy-100', 'text-navy-400');
             }
         });
         
-        const currentBtn = document.getElementById(`navBtn_${idx}`);
-        if (!currentBtn.classList.contains('bg-navy-900')) {
-            currentBtn.classList.add('bg-navy-900/20', 'border-2', 'border-navy-900', 'text-navy-900');
-        }
+        const desktopBtn = document.getElementById(`navBtn_${idx}`);
+        const mobileBtn = document.getElementById(`navBtnMobile_${idx}`);
+        
+        [desktopBtn, mobileBtn].forEach(btn => {
+            if (btn && !btn.classList.contains('bg-navy-900')) {
+                btn.classList.add('bg-navy-900/10', 'border-2', 'border-navy-900', 'text-navy-900');
+                btn.classList.remove('bg-navy-50', 'border-navy-100', 'text-navy-400');
+            }
+        });
 
         currentIdx = idx;
         
-        // Update buttons
+        // Update navigation buttons
         document.getElementById('prevBtn').disabled = (currentIdx === 1);
         if (currentIdx === totalQuestions) {
             document.getElementById('nextBtn').classList.add('hidden');
@@ -170,9 +212,15 @@
     }
 
     function markAnswered(idx) {
-        const btn = document.getElementById(`navBtn_${idx}`);
-        btn.classList.remove('bg-navy-50', 'border-navy-200', 'text-navy-500', 'bg-navy-900/20', 'border-2', 'border-navy-900', 'text-navy-900');
-        btn.classList.add('bg-navy-900', 'text-white');
+        const desktopBtn = document.getElementById(`navBtn_${idx}`);
+        const mobileBtn = document.getElementById(`navBtnMobile_${idx}`);
+        
+        [desktopBtn, mobileBtn].forEach(btn => {
+            if (btn) {
+                btn.classList.remove('bg-navy-50', 'border-navy-100', 'text-navy-400', 'bg-navy-900/10', 'border-2', 'border-navy-900', 'text-navy-900');
+                btn.classList.add('bg-navy-900', 'text-white');
+            }
+        });
     }
 
     // Timer Logic
@@ -182,19 +230,23 @@
             const now = Date.now();
             const diff = endTime - now;
             
+            const minutes = Math.floor(Math.max(0, diff) / 60000);
+            const seconds = Math.floor((Math.max(0, diff) % 60000) / 1000);
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const timerEl = document.getElementById('quizTimer');
+            const timerMobileEl = document.getElementById('quizTimerMobile');
+            
+            if(timerEl) timerEl.innerText = timeStr;
+            if(timerMobileEl) timerMobileEl.innerText = timeStr;
+
             if (diff <= 0) {
                 clearInterval(timerInterval);
-                document.getElementById('quizTimer').innerText = "00:00";
                 alert("Waktu habis! Quiz akan dikirim otomatis.");
                 document.getElementById('quizForm').submit();
-            } else {
-                const minutes = Math.floor(diff / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
-                document.getElementById('quizTimer').innerText = 
-                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
         }, 1000);
     }
 </script>
 
-{% endblock content %}
+{% endblock content2 %}

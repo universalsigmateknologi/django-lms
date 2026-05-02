@@ -195,9 +195,13 @@ def quiz_attempt_view(request, course_slug, quiz_id):
     enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
     quiz = get_object_or_404(Quiz, id=quiz_id, lesson__module__course=course)
     
-    # Check if student can still attempt
-    attempt_count = QuizAttempt.objects.filter(enrollment=enrollment, quiz=quiz).count()
-    if quiz.max_attempts > 0 and attempt_count >= quiz.max_attempts:
+    # Check if student can still attempt (only for new attempts)
+    completed_attempts = QuizAttempt.objects.filter(
+        enrollment=enrollment, 
+        quiz=quiz
+    ).exclude(status=QuizAttempt.AttemptStatus.IN_PROGRESS).count()
+    
+    if quiz.max_attempts > 0 and completed_attempts >= quiz.max_attempts:
         from django.contrib import messages
         messages.error(request, "Kamu telah mencapai batas maksimal percobaan untuk quiz ini.")
         return redirect('enrollments:quiz_start', course_slug=course.slug, quiz_id=quiz.id)
@@ -205,11 +209,19 @@ def quiz_attempt_view(request, course_slug, quiz_id):
     if request.method == 'POST':
         # Process quiz submission
         with transaction.atomic():
-            attempt = QuizAttempt.objects.create(
+            # Get the in-progress attempt
+            attempt = QuizAttempt.objects.filter(
                 enrollment=enrollment,
                 quiz=quiz,
                 status=QuizAttempt.AttemptStatus.IN_PROGRESS
-            )
+            ).order_by('-started_at').first()
+            
+            if not attempt:
+                attempt = QuizAttempt.objects.create(
+                    enrollment=enrollment,
+                    quiz=quiz,
+                    status=QuizAttempt.AttemptStatus.IN_PROGRESS
+                )
             
             total_points = 0
             earned_points = 0
@@ -219,11 +231,10 @@ def quiz_attempt_view(request, course_slug, quiz_id):
                 total_points += question.points
                 
                 # Get submitted answer
-                # Field name in form will be like 'question_{uuid}'
                 answer_id = request.POST.get(f'question_{question.id}')
                 text_answer = request.POST.get(f'text_question_{question.id}', '')
                 
-                record = QuizAnswerRecord(
+                record, _ = QuizAnswerRecord.objects.get_or_create(
                     attempt=attempt,
                     question=question
                 )
@@ -236,10 +247,11 @@ def quiz_attempt_view(request, course_slug, quiz_id):
                             if selected_answer.is_correct:
                                 record.is_correct = True
                                 earned_points += question.points
+                            else:
+                                record.is_correct = False
                         except Answer.DoesNotExist:
                             pass
                 else:
-                    # Essay/Code - require manual grading or simple check (defaulting to False for now)
                     record.text_answer = text_answer
                     record.is_correct = False
                 
@@ -261,19 +273,25 @@ def quiz_attempt_view(request, course_slug, quiz_id):
                 attempt.status = QuizAttempt.AttemptStatus.FAILED
             
             attempt.submitted_at = timezone.now()
-            # Calculate time spent
+            # Calculate time spent accurately
             time_spent = (attempt.submitted_at - attempt.started_at).total_seconds()
             attempt.time_spent = int(time_spent)
             attempt.save()
             
             return redirect('enrollments:quiz_result', course_slug=course.slug, quiz_id=quiz.id, attempt_id=attempt.id)
             
-    # GET Request: Prepare quiz questions
+    # GET Request: Start or resume quiz
+    attempt, created = QuizAttempt.objects.get_or_create(
+        enrollment=enrollment,
+        quiz=quiz,
+        status=QuizAttempt.AttemptStatus.IN_PROGRESS,
+        defaults={'started_at': timezone.now()}
+    )
+
     questions = list(quiz.questions.all().prefetch_related('answers'))
     if quiz.randomize_questions:
         random.shuffle(questions)
     
-    # If randomize answers
     if quiz.randomize_answers:
         for q in questions:
             q.shuffled_answers = list(q.answers.all())
@@ -288,6 +306,7 @@ def quiz_attempt_view(request, course_slug, quiz_id):
         'questions': questions,
         'time_limit_ms': quiz.time_limit * 1000 if quiz.time_limit > 0 else 0,
         'menu': 'quiz_attempt',
+        'attempt': attempt,
     })
     return render(request, 'enrollments/quiz_attempt.html', context)
 

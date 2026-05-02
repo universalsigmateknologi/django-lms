@@ -74,7 +74,8 @@ class Enrollment(models.Model):
         self.save(update_fields=["status", "progress_pct", "completed_at"])
 
     def recalculate_progress(self):
-        total     = LessonProgress.objects.filter(enrollment=self).count()
+        from apps.courses.models import Lesson
+        total     = Lesson.objects.filter(module__course=self.course).count()
         completed = LessonProgress.objects.filter(enrollment=self, is_completed=True).count()
 
         if total == 0:
@@ -85,7 +86,12 @@ class Enrollment(models.Model):
         if self.progress_pct >= 100.0:
             self.mark_completed()
         else:
-            self.save(update_fields=["progress_pct"])
+            if self.status == EnrollmentStatus.COMPLETED:
+                self.status = EnrollmentStatus.ACTIVE
+                self.completed_at = None
+                self.save(update_fields=["progress_pct", "status", "completed_at"])
+            else:
+                self.save(update_fields=["progress_pct"])
 
 
 class LessonProgress(models.Model):

@@ -89,11 +89,13 @@ class CertificateAdmin(admin.ModelAdmin):
         if obj.is_valid:
             return format_html(
                 '<span style="background:#E8F5E9;color:#1D9E75;padding:3px 10px;'
-                'border-radius:12px;font-size:11px;font-weight:500;">Valid</span>'
+                'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+                _("Valid")
             )
         return format_html(
             '<span style="background:#FDEDEC;color:#C0392B;padding:3px 10px;'
-            'border-radius:12px;font-size:11px;font-weight:500;">Revoked</span>'
+            'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+            _("Revoked")
         )
 
     @admin.display(description="PDF Preview")

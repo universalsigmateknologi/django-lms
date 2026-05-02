@@ -93,11 +93,10 @@ class DiscussionAdmin(admin.ModelAdmin):
         if obj.is_flagged:
             return format_html(
                 '<span style="background:#FDEDEC;color:#C0392B;padding:3px 10px;'
-                'border-radius:12px;font-size:11px;font-weight:500;">⚑ Flagged</span>'
+                'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+                "⚑ Flagged"
             )
-        return format_html(
-            '<span style="color:#aaa;font-size:11px;">—</span>'
-        )
+        return format_html('<span style="color:#aaa;font-size:11px;">{}</span>', "—")
 
     actions = [
         "pin_discussions", "unpin_discussions",
@@ -196,9 +195,10 @@ class ReplyAdmin(admin.ModelAdmin):
         if obj.is_flagged:
             return format_html(
                 '<span style="background:#FDEDEC;color:#C0392B;padding:3px 10px;'
-                'border-radius:12px;font-size:11px;font-weight:500;">⚑ Flagged</span>'
+                'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+                "⚑ Flagged"
             )
-        return format_html('<span style="color:#aaa;font-size:11px;">—</span>')
+        return format_html('<span style="color:#aaa;font-size:11px;">{}</span>', "—")
 
     actions = ["accept_replies", "clear_flags"]
 
@@ -269,11 +269,13 @@ class DiscussionFlagAdmin(admin.ModelAdmin):
         if obj.is_resolved:
             return format_html(
                 '<span style="background:#E8F5E9;color:#1D9E75;padding:3px 10px;'
-                'border-radius:12px;font-size:11px;font-weight:500;">Resolved</span>'
+                'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+                _("Resolved")
             )
         return format_html(
             '<span style="background:#FDEDEC;color:#C0392B;padding:3px 10px;'
-            'border-radius:12px;font-size:11px;font-weight:500;">Pending</span>'
+            'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+            _("Pending")
         )
 
     @admin.display(description="Resolved By")

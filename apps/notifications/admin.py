@@ -49,11 +49,13 @@ class NotificationAdmin(admin.ModelAdmin):
         if obj.is_read:
             return format_html(
                 '<span style="background:#E8F5E9;color:#1D9E75;padding:3px 10px;'
-                'border-radius:12px;font-size:11px;font-weight:500;">Read</span>'
+                'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+                _("Read")
             )
         return format_html(
             '<span style="background:#EAF3FB;color:#378ADD;padding:3px 10px;'
-            'border-radius:12px;font-size:11px;font-weight:500;">Unread</span>'
+            'border-radius:12px;font-size:11px;font-weight:500;">{}</span>',
+            _("Unread")
         )
 
     actions = ["mark_all_read", "mark_all_unread"]

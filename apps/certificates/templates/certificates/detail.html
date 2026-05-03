@@ -1,0 +1,583 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+    /* ── Certificate design CSS (Preserved from old template) ── */
+    :root {
+      --navy-950: #0a1929;
+      --gold:     #c9a84c;
+      --gold-lt:  #e8d5a3;
+    }
+
+    /* Container to make the large certificate responsive within the column */
+    .cert-preview-container {
+      width: 100%;
+      background: var(--navy-50);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      min-height: 200px;
+    }
+
+    .cert-scale-wrapper {
+        flex-shrink: 0;
+        width: 960px;
+        height: 680px;
+        transform-origin: center center;
+        transition: transform 0.2s ease;
+    }
+
+    /* ── Certificate shell ── */
+    .cert-wrap {
+      width: 960px;
+      height: 680px;
+      position: relative;
+      background: #fff;
+      box-shadow: 0 32px 80px rgba(10,25,41,.10), 0 4px 16px rgba(10,25,41,.05);
+      overflow: hidden;
+      flex-shrink: 0;
+      text-align: left;
+    }
+
+    /* ── Left dark panel ── */
+    .panel-left {
+      position: absolute;
+      top: 0; left: 0;
+      width: 300px;
+      height: 100%;
+      background: #102a43; /* navy-900 */
+      clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+      z-index: 1;
+    }
+
+    /* ── Diagonal gold accent strip ── */
+    .gold-strip {
+      position: absolute;
+      top: 0; left: 220px;
+      width: 60px;
+      height: 100%;
+      background: linear-gradient(160deg, var(--gold) 0%, var(--gold-lt) 50%, var(--gold) 100%);
+      clip-path: polygon(0 0, 100% 0, 60% 100%, -40% 100%);
+      opacity: .85;
+      z-index: 2;
+    }
+
+    /* ── Top-right small gold triangle ── */
+    .gold-tri {
+      position: absolute;
+      top: 0; right: 0;
+      width: 140px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+      opacity: .6;
+      z-index: 1;
+    }
+
+    /* ── Subtle texture overlay on white ── */
+    .cert-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 34px, rgba(188,204,220,.12) 34px, rgba(188,204,220,.12) 35px),
+        repeating-linear-gradient(90deg, transparent, transparent 34px, rgba(188,204,220,.08) 34px, rgba(188,204,220,.08) 35px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Content z-layers ── */
+    .left-content  { position: absolute; top: 0; left: 0; width: 260px; height: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; padding: 44px 20px 36px; }
+    .right-content { position: absolute; top: 0; left: 290px; right: 0; height: 100%; z-index: 10; display: flex; flex-direction: column; justify-content: center; padding: 48px 56px 48px 48px; }
+
+    /* ── Seal / badge ── */
+    .seal {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      background: var(--navy-950);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 0 6px rgba(201,168,76,.15), inset 0 0 24px rgba(201,168,76,.08);
+    }
+    .seal::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 1px dashed rgba(201,168,76,.4);
+    }
+    .seal-star {
+      font-size: 22px;
+      margin-bottom: 2px;
+      color: var(--gold);
+    }
+    .seal-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--gold);
+      text-align: center;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    /* ── Left side text ── */
+    .left-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-top: 24px;
+      text-align: center;
+    }
+    .left-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(201,168,76,.4);
+      margin: 12px auto;
+    }
+    .left-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11.5px;
+      font-weight: 300;
+      color: #bcccdc; /* navy-200 */
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    /* ── Cert number ── */
+    .cert-number {
+      margin-top: auto;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: #829ab1; /* navy-400 */
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .cert-number span {
+      display: block;
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      margin-top: 3px;
+      word-break: break-all;
+    }
+
+    /* ── Logo top-right ── */
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 36px;
+      align-self: flex-end;
+    }
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #334e68, #102a43);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-icon svg { width: 18px; height: 18px; fill: var(--gold); }
+    .brand-name {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #243b53; /* navy-800 */
+      text-transform: uppercase;
+    }
+    .brand-tagline {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: #829ab1; /* navy-400 */
+      text-transform: uppercase;
+    }
+
+    /* ── Main heading ── */
+    .cert-heading {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      color: #627d98; /* navy-500 */
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .cert-main-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 500;
+      color: #102a43; /* navy-900 */
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .cert-sub {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: #829ab1; /* navy-400 */
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* ── Presented to ── */
+    .presented-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: #829ab1; /* navy-400 */
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* ── Recipient name ── */
+    .recipient-name {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 50px;
+      color: #243b53; /* navy-800 */
+      line-height: 1.1;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    /* ── Gold underline ── */
+    .name-line {
+      width: 100%;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      margin-bottom: 20px;
+    }
+
+    /* ── Course info ── */
+    .course-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 3px;
+      color: #829ab1; /* navy-400 */
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .course-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: #243b53; /* navy-800 */
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .instructor-line {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: #627d98; /* navy-500 */
+      margin-bottom: 32px;
+    }
+    .instructor-line em { font-style: italic; color: #334e68; }
+
+    /* ── Bottom meta row ── */
+    .meta-row {
+      display: flex;
+      gap: 40px;
+      align-items: flex-end;
+      margin-top: auto;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .meta-line {
+      width: 120px;
+      height: 1px;
+      background: #d9e2ec; /* navy-100 */
+      margin-bottom: 6px;
+    }
+    .meta-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 8px;
+      letter-spacing: 3px;
+      color: #829ab1; /* navy-400 */
+      text-transform: uppercase;
+    }
+    .meta-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #334e68; /* navy-700 */
+    }
+
+    /* ── Bottom gold bar ── */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #102a43 0%, var(--gold) 40%, var(--gold-lt) 60%, var(--gold) 80%, transparent 100%);
+      z-index: 20;
+    }
+
+    /* ── Print styles (Absolute Isolation) ── */
+    @media print {
+      @page {
+        size: landscape;
+        margin: 0;
+      }
+      
+      /* Hide everything globally */
+      body > * {
+        display: none !important;
+      }
+      
+      /* Show ONLY the certificate wrapper */
+      main, .max-w-7xl, .grid, .xl\:col-span-3, .bg-white, .cert-preview-container, .cert-scale-wrapper, #printable-cert {
+        display: block !important;
+        visibility: visible !important;
+      }
+
+      /* Hide other children in these containers */
+      nav, footer, .no-print, .breadcrumb, .xl\:col-span-2, .mt-8, h1, p:not(#printable-cert p) {
+          display: none !important;
+      }
+
+      /* Reset layout for print */
+      body, main, .max-w-7xl, .grid, .xl\:col-span-3, .bg-white, .cert-preview-container, .cert-scale-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        transform: none !important;
+        width: 100% !important;
+        background: none !important;
+      }
+
+      #printable-cert {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 960px !important;
+        height: 680px !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+</style>
+
+<main class="flex-grow pt-14 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- ========== BREADCRUMB ========== -->
+        <nav class="mb-6 breadcrumb no-print">
+          <ol class="flex items-center gap-2 text-xs text-navy-400">
+            <li>
+              <a href="{% url 'course_preview' %}" class="hover:text-navy-700 transition-colors">Dashboard</a>
+            </li>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            <li>
+              <a href="{% url 'certificates:list' %}" class="hover:text-navy-700 transition-colors">Sertifikat</a>
+            </li>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            <li class="text-navy-700 font-500">{{ certificate.certificate_number }}</li>
+          </ol>
+        </nav>
+
+        <!-- ========== MAIN GRID ========== -->
+        <div class="grid grid-cols-1 xl:grid-cols-5 gap-8 lg:gap-10">
+
+          <!-- LEFT — Certificate Preview -->
+          <div class="xl:col-span-3">
+            <div class="bg-white rounded-xl border border-navy-100 p-4 sm:p-6 lg:p-8">
+              
+              <!-- Certificate Visual -->
+              <div class="cert-preview-container">
+                <div class="cert-scale-wrapper">
+                    <div class="cert-wrap" id="printable-cert">
+                      <!-- Decorative layers -->
+                      <div class="panel-left"></div>
+                      <div class="gold-strip"></div>
+                      <div class="gold-tri"></div>
+                      <div class="bottom-bar"></div>
+
+                      <!-- ── LEFT PANEL CONTENT ── -->
+                      <div class="left-content">
+                        <div class="seal">
+                          <div class="seal-star">✦</div>
+                          <div class="seal-label">Certified<br>Graduate</div>
+                        </div>
+                        <p class="left-title">Achievement</p>
+                        <div class="left-divider"></div>
+                        <p class="left-body">
+                          This certificate is awarded in recognition of successful completion and demonstrated excellence throughout the program.
+                        </p>
+                        <div class="cert-number">
+                          Certificate No.
+                          <span>{{ certificate.certificate_number }}</span>
+                        </div>
+                      </div>
+
+                      <!-- ── RIGHT MAIN CONTENT ── -->
+                      <div class="right-content">
+                        <div class="brand-logo">
+                          <div>
+                            <div class="brand-name">SigmaCourse</div>
+                            <div class="brand-tagline">Online Learning Platform</div>
+                          </div>
+                          <div class="brand-icon">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                          </div>
+                        </div>
+
+                        <p class="cert-heading">This certifies that</p>
+                        <h1 class="cert-main-title">Certificate</h1>
+                        <p class="cert-sub">of completion</p>
+
+                        <p class="presented-label">is proudly presented to</p>
+                        <p class="recipient-name">{{ certificate.student_name_snapshot }}</p>
+                        <div class="name-line"></div>
+
+                        <p class="course-label">for successfully completing</p>
+                        <p class="course-title">{{ certificate.course_title_snapshot }}</p>
+                        <p class="instructor-line">Instructed by <em>{{ certificate.instructor_name_snapshot }}</em></p>
+
+                        <div class="meta-row">
+                          <div class="meta-item">
+                            <div class="meta-line"></div>
+                            <div class="meta-label">Date Issued</div>
+                            <div class="meta-value">{{ certificate.issued_at|date:"d M Y" }}</div>
+                          </div>
+                          <div class="meta-item">
+                            <div class="meta-line"></div>
+                            <div class="meta-label">Signature</div>
+                            <div class="meta-value" style="font-family:'Great Vibes',cursive;font-size:22px;line-height:1;">{{ certificate.instructor_name_snapshot }}</div>
+                          </div>
+                          <div class="meta-item" style="margin-left:8px;">
+                            <div class="meta-line"></div>
+                            <div class="meta-label">Status</div>
+                            {% if certificate.is_valid %}
+                            <div class="meta-value" style="color:#3a9e6b;font-size:12px;letter-spacing:1px;">✔ Valid &amp; Active</div>
+                            {% else %}
+                            <div class="meta-value" style="color:#C0392B;font-size:12px;letter-spacing:1px;">Dicabut</div>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex flex-col sm:flex-row gap-3 mt-8 no-print">
+                <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-navy-900 text-white text-sm font-600 rounded-lg hover:bg-navy-800 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                  Cetak / Unduh PDF
+                </button>
+                <button onclick="copyVerificationLink()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-navy-700 text-sm font-500 border border-navy-200 rounded-lg hover:bg-navy-50 hover:border-navy-300 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"/></svg>
+                  Bagikan Tautan
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT — Detail Info -->
+          <div class="xl:col-span-2 no-print">
+            <div class="sticky top-20 flex flex-col gap-6">
+              <!-- Status Card -->
+              <div class="bg-white rounded-xl border border-navy-100 p-6">
+                <div class="flex items-center justify-between mb-5">
+                  <h3 class="text-sm font-700 text-navy-900">Status Sertifikat</h3>
+                  {% if certificate.is_valid %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Aktif
+                  </span>
+                  {% else %}
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-500 bg-red-50 text-red-700 border border-red-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    Dicabut
+                  </span>
+                  {% endif %}
+                </div>
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-navy-400">Tanggal terbit</span>
+                    <span class="font-500 text-navy-800">{{ certificate.issued_at|date:"d F Y" }}</span>
+                  </div>
+                  <div class="border-t border-navy-50"></div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-navy-400">ID Sertifikat</span>
+                    <span class="font-500 text-navy-800 font-mono">{{ certificate.certificate_number }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Course Info Card -->
+              <div class="bg-white rounded-xl border border-navy-100 p-6">
+                <h3 class="text-sm font-700 text-navy-900 mb-5">Informasi Kursus</h3>
+                <div class="space-y-4">
+                  <div>
+                    <p class="text-[10px] uppercase tracking-widest text-navy-400 mb-1">Nama Kursus</p>
+                    <p class="text-sm font-600 text-navy-800">{{ certificate.course_title_snapshot }}</p>
+                  </div>
+                  <div class="border-t border-navy-50"></div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="text-[10px] uppercase tracking-widest text-navy-400 mb-1">Kategori</p>
+                      <p class="text-sm font-500 text-navy-700">{{ certificate.course.category.name }}</p>
+                    </div>
+                    <div>
+                      <p class="text-[10px] uppercase tracking-widest text-navy-400 mb-1">Level</p>
+                      <p class="text-sm font-500 text-navy-700">{{ certificate.course.get_level_display }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function copyVerificationLink() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Tautan verifikasi telah disalin!');
+        });
+    }
+
+    function scaleCertificate() {
+        const container = document.querySelector('.cert-preview-container');
+        const wrapper = document.querySelector('.cert-scale-wrapper');
+        if (!container || !wrapper) return;
+        
+        const containerWidth = container.offsetWidth - 48; // padding
+        const certWidth = 960;
+        const scale = Math.min(containerWidth / certWidth, 1);
+        
+        wrapper.style.transform = `scale(${scale})`;
+        // Adjust container height to match scaled cert height
+        container.style.height = `${680 * scale + 48}px`;
+    }
+
+    window.addEventListener('resize', scaleCertificate);
+    window.addEventListener('DOMContentLoaded', scaleCertificate);
+    // Initial call
+    scaleCertificate();
+</script>
+{% endblock %}

@@ -1,0 +1,336 @@
+<!-- ========== SIDEBAR FILTER ========== -->
+<aside class="lg:w-64 shrink-0">
+  <div class="sticky top-28">
+    <h2 class="text-xs font-700 uppercase tracking-widest text-navy-400 mb-5">Filter</h2>
+
+    <!-- Status -->
+    <div class="mb-6">
+      <p class="text-sm font-600 text-navy-800 mb-3">Status</p>
+      <div class="flex flex-col gap-2">
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" checked class="w-4 h-4 rounded border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">Aktif</span>
+          <span class="ml-auto text-xs text-navy-400 bg-navy-100 px-2 py-0.5 rounded-full">8</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" class="w-4 h-4 rounded border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">Kadaluarsa</span>
+          <span class="ml-auto text-xs text-navy-400 bg-navy-100 px-2 py-0.5 rounded-full">3</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Kategori -->
+    <div class="mb-6">
+      <p class="text-sm font-600 text-navy-800 mb-3">Kategori</p>
+      <div class="flex flex-col gap-2">
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" checked class="w-4 h-4 rounded border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">Web Development</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" checked class="w-4 h-4 rounded border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">Data Science</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" class="w-4 h-4 rounded border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">UI/UX Design</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" class="w-4 h-4 rounded border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">Cloud Computing</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" class="w-4 h-4 rounded border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">Cyber Security</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Tahun -->
+    <div class="mb-6">
+      <p class="text-sm font-600 text-navy-800 mb-3">Tahun Diterbitkan</p>
+      <div class="flex flex-col gap-2">
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="radio" name="year" class="w-4 h-4 border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">2025</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="radio" name="year" checked class="w-4 h-4 border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">2024</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="radio" name="year" class="w-4 h-4 border-navy-300 text-navy-700 focus:ring-navy-500/20">
+          <span class="text-sm text-navy-600 group-hover:text-navy-900 transition-colors">2023</span>
+        </label>
+      </div>
+    </div>
+
+    <button class="w-full text-sm font-500 text-navy-500 hover:text-navy-800 transition-colors py-2">Reset Filter</button>
+  </div>
+</aside>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="flex-1 min-w-0">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+    <div>
+      <p class="text-sm text-navy-400 mb-1">Dashboard / Sertifikat</p>
+      <h1 class="text-2xl lg:text-3xl font-800 text-navy-900 tracking-tight">Sertifikat Saya</h1>
+      <p class="text-sm text-navy-500 mt-1">11 sertifikat ditemukan</p>
+    </div>
+    <div class="relative">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+      <input type="text" placeholder="Cari sertifikat..." class="w-full sm:w-72 pl-10 pr-4 py-2.5 text-sm bg-white border border-navy-200 rounded-lg text-navy-800 placeholder:text-navy-400 focus:outline-none focus:border-navy-400 focus:ring-2 focus:ring-navy-100 transition-all">
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="border-t border-navy-100 mb-6"></div>
+
+  <!-- Certificate List -->
+  <div class="flex flex-col divide-y divide-navy-100">
+
+    <!-- Certificate Item 1 -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-900 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">Advanced React & Next.js Development</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              15 Jan 2025
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2025-00847</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">Aktif</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+    <!-- Certificate Item 2 -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-800 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">Python for Data Science & Machine Learning</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              28 Nov 2024
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2024-06312</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">Aktif</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+    <!-- Certificate Item 3 -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-700 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">UI/UX Design Fundamentals</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              12 Okt 2024
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2024-05198</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">Aktif</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+    <!-- Certificate Item 4 -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-800 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">AWS Solutions Architect Associate</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              5 Sep 2024
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2024-04023</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">Aktif</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+    <!-- Certificate Item 5 — Expired -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors opacity-70">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-300 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">JavaScript ES6+ Mastery</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              20 Mar 2023
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2023-01284</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-navy-50 text-navy-400 border border-navy-100">Kadaluarsa</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+    <!-- Certificate Item 6 -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-700 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">SQL & Database Management</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              8 Agu 2024
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2024-03567</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">Aktif</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+    <!-- Certificate Item 7 -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-900 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">Cybersecurity Essentials</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              22 Jul 2024
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2024-02941</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">Aktif</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+    <!-- Certificate Item 8 — Expired -->
+    <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors opacity-70">
+      <div class="flex items-start gap-4 flex-1 min-w-0">
+        <div class="w-11 h-11 rounded-lg bg-navy-300 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">Docker & Kubernetes Practical</h3>
+          <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="inline-flex items-center gap-1 text-xs text-navy-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+              11 Jan 2023
+            </span>
+            <span class="text-navy-200">·</span>
+            <span class="text-xs text-navy-400 font-mono">CH-2023-00456</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:ml-4 shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-navy-50 text-navy-400 border border-navy-100">Kadaluarsa</span>
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Unduh
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex items-center justify-between mt-8 pt-6 border-t border-navy-100">
+    <p class="text-xs text-navy-400">Menampilkan 1–8 dari 11 sertifikat</p>
+    <div class="flex items-center gap-1">
+      <button class="w-8 h-8 flex items-center justify-center rounded-lg text-xs text-navy-400 hover:bg-navy-100 transition-colors" disabled>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      </button>
+      <button class="w-8 h-8 flex items-center justify-center rounded-lg text-xs font-600 bg-navy-900 text-white">1</button>
+      <button class="w-8 h-8 flex items-center justify-center rounded-lg text-xs font-500 text-navy-600 hover:bg-navy-100 transition-colors">2</button>
+      <button class="w-8 h-8 flex items-center justify-center rounded-lg text-xs text-navy-400 hover:bg-navy-100 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+      </button>
+    </div>
+  </div>
+
+</main>

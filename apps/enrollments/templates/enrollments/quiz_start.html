@@ -95,16 +95,10 @@
     </div>
 
     <!-- Start Button -->
-    {% if can_attempt %}
     <a href="{% url 'enrollments:quiz_attempt' course.slug quiz.id %}" class="w-full bg-navy-900 hover:bg-navy-800 text-white font-semibold text-base py-4 rounded-2xl transition-colors duration-200 flex items-center justify-center gap-2.5">
         <span>Mulai Quiz</span>
         <i data-lucide="arrow-right" class="w-4.5 h-4.5"></i>
     </a>
-    {% else %}
-    <div class="w-full bg-navy-100 text-navy-400 font-semibold text-base py-4 rounded-2xl text-center cursor-not-allowed">
-        Batas Percobaan Habis
-    </div>
-    {% endif %}
 
     {% if attempts %}
     <div class="mt-12">

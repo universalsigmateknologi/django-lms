@@ -194,17 +194,6 @@ def quiz_attempt_view(request, course_slug, quiz_id):
     course = get_object_or_404(Course, slug=course_slug)
     enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
     quiz = get_object_or_404(Quiz, id=quiz_id, lesson__module__course=course)
-    
-    # Check if student can still attempt (only for new attempts)
-    completed_attempts = QuizAttempt.objects.filter(
-        enrollment=enrollment, 
-        quiz=quiz
-    ).exclude(status=QuizAttempt.AttemptStatus.IN_PROGRESS).count()
-    
-    if quiz.max_attempts > 0 and completed_attempts >= quiz.max_attempts:
-        from django.contrib import messages
-        messages.error(request, "Kamu telah mencapai batas maksimal percobaan untuk quiz ini.")
-        return redirect('enrollments:quiz_start', course_slug=course.slug, quiz_id=quiz.id)
 
     if request.method == 'POST':
         # Process quiz submission

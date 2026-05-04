@@ -2,7 +2,9 @@
 {% load static humanize %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Great+Vibes&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.7.2/dist/dom-to-image-more.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
     /* ── Certificate design CSS (Preserved from old template) ── */
     :root {
@@ -327,54 +329,6 @@
       z-index: 20;
     }
 
-    /* ── Print styles (Absolute Isolation) ── */
-    @media print {
-      @page {
-        size: landscape;
-        margin: 0;
-      }
-      
-      /* Hide everything globally */
-      body > * {
-        display: none !important;
-      }
-      
-      /* Show ONLY the certificate wrapper */
-      main, .max-w-7xl, .grid, .xl\:col-span-3, .bg-white, .cert-preview-container, .cert-scale-wrapper, #printable-cert {
-        display: block !important;
-        visibility: visible !important;
-      }
-
-      /* Hide other children in these containers */
-      nav, footer, .no-print, .breadcrumb, .xl\:col-span-2, .mt-8, h1, p:not(#printable-cert p) {
-          display: none !important;
-      }
-
-      /* Reset layout for print */
-      body, main, .max-w-7xl, .grid, .xl\:col-span-3, .bg-white, .cert-preview-container, .cert-scale-wrapper {
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-        transform: none !important;
-        width: 100% !important;
-        background: none !important;
-      }
-
-      #printable-cert {
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 960px !important;
-        height: 680px !important;
-        margin: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-      }
-
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
 </style>
 
 <main class="flex-grow pt-14 pb-16">
@@ -482,9 +436,9 @@
 
               <!-- Action buttons -->
               <div class="flex flex-col sm:flex-row gap-3 mt-8 no-print">
-                <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-navy-900 text-white text-sm font-600 rounded-lg hover:bg-navy-800 transition-colors">
+                <button id="btn-download-pdf" onclick="downloadPDF()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-navy-900 text-white text-sm font-600 rounded-lg hover:bg-navy-800 transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-                  Cetak / Unduh PDF
+                  Unduh PDF
                 </button>
                 <button onclick="copyVerificationLink()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-navy-700 text-sm font-500 border border-navy-200 rounded-lg hover:bg-navy-50 hover:border-navy-300 transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"/></svg>
@@ -554,6 +508,92 @@
 </main>
 
 <script>
+    // ── PDF Download using dom-to-image-more + jsPDF ──
+    function downloadPDF() {
+        const btn = document.getElementById('btn-download-pdf');
+        const originalHTML = btn.innerHTML;
+        
+        // Show loading state
+        btn.disabled = true;
+        btn.innerHTML = `
+            <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Memproses...`;
+
+        const certElement = document.getElementById('printable-cert');
+
+        // Inject temporary style to strip Tailwind's base border-style from all elements.
+        // Tailwind preflight sets `border-style: solid` on *, which dom-to-image
+        // serializes as visible borders in the output image.
+        const fixStyle = document.createElement('style');
+        fixStyle.id = 'pdf-border-fix';
+        fixStyle.textContent = `
+            #printable-cert *, 
+            #printable-cert *::before, 
+            #printable-cert *::after {
+                border-style: none !important;
+                border-width: 0 !important;
+                outline: none !important;
+            }
+            /* Preserve the seal's intentional circular border */
+            #printable-cert .seal {
+                border: 3px solid var(--gold) !important;
+                border-style: solid !important;
+            }
+            /* Preserve the seal's dashed inner ring */
+            #printable-cert .seal::before {
+                border: 1px dashed rgba(201,168,76,.4) !important;
+                border-style: dashed !important;
+            }
+        `;
+        document.head.appendChild(fixStyle);
+
+        // Use dom-to-image-more which supports clip-path
+        domtoimage.toJpeg(certElement, {
+            quality: 0.95,
+            width: 960,
+            height: 680,
+            style: {
+                transform: 'none',
+                'transform-origin': 'top left'
+            }
+        }).then(function(imgData) {
+            // Remove temporary style override
+            fixStyle.remove();
+
+            const { jsPDF } = window.jspdf;
+            
+            // Create PDF with exact certificate dimensions
+            // 960px × 680px at 96dpi ≈ 253.97mm × 179.92mm
+            const pdfWidth = 253.97;
+            const pdfHeight = 179.92;
+            
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: [pdfWidth, pdfHeight]
+            });
+
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('Sertifikat-{{ certificate.certificate_number }}.pdf');
+            
+            // Restore button
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }).catch(function(err) {
+            // Remove temporary style override even on error
+            fixStyle.remove();
+            
+            console.error('PDF generation error:', err);
+            alert('Gagal membuat PDF. Error: ' + err.message);
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        });
+    }
+
+    // ── Copy verification link ──
     function copyVerificationLink() {
         const url = window.location.href;
         navigator.clipboard.writeText(url).then(() => {
@@ -561,6 +601,7 @@
         });
     }
 
+    // ── Responsive certificate scaling ──
     function scaleCertificate() {
         const container = document.querySelector('.cert-preview-container');
         const wrapper = document.querySelector('.cert-scale-wrapper');

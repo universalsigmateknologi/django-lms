@@ -100,15 +100,22 @@
     <div class="flex flex-col divide-y divide-navy-100">
       {% for cert in certificates %}
       <!-- Certificate Item -->
-      <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors {% if not cert.is_valid %}opacity-70{% endif %}">
+      <div class="group py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/60 px-3 -mx-3 rounded-lg transition-colors {% if not cert.is_valid or not cert.is_accessible %}opacity-70{% endif %}">
         <div class="flex items-start gap-4 flex-1 min-w-0">
           <div class="w-11 h-11 rounded-lg {% if forloop.counter|divisibleby:3 %}bg-navy-900{% elif forloop.counter|divisibleby:2 %}bg-navy-800{% else %}bg-navy-700{% endif %} flex items-center justify-center shrink-0">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342"/></svg>
           </div>
           <div class="min-w-0">
+            {% if cert.is_accessible %}
             <a href="{% url 'certificates:detail' cert.certificate_number %}" class="text-sm font-600 text-navy-900 truncate group-hover:text-navy-700 transition-colors">
               {{ cert.course_title_snapshot }}
             </a>
+            {% else %}
+            <span class="text-sm font-600 text-navy-400 truncate cursor-not-allowed flex items-center gap-2" title="Materi belum selesai atau dinonaktifkan oleh instruktur">
+              {{ cert.course_title_snapshot }}
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </span>
+            {% endif %}
             <p class="text-xs text-navy-400 mt-0.5">CourseHub Academy</p>
             <div class="flex items-center gap-3 mt-2">
               <span class="inline-flex items-center gap-1 text-xs text-navy-500">
@@ -121,21 +128,30 @@
           </div>
         </div>
         <div class="flex items-center gap-3 sm:ml-4 shrink-0">
-          {% if cert.is_valid %}
+          {% if cert.is_valid and cert.is_accessible %}
           <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-emerald-50 text-emerald-700 border border-emerald-100">Aktif</span>
+          {% elif not cert.is_accessible %}
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-amber-50 text-amber-700 border border-amber-100">Terkunci</span>
           {% else %}
           <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-500 bg-navy-50 text-navy-400 border border-navy-100">Kadaluarsa</span>
           {% endif %}
           
-          {% if cert.pdf_file %}
-          <a href="{{ cert.pdf_file.url }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-            Unduh
-          </a>
+          {% if cert.is_accessible %}
+              {% if cert.pdf_file %}
+              <a href="{{ cert.pdf_file.url }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                Unduh
+              </a>
+              {% else %}
+              <a href="{% url 'certificates:detail' cert.certificate_number %}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+                Lihat
+              </a>
+              {% endif %}
           {% else %}
-          <a href="{% url 'certificates:detail' cert.certificate_number %}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-600 hover:text-navy-900 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
-            Lihat
-          </a>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-500 text-navy-300 bg-navy-50 rounded-lg cursor-not-allowed" title="Selesaikan kursus atau tunggu instruktur menyelesaikan materi">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            Terkunci
+          </div>
           {% endif %}
         </div>
       </div>

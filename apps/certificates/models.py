@@ -134,6 +134,15 @@ class Certificate(models.Model):
         from django.urls import reverse
         return reverse("certificates:verify", kwargs={"cert_number": self.certificate_number})
 
+    @property
+    def is_accessible(self) -> bool:
+        """
+        Sertifikat dapat diakses jika:
+        1. Course.is_lesson_finished == True
+        2. Enrollment.progress_pct == 100.0
+        """
+        return self.course.is_lesson_finished and self.enrollment.progress_pct >= 100.0
+
     def revoke(self, reason: str = ""):
         """Cabut sertifikat — misal jika terjadi kecurangan."""
         self.is_valid     = False

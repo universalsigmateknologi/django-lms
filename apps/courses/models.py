@@ -41,6 +41,7 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_published = models.BooleanField(default=False)
     thumbnail = models.ImageField(upload_to='course_thumbnails/')
+    is_lesson_finished = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

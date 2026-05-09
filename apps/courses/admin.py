@@ -45,7 +45,7 @@ class TagAdmin(admin.ModelAdmin):
 class CourseAdmin(admin.ModelAdmin):
     list_display  = (
         "title", "instructor_email", "category",
-        "level", "price", "is_published",
+        "level", "price", "is_published", "is_lesson_finished",
         "created_at", "updated_at",
     )
     list_filter   = ("is_published", "level", "category")
@@ -65,7 +65,7 @@ class CourseAdmin(admin.ModelAdmin):
             ),
         }),
         (_("Harga & Status"), {
-            "fields": ("price", "is_published"),
+            "fields": ("price", "is_published", "is_lesson_finished"),
         }),
         (_("Thumbnail"), {
             "fields": ("thumbnail", "thumbnail_preview"),

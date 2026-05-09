@@ -64,7 +64,7 @@ class CertificateListView(LoginRequiredMixin, ListView):
         
         return context
 
-class CertificateDetailView(DetailView):
+class CertificateDetailView(LoginRequiredMixin, DetailView):
     model = Certificate
     template_name = 'certificates/detail.html'
     context_object_name = 'certificate'
@@ -74,3 +74,11 @@ class CertificateDetailView(DetailView):
     def get_queryset(self):
         # Bisa diakses publik untuk keperluan verifikasi sertifikat
         return Certificate.objects.filter(is_valid=True)
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        # Sertifikat hanya bisa diakses jika is_accessible adalah True
+        if not obj.is_accessible:
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied("Sertifikat ini belum dapat diakses atau telah dinonaktifkan.")
+        return obj

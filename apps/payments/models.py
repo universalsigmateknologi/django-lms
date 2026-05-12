@@ -1,10 +1,20 @@
 import uuid
+import random
+import string
+from decimal import Decimal
+
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import (
+    MinValueValidator, MaxValueValidator, FileExtensionValidator
+)
 from django.conf import settings
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Enums / TextChoices
+# ─────────────────────────────────────────────────────────────────────────────
 
 class Currency(models.TextChoices):
     IDR = "IDR", _("Indonesian Rupiah")
@@ -20,12 +30,13 @@ class PaymentGateway(models.TextChoices):
 
 
 class OrderStatus(models.TextChoices):
-    PENDING   = "pending",   _("Pending")
-    PAID      = "paid",      _("Paid")
-    FAILED    = "failed",    _("Failed")
-    CANCELLED = "cancelled", _("Cancelled")
-    REFUNDED  = "refunded",  _("Refunded")
-    EXPIRED   = "expired",   _("Expired")
+    PENDING              = "pending",              _("Pending")
+    WAITING_VERIFICATION = "waiting_verification", _("Waiting Verification")
+    PAID                 = "paid",                 _("Paid")
+    FAILED               = "failed",               _("Failed")
+    CANCELLED            = "cancelled",            _("Cancelled")
+    REFUNDED             = "refunded",             _("Refunded")
+    EXPIRED              = "expired",              _("Expired")
 
 
 class PaymentStatus(models.TextChoices):
@@ -40,6 +51,80 @@ class CouponType(models.TextChoices):
     FLAT       = "flat",       _("Flat Amount")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Payment Settings  (Singleton config for admin)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class PaymentSettings(models.Model):
+    """
+    Singleton model – hanya satu row. Menyimpan konfigurasi pembayaran
+    yang bisa diubah admin tanpa deploy ulang.
+    """
+    # WhatsApp
+    admin_whatsapp   = models.CharField(
+        _("admin WhatsApp number"), max_length=20, default="6281234567890",
+        help_text=_("Format: 62xxxxxxxxxxx (tanpa + atau 0 di depan)"),
+    )
+    # Bank accounts  (JSON list)
+    bank_accounts    = models.JSONField(
+        _("bank accounts"), default=list, blank=True,
+        help_text=_("Daftar rekening bank dalam format JSON"),
+    )
+    # Payment expiry (hours)
+    payment_expiry_hours = models.PositiveSmallIntegerField(
+        _("payment expiry (hours)"), default=24,
+        help_text=_("Batas waktu pembayaran dalam jam"),
+    )
+    # Max upload size (MB)
+    max_upload_size_mb = models.PositiveSmallIntegerField(
+        _("max upload size (MB)"), default=5,
+    )
+
+    class Meta:
+        db_table     = "payment_settings"
+        verbose_name = _("payment settings")
+        verbose_name_plural = _("payment settings")
+
+    def __str__(self):
+        return "Payment Settings"
+
+    def save(self, *args, **kwargs):
+        # Singleton: paksa pk = 1
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(
+            pk=1,
+            defaults={
+                "bank_accounts": [
+                    {
+                        "bank_name": "BCA",
+                        "account_number": "1234567890",
+                        "account_holder": "PT Sigma Teknologi",
+                        "logo": "bca",
+                    },
+                    {
+                        "bank_name": "BNI",
+                        "account_number": "0987654321",
+                        "account_holder": "PT Sigma Teknologi",
+                        "logo": "bni",
+                    },
+                    {
+                        "bank_name": "GoPay",
+                        "account_number": "081234567890",
+                        "account_holder": "Sigma LMS",
+                        "logo": "gopay",
+                    },
+                ]
+            },
+        )
+        return obj
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Coupon
 # ─────────────────────────────────────────────────────────────────────────────
 
 class Coupon(models.Model):
@@ -126,6 +211,10 @@ class Coupon(models.Model):
         return min(discount, float(amount))  # diskon tidak boleh melebihi total
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Order
+# ─────────────────────────────────────────────────────────────────────────────
+
 class Order(models.Model):
     """
     Satu order bisa berisi lebih dari satu kursus (bundle).
@@ -142,7 +231,7 @@ class Order(models.Model):
                       related_name="orders",
                     )
     status        = models.CharField(
-                      _("status"), max_length=20,
+                      _("status"), max_length=25,
                       choices=OrderStatus.choices,
                       default=OrderStatus.PENDING,
                     )
@@ -192,32 +281,84 @@ class Order(models.Model):
         # Auto-generate order number saat pertama kali dibuat
         if not self.order_number:
             self.order_number = self._generate_order_number()
+        # Auto-set expired_at if not set
+        if not self.expired_at and self.status == OrderStatus.PENDING:
+            config = PaymentSettings.load()
+            self.expired_at = self.created_at + timezone.timedelta(
+                hours=config.payment_expiry_hours
+            )
         super().save(*args, **kwargs)
 
     @staticmethod
     def _generate_order_number() -> str:
-        import random, string
         prefix = timezone.now().strftime("%Y%m%d")
         suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
-        return f"ORD-{prefix}-{suffix}"
+        return f"INV-{prefix}-{suffix}"
 
     def mark_paid(self):
         self.status  = OrderStatus.PAID
         self.paid_at = timezone.now()
-        self.save(update_fields=["status", "paid_at"])
+        self.save(update_fields=["status", "paid_at", "updated_at"])
+
+    def mark_waiting_verification(self):
+        self.status = OrderStatus.WAITING_VERIFICATION
+        self.save(update_fields=["status", "updated_at"])
 
     def mark_failed(self):
         self.status = OrderStatus.FAILED
-        self.save(update_fields=["status"])
+        self.save(update_fields=["status", "updated_at"])
+
+    def mark_cancelled(self):
+        self.status = OrderStatus.CANCELLED
+        self.save(update_fields=["status", "updated_at"])
 
     def mark_refunded(self):
         self.status = OrderStatus.REFUNDED
-        self.save(update_fields=["status"])
+        self.save(update_fields=["status", "updated_at"])
 
     @property
     def is_paid(self) -> bool:
         return self.status == OrderStatus.PAID
 
+    @property
+    def is_expired(self) -> bool:
+        if self.expired_at and timezone.now() > self.expired_at:
+            return True
+        return False
+
+    @property
+    def time_remaining_seconds(self) -> int:
+        """Sisa waktu pembayaran dalam detik."""
+        if not self.expired_at:
+            return 0
+        remaining = (self.expired_at - timezone.now()).total_seconds()
+        return max(0, int(remaining))
+
+    def get_whatsapp_message(self) -> str:
+        """Generate pesan WhatsApp otomatis."""
+        items = self.items.all()
+        course_names = ", ".join([item.course_title for item in items])
+        return (
+            f"Halo Admin, saya sudah melakukan pembayaran.\n\n"
+            f"📋 Invoice: {self.order_number}\n"
+            f"👤 Nama: {self.user.get_full_name() or self.user.username}\n"
+            f"📧 Email: {self.user.email}\n"
+            f"📚 Kursus: {course_names}\n"
+            f"💰 Total: Rp{self.total_amount:,.0f}\n\n"
+            f"Mohon diverifikasi. Terima kasih! 🙏"
+        )
+
+    def get_whatsapp_url(self) -> str:
+        """Generate URL WhatsApp dengan pesan otomatis."""
+        import urllib.parse
+        config = PaymentSettings.load()
+        message = urllib.parse.quote(self.get_whatsapp_message())
+        return f"https://wa.me/{config.admin_whatsapp}?text={message}"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Order Item
+# ─────────────────────────────────────────────────────────────────────────────
 
 class OrderItem(models.Model):
     """
@@ -258,6 +399,10 @@ class OrderItem(models.Model):
             self.price_snapshot = self.course.price
         super().save(*args, **kwargs)
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Payment
+# ─────────────────────────────────────────────────────────────────────────────
 
 class Payment(models.Model):
     """
@@ -315,6 +460,70 @@ class Payment(models.Model):
         return f"{self.gateway} | {self.transaction_id} | {self.status}"
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Manual Payment Proof (Bukti Transfer)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def proof_upload_path(instance, filename):
+    """Generates upload path: payment_proofs/<order_number>/<filename>"""
+    return f"payment_proofs/{instance.order.order_number}/{filename}"
+
+
+class ManualPaymentProof(models.Model):
+    """
+    Bukti pembayaran yang diupload user untuk pembayaran manual.
+    """
+    id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    order           = models.ForeignKey(
+                        Order,
+                        on_delete=models.CASCADE,
+                        related_name="payment_proofs",
+                      )
+    proof_image     = models.ImageField(
+                        _("proof image"),
+                        upload_to=proof_upload_path,
+                        validators=[
+                            FileExtensionValidator(
+                                allowed_extensions=["jpg", "jpeg", "png", "webp"]
+                            )
+                        ],
+                        help_text=_("Format: JPG, PNG, WebP. Maks 5MB."),
+                      )
+    sender_name     = models.CharField(
+                        _("sender name"), max_length=100,
+                        help_text=_("Nama pengirim sesuai rekening"),
+                      )
+    sender_bank     = models.CharField(
+                        _("sender bank"), max_length=50, blank=True,
+                        help_text=_("Bank pengirim"),
+                      )
+    notes           = models.TextField(_("notes"), blank=True)
+    uploaded_at     = models.DateTimeField(auto_now_add=True)
+
+    # Admin review
+    reviewed_by     = models.ForeignKey(
+                        settings.AUTH_USER_MODEL,
+                        on_delete=models.SET_NULL,
+                        null=True, blank=True,
+                        related_name="reviewed_proofs",
+                      )
+    reviewed_at     = models.DateTimeField(null=True, blank=True)
+    admin_note      = models.TextField(_("admin note"), blank=True)
+
+    class Meta:
+        db_table     = "manual_payment_proofs"
+        verbose_name = _("payment proof")
+        verbose_name_plural = _("payment proofs")
+        ordering     = ["-uploaded_at"]
+
+    def __str__(self):
+        return f"Proof for {self.order.order_number} by {self.sender_name}"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Refund
+# ─────────────────────────────────────────────────────────────────────────────
+
 class Refund(models.Model):
     """
     Permintaan refund dari student atau inisiasi admin.
@@ -365,6 +574,10 @@ class Refund(models.Model):
     def __str__(self):
         return f"Refund {self.payment.transaction_id} — {self.status}"
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Instructor Revenue
+# ─────────────────────────────────────────────────────────────────────────────
 
 class InstructorRevenue(models.Model):
     """

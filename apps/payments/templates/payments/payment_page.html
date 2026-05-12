@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+{% block content %}
+<style>
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse-dot{animation:pulse-dot 2s infinite}
+.copy-btn:active{transform:scale(.95)}
+</style>
+
+<div class="max-w-5xl mx-auto px-4 py-8">
+<!-- Breadcrumb -->
+<div class="flex items-center gap-2 text-xs text-navy-400 mb-6">
+  <a href="{% url 'course_preview' %}" class="hover:text-navy-700">Kursus</a>
+  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+  <span class="text-navy-600 font-medium">Pembayaran</span>
+</div>
+
+{% if messages %}
+<div class="mb-4">
+{% for message in messages %}
+<div class="px-4 py-3 rounded-xl text-sm font-medium {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-200{% elif message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-navy-50 text-navy-700 border border-navy-200{% endif %}">
+  {{ message }}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<div class="flex flex-col lg:flex-row gap-6">
+<!-- LEFT COLUMN -->
+<div class="flex-1 space-y-5">
+
+  <!-- Status Banner -->
+  {% if order.status == 'paid' %}
+  <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
+    <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+      <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+    </div>
+    <h2 class="text-lg font-bold text-emerald-800">Pembayaran Berhasil!</h2>
+    <p class="text-sm text-emerald-600 mt-1">Kamu sudah terdaftar di kursus ini.</p>
+    {% for item in order_items %}
+    <a href="{% url 'enrollments:my_courses' %}" class="inline-block mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors">Mulai Belajar</a>
+    {% endfor %}
+  </div>
+
+  {% elif order.status == 'cancelled' or order.status == 'expired' %}
+  <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
+    <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+      <svg class="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+    </div>
+    <h2 class="text-lg font-bold text-red-800">Order {{ order.get_status_display }}</h2>
+    <p class="text-sm text-red-600 mt-1">Silakan buat order baru jika ingin melanjutkan.</p>
+  </div>
+
+  {% elif order.status == 'waiting_verification' %}
+  <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center">
+    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+      <svg class="w-7 h-7 text-blue-600 pulse-dot" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    </div>
+    <h2 class="text-lg font-bold text-blue-800">Menunggu Verifikasi Admin</h2>
+    <p class="text-sm text-blue-600 mt-1">Bukti transfer sudah diupload. Silakan konfirmasi via WhatsApp.</p>
+    <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl transition-colors">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.122 1.523 5.857L.06 23.574l5.876-1.54A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.935 0-3.727-.57-5.236-1.548l-.375-.224-3.893 1.02 1.04-3.796-.246-.39A9.779 9.779 0 0 1 2.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+      Konfirmasi via WhatsApp
+    </a>
+  </div>
+
+  {% else %}
+  <!-- PENDING: Countdown Timer -->
+  <div class="bg-white border border-navy-100 rounded-2xl p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-bold text-navy-900">Batas Waktu Pembayaran</h3>
+      <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-semibold">Pending</span>
+    </div>
+    <div id="countdown" class="flex items-center justify-center gap-3 py-3">
+      <div class="text-center"><span id="cd-hours" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Jam</p></div>
+      <span class="text-xl text-navy-300 font-light">:</span>
+      <div class="text-center"><span id="cd-minutes" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Menit</p></div>
+      <span class="text-xl text-navy-300 font-light">:</span>
+      <div class="text-center"><span id="cd-seconds" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Detik</p></div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if order.status == 'pending' %}
+  <!-- Bank Transfer Info -->
+  <div class="bg-white border border-navy-100 rounded-2xl p-5">
+    <h3 class="text-sm font-bold text-navy-900 mb-4">Transfer ke Salah Satu Rekening</h3>
+    <div class="space-y-3">
+      {% for bank in bank_accounts %}
+      <div class="flex items-center justify-between p-4 bg-navy-50/60 rounded-xl border border-navy-100">
+        <div>
+          <p class="text-xs text-navy-500 font-medium">{{ bank.bank_name }}</p>
+          <p class="text-base font-bold text-navy-900 mt-0.5 tracking-wide" id="acc-{{ forloop.counter }}">{{ bank.account_number }}</p>
+          <p class="text-xs text-navy-400 mt-0.5">a.n. {{ bank.account_holder }}</p>
+        </div>
+        <button onclick="copyText('{{ bank.account_number }}')" class="copy-btn px-3 py-1.5 text-xs font-semibold text-navy-600 bg-white border border-navy-200 rounded-lg hover:bg-navy-100 transition-colors">Salin</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Upload Bukti Transfer -->
+  <div class="bg-white border border-navy-100 rounded-2xl p-5">
+    <h3 class="text-sm font-bold text-navy-900 mb-4">Upload Bukti Transfer</h3>
+    <form method="post" action="{% url 'payments:upload_proof' order.order_number %}" enctype="multipart/form-data" id="proof-form">
+      {% csrf_token %}
+      <!-- Image Upload Area -->
+      <div id="upload-area" onclick="document.getElementById('proof-image-input').click()" class="border-2 border-dashed border-navy-200 rounded-xl p-8 text-center cursor-pointer hover:border-navy-400 hover:bg-navy-50/50 transition-all">
+        <div id="upload-placeholder">
+          <svg class="w-10 h-10 text-navy-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+          <p class="text-sm text-navy-500 font-medium">Klik untuk upload bukti transfer</p>
+          <p class="text-xs text-navy-400 mt-1">JPG, PNG, WebP • Maks 5MB</p>
+        </div>
+        <div id="upload-preview" class="hidden">
+          <img id="preview-img" class="max-h-48 mx-auto rounded-lg" />
+          <p id="preview-name" class="text-xs text-navy-500 mt-2"></p>
+        </div>
+      </div>
+      {{ form.proof_image }}
+
+      {% for error in form.proof_image.errors %}
+      <p class="text-xs text-red-500 mt-1">{{ error }}</p>
+      {% endfor %}
+
+      <!-- Sender Info -->
+      <div class="mt-4 space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-navy-700 mb-1.5">Nama Pengirim <span class="text-red-400">*</span></label>
+          {{ form.sender_name }}
+          {% for error in form.sender_name.errors %}<p class="text-xs text-red-500 mt-1">{{ error }}</p>{% endfor %}
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-navy-700 mb-1.5">Bank Pengirim</label>
+          {{ form.sender_bank }}
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-navy-700 mb-1.5">Catatan (opsional)</label>
+          {{ form.notes }}
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn" disabled class="w-full mt-5 py-3 bg-navy-900 hover:bg-navy-950 disabled:bg-navy-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors">
+        Upload Bukti Transfer
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  {% if existing_proof and order.status == 'waiting_verification' %}
+  <!-- Uploaded Proof Preview -->
+  <div class="bg-white border border-navy-100 rounded-2xl p-5">
+    <h3 class="text-sm font-bold text-navy-900 mb-3">Bukti Transfer yang Diupload</h3>
+    <div class="rounded-xl overflow-hidden border border-navy-100">
+      <img src="{{ existing_proof.proof_image.url }}" class="w-full max-h-64 object-contain bg-navy-50" />
+    </div>
+    <div class="mt-3 space-y-1 text-sm">
+      <p class="text-navy-600"><span class="font-medium text-navy-800">Pengirim:</span> {{ existing_proof.sender_name }}</p>
+      {% if existing_proof.sender_bank %}<p class="text-navy-600"><span class="font-medium text-navy-800">Bank:</span> {{ existing_proof.sender_bank }}</p>{% endif %}
+      {% if existing_proof.notes %}<p class="text-navy-600"><span class="font-medium text-navy-800">Catatan:</span> {{ existing_proof.notes }}</p>{% endif %}
+      <p class="text-xs text-navy-400">Diupload: {{ existing_proof.uploaded_at|date:"d M Y H:i" }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- RIGHT COLUMN: Order Summary -->
+<div class="w-full lg:w-[360px] shrink-0">
+  <div class="lg:sticky lg:top-20 space-y-5">
+    <div class="bg-white border border-navy-100 rounded-2xl p-5">
+      <h3 class="text-sm font-bold text-navy-900 mb-4">Ringkasan Order</h3>
+
+      <!-- Invoice -->
+      <div class="flex items-center justify-between py-2.5 border-b border-navy-100">
+        <span class="text-xs text-navy-500">Invoice</span>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-navy-900 font-mono">{{ order.order_number }}</span>
+          <button onclick="copyText('{{ order.order_number }}')" class="copy-btn text-navy-400 hover:text-navy-700">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="flex items-center justify-between py-2.5 border-b border-navy-100">
+        <span class="text-xs text-navy-500">Status</span>
+        {% if order.status == 'pending' %}
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700">Pending</span>
+        {% elif order.status == 'waiting_verification' %}
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700">Menunggu Verifikasi</span>
+        {% elif order.status == 'paid' %}
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">Paid</span>
+        {% elif order.status == 'cancelled' %}
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-50 text-red-700">Cancelled</span>
+        {% elif order.status == 'expired' %}
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600">Expired</span>
+        {% endif %}
+      </div>
+
+      <!-- Course Items -->
+      {% for item in order_items %}
+      <div class="flex gap-3 py-3 border-b border-navy-100">
+        {% if item.course.thumbnail %}
+        <img src="{{ item.course.thumbnail.url }}" class="w-16 h-12 rounded-lg object-cover shrink-0" />
+        {% endif %}
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-navy-900 leading-snug line-clamp-2">{{ item.course_title }}</p>
+          <p class="text-xs text-navy-500 mt-1">Rp{{ item.price_snapshot|intcomma }}</p>
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- Totals -->
+      <div class="pt-3 space-y-2">
+        <div class="flex justify-between text-sm">
+          <span class="text-navy-500">Subtotal</span>
+          <span class="text-navy-700">Rp{{ order.subtotal|intcomma }}</span>
+        </div>
+        {% if order.discount_amount > 0 %}
+        <div class="flex justify-between text-sm">
+          <span class="text-navy-500">Diskon</span>
+          <span class="text-emerald-600">-Rp{{ order.discount_amount|intcomma }}</span>
+        </div>
+        {% endif %}
+        <div class="flex justify-between text-base font-bold pt-2 border-t border-navy-100">
+          <span class="text-navy-900">Total</span>
+          <span class="text-navy-900">Rp{{ order.total_amount|intcomma }}</span>
+        </div>
+      </div>
+
+      <!-- Copy Total -->
+      <button onclick="copyText('{{ order.total_amount }}')" class="w-full mt-3 py-2 text-xs font-medium text-navy-500 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+        Salin Nominal: Rp{{ order.total_amount|intcomma }}
+      </button>
+    </div>
+
+    <!-- Help -->
+    <div class="bg-navy-50/60 border border-navy-100 rounded-2xl p-4">
+      <p class="text-xs text-navy-500 leading-relaxed">
+        <span class="font-semibold text-navy-700">Butuh bantuan?</span><br>
+        Hubungi admin via WhatsApp untuk pertanyaan seputar pembayaran.
+      </p>
+      <a href="{{ whatsapp_url }}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold text-emerald-600 hover:text-emerald-700">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.122 1.523 5.857L.06 23.574l5.876-1.54A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82a9.78 9.78 0 0 1-5.236-1.548l-.375-.224-3.893 1.02 1.04-3.796-.246-.39A9.779 9.779 0 0 1 2.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+        Hubungi Admin
+      </a>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+  <div class="bg-navy-900 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3">
+    <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    <span id="toast-text" class="text-sm font-medium"></span>
+  </div>
+</div>
+
+<script>
+// Countdown
+(function(){
+  let remaining = {{ time_remaining }};
+  if(remaining <= 0) return;
+  const hEl=document.getElementById('cd-hours'),mEl=document.getElementById('cd-minutes'),sEl=document.getElementById('cd-seconds');
+  if(!hEl) return;
+  function update(){
+    if(remaining<=0){location.reload();return;}
+    const h=Math.floor(remaining/3600),m=Math.floor((remaining%3600)/60),s=remaining%60;
+    hEl.textContent=String(h).padStart(2,'0');
+    mEl.textContent=String(m).padStart(2,'0');
+    sEl.textContent=String(s).padStart(2,'0');
+    remaining--;
+  }
+  update();
+  setInterval(update,1000);
+})();
+
+// Copy
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=>{showToast('Berhasil disalin!')});
+}
+let toastTimeout;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-text').textContent=msg;
+  t.classList.remove('hidden');
+  clearTimeout(toastTimeout);
+  toastTimeout=setTimeout(()=>t.classList.add('hidden'),2500);
+}
+
+// Image preview + enable submit
+const fileInput=document.getElementById('proof-image-input');
+const senderInput=document.getElementById('sender-name-input');
+const submitBtn=document.getElementById('submit-btn');
+if(fileInput){
+  fileInput.addEventListener('change',function(e){
+    const file=e.target.files[0];
+    if(!file)return;
+    if(file.size>5*1024*1024){alert('File terlalu besar (maks 5MB)');this.value='';return;}
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      document.getElementById('upload-placeholder').classList.add('hidden');
+      const prev=document.getElementById('upload-preview');
+      prev.classList.remove('hidden');
+      document.getElementById('preview-img').src=ev.target.result;
+      document.getElementById('preview-name').textContent=file.name;
+      checkSubmit();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+if(senderInput){senderInput.addEventListener('input',checkSubmit);}
+function checkSubmit(){
+  if(!submitBtn)return;
+  const hasFile=fileInput&&fileInput.files.length>0;
+  const hasName=senderInput&&senderInput.value.trim().length>0;
+  submitBtn.disabled=!(hasFile&&hasName);
+}
+</script>
+{% endblock content %}

@@ -1,9 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Sum
 from django.utils import timezone
-from .models import Coupon, Order, OrderItem, Payment, Refund, InstructorRevenue
+from .models import (
+    Coupon, Order, OrderItem, Payment,
+    Refund, InstructorRevenue,
+    ManualPaymentProof, PaymentSettings, OrderStatus,
+)
 
 
 # ─── Inlines ─────────────────────────────────────────────────────────────────
@@ -23,7 +26,39 @@ class PaymentInline(admin.TabularInline):
     show_change_link = True
 
 
+class ManualPaymentProofInline(admin.TabularInline):
+    model           = ManualPaymentProof
+    extra           = 0
+    readonly_fields = ("proof_image_preview", "sender_name", "sender_bank", "notes", "uploaded_at")
+    fields          = ("proof_image_preview", "sender_name", "sender_bank", "notes", "uploaded_at")
+    can_delete      = False
+
+    @admin.display(description="Bukti Transfer")
+    def proof_image_preview(self, obj):
+        if obj.proof_image:
+            return format_html(
+                '<a href="{url}" target="_blank">'
+                '<img src="{url}" style="max-height:120px;border-radius:8px;'
+                'border:1px solid #e2e8f0;" />'
+                '</a>',
+                url=obj.proof_image.url,
+            )
+        return "-"
+
+
 # ─── ModelAdmin ──────────────────────────────────────────────────────────────
+
+@admin.register(PaymentSettings)
+class PaymentSettingsAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "admin_whatsapp", "payment_expiry_hours", "max_upload_size_mb")
+
+    def has_add_permission(self, request):
+        # Singleton: hanya boleh 1 record
+        return not PaymentSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(Coupon)
 class CouponAdmin(admin.ModelAdmin):
@@ -85,7 +120,7 @@ class OrderAdmin(admin.ModelAdmin):
         "id", "order_number", "created_at",
         "updated_at", "paid_at",
     )
-    inlines       = [OrderItemInline, PaymentInline]
+    inlines       = [OrderItemInline, PaymentInline, ManualPaymentProofInline]
 
     fieldsets = (
         (_("Identitas Order"), {
@@ -110,12 +145,13 @@ class OrderAdmin(admin.ModelAdmin):
     @admin.display(description="Status")
     def status_badge(self, obj):
         colors = {
-            "pending":   ("#BA7517", "#FFF8E1"),
-            "paid":      ("#1D9E75", "#E8F5E9"),
-            "failed":    ("#C0392B", "#FDEDEC"),
-            "cancelled": ("#7F8C8D", "#F2F3F4"),
-            "refunded":  ("#8E44AD", "#F5EEF8"),
-            "expired":   ("#555",    "#eee"),
+            "pending":              ("#BA7517", "#FFF8E1"),
+            "waiting_verification": ("#1565C0", "#E3F2FD"),
+            "paid":                 ("#1D9E75", "#E8F5E9"),
+            "failed":               ("#C0392B", "#FDEDEC"),
+            "cancelled":            ("#7F8C8D", "#F2F3F4"),
+            "refunded":             ("#8E44AD", "#F5EEF8"),
+            "expired":              ("#555",    "#eee"),
         }
         color, bg = colors.get(obj.status, ("#555", "#eee"))
         return format_html(
@@ -127,23 +163,105 @@ class OrderAdmin(admin.ModelAdmin):
 
     actions = ["mark_paid", "mark_cancelled", "mark_refunded"]
 
-    @admin.action(description="Tandai sebagai Paid")
+    @admin.action(description="✅ Tandai sebagai Paid (auto-enroll)")
     def mark_paid(self, request, queryset):
         for order in queryset:
             order.mark_paid()
-        self.message_user(request, f"{queryset.count()} order ditandai paid.")
+        self.message_user(request, f"{queryset.count()} order ditandai paid & enrollment dibuat otomatis.")
 
-    @admin.action(description="Tandai sebagai Cancelled")
+    @admin.action(description="❌ Tandai sebagai Cancelled")
     def mark_cancelled(self, request, queryset):
-        from .models import OrderStatus
-        queryset.update(status=OrderStatus.CANCELLED)
+        for order in queryset:
+            order.mark_cancelled()
         self.message_user(request, f"{queryset.count()} order dibatalkan.")
 
-    @admin.action(description="Tandai sebagai Refunded")
+    @admin.action(description="↩️ Tandai sebagai Refunded")
     def mark_refunded(self, request, queryset):
         for order in queryset:
             order.mark_refunded()
         self.message_user(request, f"{queryset.count()} order direfund.")
+
+
+@admin.register(ManualPaymentProof)
+class ManualPaymentProofAdmin(admin.ModelAdmin):
+    list_display  = (
+        "order_number", "sender_name", "sender_bank",
+        "proof_preview_small", "uploaded_at", "is_reviewed",
+    )
+    list_filter   = ("sender_bank", "uploaded_at")
+    search_fields = ("order__order_number", "sender_name")
+    ordering      = ("-uploaded_at",)
+    readonly_fields = (
+        "id", "uploaded_at", "proof_image_preview",
+    )
+
+    fieldsets = (
+        (_("Informasi Bukti"), {
+            "fields": ("id", "order", "proof_image_preview", "proof_image"),
+        }),
+        (_("Detail Pengirim"), {
+            "fields": ("sender_name", "sender_bank", "notes"),
+        }),
+        (_("Review"), {
+            "fields": ("reviewed_by", "reviewed_at", "admin_note"),
+        }),
+    )
+
+    @admin.display(description="Order")
+    def order_number(self, obj):
+        return obj.order.order_number
+
+    @admin.display(description="Preview")
+    def proof_preview_small(self, obj):
+        if obj.proof_image:
+            return format_html(
+                '<img src="{}" style="max-height:40px;border-radius:4px;" />',
+                obj.proof_image.url,
+            )
+        return "-"
+
+    @admin.display(description="Bukti Transfer (Full)")
+    def proof_image_preview(self, obj):
+        if obj.proof_image:
+            return format_html(
+                '<a href="{url}" target="_blank">'
+                '<img src="{url}" style="max-height:300px;border-radius:12px;'
+                'border:1px solid #e2e8f0;" />'
+                '</a>',
+                url=obj.proof_image.url,
+            )
+        return "-"
+
+    @admin.display(description="Reviewed?", boolean=True)
+    def is_reviewed(self, obj):
+        return obj.reviewed_at is not None
+
+    actions = ["approve_and_mark_paid", "reject_proof"]
+
+    @admin.action(description="✅ Approve & Mark Order as Paid")
+    def approve_and_mark_paid(self, request, queryset):
+        for proof in queryset:
+            proof.reviewed_by = request.user
+            proof.reviewed_at = timezone.now()
+            proof.save(update_fields=["reviewed_by", "reviewed_at"])
+            proof.order.mark_paid()
+        self.message_user(
+            request,
+            f"{queryset.count()} bukti diapprove & order ditandai paid."
+        )
+
+    @admin.action(description="❌ Reject & Cancel Order")
+    def reject_proof(self, request, queryset):
+        for proof in queryset:
+            proof.reviewed_by = request.user
+            proof.reviewed_at = timezone.now()
+            proof.admin_note = "Ditolak oleh admin"
+            proof.save(update_fields=["reviewed_by", "reviewed_at", "admin_note"])
+            proof.order.mark_cancelled()
+        self.message_user(
+            request,
+            f"{queryset.count()} bukti ditolak & order dibatalkan."
+        )
 
 
 @admin.register(Payment)

@@ -4,6 +4,8 @@ from .models import Course, Category, Tag
 from django.db.models import Q, Count, Sum, ExpressionWrapper, FloatField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
+from apps.payments.models import Order, OrderStatus
+from apps.enrollments.models import Enrollment, EnrollmentStatus
 
 def landing_view(request):
     return render(request, 'courses/landing.html')
@@ -120,9 +122,34 @@ def course_detail_view(request, slug):
     # Calculate stats for curriculum header
     total_lessons = sum(module.lessons.count() for module in modules)
     
+    first_lesson_id = None
+    # Ensure modules and lessons are ordered correctly
+    first_module = course.modules.order_by('order').first()
+    if first_module:
+        first_lesson = first_module.lessons.order_by('order').first()
+        if first_lesson:
+            first_lesson_id = first_lesson.id
+
+    user_order = None
+    enrollment = None
+    if request.user.is_authenticated:
+        user_order = Order.objects.filter(
+            user=request.user,
+            items__course=course
+        ).exclude(status=OrderStatus.CANCELLED).order_by('-created_at').first()
+
+        enrollment = Enrollment.objects.filter(
+            student=request.user,
+            course=course
+        ).first()
+    
     context = {
         'course': course,
         'modules': modules,
         'total_lessons': total_lessons,
+        'first_lesson_id': first_lesson_id,
+        'user_order': user_order,
+        'enrollment': enrollment,
+        'OrderStatus': OrderStatus,
     }
     return render(request, 'courses/detail.html', context)

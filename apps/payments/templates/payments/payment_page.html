@@ -30,58 +30,62 @@
 <div class="flex-1 min-w-0 space-y-5">
 
   <!-- Status Banner -->
-  {% if order.status == 'paid' %}
-  <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
-    <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-      <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+  {% if not is_new_order %}
+    <!-- Existing status banners -->
+    {% if order.status == 'paid' %}
+    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
+      <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+        <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+      </div>
+      <h2 class="text-lg font-bold text-emerald-800">Pembayaran Berhasil!</h2>
+      <p class="text-sm text-emerald-600 mt-1">Kamu sudah terdaftar di kursus ini.</p>
+      {% for item in order_items %}
+      <a href="{% url 'enrollments:my_courses' %}" class="inline-block mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors">Mulai Belajar</a>
+      {% endfor %}
     </div>
-    <h2 class="text-lg font-bold text-emerald-800">Pembayaran Berhasil!</h2>
-    <p class="text-sm text-emerald-600 mt-1">Kamu sudah terdaftar di kursus ini.</p>
-    {% for item in order_items %}
-    <a href="{% url 'enrollments:my_courses' %}" class="inline-block mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors">Mulai Belajar</a>
-    {% endfor %}
-  </div>
 
-  {% elif order.status == 'cancelled' or order.status == 'expired' %}
-  <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
-    <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-      <svg class="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+    {% elif order.status == 'cancelled' or order.status == 'expired' %}
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
+      <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+        <svg class="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </div>
+      <h2 class="text-lg font-bold text-red-800">Order {{ order.get_status_display }}</h2>
+      <p class="text-sm text-red-600 mt-1">Silakan buat order baru jika ingin melanjutkan.</p>
     </div>
-    <h2 class="text-lg font-bold text-red-800">Order {{ order.get_status_display }}</h2>
-    <p class="text-sm text-red-600 mt-1">Silakan buat order baru jika ingin melanjutkan.</p>
-  </div>
 
-  {% elif order.status == 'waiting_verification' %}
-  <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center">
-    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-      <svg class="w-7 h-7 text-blue-600 pulse-dot" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    {% elif order.status == 'waiting_verification' %}
+    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center">
+      <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+        <svg class="w-7 h-7 text-blue-600 pulse-dot" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+      </div>
+      <h2 class="text-lg font-bold text-blue-800">Menunggu Verifikasi Admin</h2>
+      <p class="text-sm text-blue-600 mt-1">Bukti transfer sudah diupload. Silakan konfirmasi via WhatsApp.</p>
+      <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.122 1.523 5.857L.06 23.574l5.876-1.54A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.935 0-3.727-.57-5.236-1.548l-.375-.224-3.893 1.02 1.04-3.796-.246-.39A9.779 9.779 0 0 1 2.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+        Konfirmasi via WhatsApp
+      </a>
     </div>
-    <h2 class="text-lg font-bold text-blue-800">Menunggu Verifikasi Admin</h2>
-    <p class="text-sm text-blue-600 mt-1">Bukti transfer sudah diupload. Silakan konfirmasi via WhatsApp.</p>
-    <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl transition-colors">
-      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.122 1.523 5.857L.06 23.574l5.876-1.54A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.935 0-3.727-.57-5.236-1.548l-.375-.224-3.893 1.02 1.04-3.796-.246-.39A9.779 9.779 0 0 1 2.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
-      Konfirmasi via WhatsApp
-    </a>
-  </div>
+    {% endif %}
 
-  {% else %}
-  <!-- PENDING: Countdown Timer -->
-  <div class="bg-white border border-navy-100 rounded-2xl p-5">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-sm font-bold text-navy-900">Batas Waktu Pembayaran</h3>
-      <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-semibold">Pending</span>
+    {% if order.status == 'pending' %}
+    <!-- PENDING: Countdown Timer -->
+    <div class="bg-white border border-navy-100 rounded-2xl p-5">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-bold text-navy-900">Batas Waktu Pembayaran</h3>
+        <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-semibold">Pending</span>
+      </div>
+      <div id="countdown" class="flex items-center justify-center gap-3 py-3">
+        <div class="text-center"><span id="cd-hours" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Jam</p></div>
+        <span class="text-xl text-navy-300 font-light">:</span>
+        <div class="text-center"><span id="cd-minutes" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Menit</p></div>
+        <span class="text-xl text-navy-300 font-light">:</span>
+        <div class="text-center"><span id="cd-seconds" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Detik</p></div>
+      </div>
     </div>
-    <div id="countdown" class="flex items-center justify-center gap-3 py-3">
-      <div class="text-center"><span id="cd-hours" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Jam</p></div>
-      <span class="text-xl text-navy-300 font-light">:</span>
-      <div class="text-center"><span id="cd-minutes" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Menit</p></div>
-      <span class="text-xl text-navy-300 font-light">:</span>
-      <div class="text-center"><span id="cd-seconds" class="text-2xl font-bold text-navy-900 tabular-nums">00</span><p class="text-[10px] text-navy-400 mt-0.5">Detik</p></div>
-    </div>
-  </div>
+    {% endif %}
   {% endif %}
 
-  {% if order.status == 'pending' %}
+  {% if is_new_order or order.status == 'pending' %}
   <!-- Bank Transfer Info -->
   <div class="bg-white border border-navy-100 rounded-2xl p-5">
     <h3 class="text-sm font-bold text-navy-900 mb-4">Transfer ke Salah Satu Rekening</h3>
@@ -102,7 +106,7 @@
   <!-- Upload Bukti Transfer -->
   <div class="bg-white border border-navy-100 rounded-2xl p-5">
     <h3 class="text-sm font-bold text-navy-900 mb-4">Upload Bukti Transfer</h3>
-    <form method="post" action="{% url 'payments:upload_proof' order.order_number %}" enctype="multipart/form-data" id="proof-form">
+    <form method="post" action="{% if is_new_order %}{% url 'payments:create_order' course.slug %}{% else %}{% url 'payments:upload_proof' order.order_number %}{% endif %}" enctype="multipart/form-data" id="proof-form">
       {% csrf_token %}
       <!-- Image Upload Area -->
       <div id="upload-area" onclick="document.getElementById('proof-image-input').click()" class="border-2 border-dashed border-navy-200 rounded-xl p-8 text-center cursor-pointer hover:border-navy-400 hover:bg-navy-50/50 transition-all">
@@ -174,17 +178,21 @@
       <div class="flex items-center justify-between py-2.5 border-b border-navy-100">
         <span class="text-xs text-navy-500">Invoice</span>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-navy-900 font-mono">{{ order.order_number }}</span>
+          <span class="text-xs font-bold text-navy-900 font-mono">{{ order.order_number|default:"Draft" }}</span>
+          {% if order.order_number %}
           <button onclick="copyText('{{ order.order_number }}')" class="copy-btn text-navy-400 hover:text-navy-700">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg>
           </button>
+          {% endif %}
         </div>
       </div>
 
       <!-- Status -->
       <div class="flex items-center justify-between py-2.5 border-b border-navy-100">
         <span class="text-xs text-navy-500">Status</span>
-        {% if order.status == 'pending' %}
+        {% if is_new_order %}
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-navy-50 text-navy-700">Baru</span>
+        {% elif order.status == 'pending' %}
         <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700">Pending</span>
         {% elif order.status == 'waiting_verification' %}
         <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700">Menunggu Verifikasi</span>
@@ -214,7 +222,7 @@
       <div class="pt-3 space-y-2">
         <div class="flex justify-between text-sm">
           <span class="text-navy-500">Subtotal</span>
-          <span class="text-navy-700">Rp{{ order.subtotal|intcomma }}</span>
+          <span class="text-navy-700">Rp{{ subtotal|intcomma }}</span>
         </div>
         {% if order.discount_amount > 0 %}
         <div class="flex justify-between text-sm">
@@ -224,13 +232,13 @@
         {% endif %}
         <div class="flex justify-between text-base font-bold pt-2 border-t border-navy-100">
           <span class="text-navy-900">Total</span>
-          <span class="text-navy-900">Rp{{ order.total_amount|intcomma }}</span>
+          <span class="text-navy-900">Rp{{ total_amount|intcomma }}</span>
         </div>
       </div>
 
       <!-- Copy Total -->
-      <button onclick="copyText('{{ order.total_amount }}')" class="w-full mt-3 py-2 text-xs font-medium text-navy-500 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
-        Salin Nominal: Rp{{ order.total_amount|intcomma }}
+      <button onclick="copyText('{{ total_amount }}')" class="w-full mt-3 py-2 text-xs font-medium text-navy-500 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">
+        Salin Nominal: Rp{{ total_amount|intcomma }}
       </button>
     </div>
 

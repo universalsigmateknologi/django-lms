@@ -340,12 +340,12 @@ class Order(models.Model):
         course_names = ", ".join([item.course_title for item in items])
         return (
             f"Halo Admin, saya sudah melakukan pembayaran.\n\n"
-            f"📋 Invoice: {self.order_number}\n"
-            f"👤 Nama: {self.user.get_full_name() or self.user.username}\n"
-            f"📧 Email: {self.user.email}\n"
-            f"📚 Kursus: {course_names}\n"
-            f"💰 Total: Rp{self.total_amount:,.0f}\n\n"
-            f"Mohon diverifikasi. Terima kasih! 🙏"
+            f"- Invoice: {self.order_number}\n"
+            f"- Nama: {self.user.get_full_name() or self.user.username}\n"
+            f"- Email: {self.user.email}\n"
+            f"- Kursus: {course_names}\n"
+            f"- Total: Rp{self.total_amount:,.0f}\n\n"
+            f"Mohon diverifikasi. Terima kasih!"
         )
 
     def get_whatsapp_url(self) -> str:

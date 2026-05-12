@@ -9,6 +9,7 @@ Flow:
 5. order_history_view  — User's order list
 """
 import logging
+import urllib.parse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -28,12 +29,12 @@ from apps.enrollments.models import Enrollment
 logger = logging.getLogger(__name__)
 
 
+
 @login_required
-@require_POST
 def create_order_view(request, slug):
     """
-    POST endpoint: Buat order baru dari halaman course detail.
-    Redirects ke halaman pembayaran.
+    GET: Tampilkan halaman pembayaran (bank info + upload form) sebelum order dibuat.
+    POST: Buat order sekaligus upload bukti transfer.
     """
     course = get_object_or_404(Course, slug=slug, is_published=True)
 
@@ -50,26 +51,70 @@ def create_order_view(request, slug):
     ).first()
 
     if existing_order:
-        # Redirect ke order yang sudah ada
+        # Redirect ke order yang sudah ada agar tidak duplikat
         return redirect("payments:payment_page", order_number=existing_order.order_number)
 
-    # ── Create Order ──
-    with transaction.atomic():
-        order = Order.objects.create(
-            user=request.user,
-            subtotal=course.price,
-            total_amount=course.price,
-            currency="IDR",
-        )
-        OrderItem.objects.create(
-            order=order,
-            course=course,
-            course_title=course.title,
-            price_snapshot=course.price,
-        )
+    if request.method == "POST":
+        form = PaymentProofForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    # 1. Create Order
+                    order = Order.objects.create(
+                        user=request.user,
+                        subtotal=course.price,
+                        total_amount=course.price,
+                        currency="IDR",
+                    )
+                    # 2. Create OrderItem
+                    OrderItem.objects.create(
+                        order=order,
+                        course=course,
+                        course_title=course.title,
+                        price_snapshot=course.price,
+                    )
+                    # 3. Save Proof
+                    proof = form.save(commit=False)
+                    proof.order = order
+                    proof.save()
 
-    messages.success(request, "Order berhasil dibuat! Silakan lakukan pembayaran.")
-    return redirect("payments:payment_page", order_number=order.order_number)
+                    # 4. Update order status
+                    order.mark_waiting_verification()
+
+                messages.success(request, "Order berhasil dibuat dan bukti transfer telah diupload! Menunggu verifikasi admin.")
+                return redirect("payments:payment_page", order_number=order.order_number)
+            except Exception as e:
+                logger.error(f"Error creating order/uploading proof: {str(e)}")
+                messages.error(request, "Terjadi kesalahan saat memproses order. Silakan coba lagi.")
+        else:
+            messages.error(request, "Upload gagal. Periksa kembali file dan data yang diisi.")
+    else:
+        form = PaymentProofForm()
+
+
+
+    # Context untuk mode "New Order" (order belum ada di DB)
+    config = PaymentSettings.load()
+    context = {
+        "course": course,
+        "is_new_order": True,
+        "order_items": [
+            {
+                "course": course,
+                "course_title": course.title,
+                "price_snapshot": course.price,
+            }
+        ],
+        "subtotal": course.price,
+        "total_amount": course.price,
+        "config": config,
+        "form": form,
+        "bank_accounts": config.bank_accounts,
+        "time_remaining": 0,
+        "whatsapp_url": f"https://wa.me/{config.admin_whatsapp}?text=Halo%20Admin,%20saya%20ingin%20bertanya%20tentang%20kursus%20{urllib.parse.quote(course.title)}",
+        "OrderStatus": OrderStatus,
+    }
+    return render(request, "payments/payment_page.html", context)
 
 
 @login_required
@@ -95,8 +140,13 @@ def payment_page_view(request, order_number):
     existing_proof = order.payment_proofs.first()
 
     context = {
+
+
         "order": order,
         "order_items": order.items.select_related("course"),
+        "subtotal": order.subtotal,
+        "total_amount": order.total_amount,
+        "is_new_order": False,
         "config": config,
         "form": form,
         "existing_proof": existing_proof,

@@ -1,16 +1,41 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+<body class="bg-navy-50 font-sans text-navy-900 antialiased">
 
-<body>
-    {% block content %}
+  <div class="flex h-screen overflow-hidden">
 
-    {% endblock content %}
+    <!-- Sidebar -->
+    {% include 'components/sidebar_admin.html' %}
+
+    <!-- Main -->
+    <main class="flex-1 overflow-y-auto">
+
+      <!-- Top Bar -->
+      {% block topbar %}
+        
+      {% endblock topbar %}
+
+      <!-- Content -->
+      <div class="p-8 space-y-8">
+        <!-- container -->
+         {% block content %}
+            
+         {% endblock content %}
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>

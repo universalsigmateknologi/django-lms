@@ -151,11 +151,8 @@
     }
     .left-body {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 11.5px;
-      font-weight: 300;
       color: #bcccdc; /* navy-200 */
       line-height: 1.8;
-      text-align: center;
     }
 
     /* ── Cert number ── */
@@ -373,7 +370,7 @@
                         </div>
                         <p class="left-title">Achievement</p>
                         <div class="left-divider"></div>
-                        <p class="left-body">
+                        <p class="left-body font-size-12px text-center font-bold">
                           This certificate is awarded in recognition of successful completion and demonstrated excellence throughout the program.
                         </p>
                         <div class="cert-number">
@@ -410,17 +407,10 @@
 
                         <div class="meta-row">
                           <div class="meta-item">
-                            <div class="meta-line"></div>
                             <div class="meta-label">Date Issued</div>
                             <div class="meta-value">{{ certificate.issued_at|date:"d M Y" }}</div>
                           </div>
-                          <div class="meta-item">
-                            <div class="meta-line"></div>
-                            <div class="meta-label">Signature</div>
-                            <div class="meta-value" style="font-family:'Great Vibes',cursive;font-size:22px;line-height:1;">{{ certificate.instructor_name_snapshot }}</div>
-                          </div>
                           <div class="meta-item" style="margin-left:8px;">
-                            <div class="meta-line"></div>
                             <div class="meta-label">Status</div>
                             {% if certificate.is_valid %}
                             <div class="meta-value" style="color:#3a9e6b;font-size:12px;letter-spacing:1px;">✔ Valid &amp; Active</div>

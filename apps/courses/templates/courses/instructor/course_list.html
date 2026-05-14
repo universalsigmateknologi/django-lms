@@ -10,11 +10,14 @@
         </div>
     </div>
     <div class="flex items-center gap-3">
-        <div class="relative">
+        <form action="" method="GET" class="relative">
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-navy-300"></i>
-            <input type="text" placeholder="Cari kelas..."
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Cari kelas..."
                 class="pl-9 pr-4 py-2 text-sm bg-navy-50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 w-56 placeholder:text-navy-300 transition-all">
-        </div>
+            {% if status_filter != 'all' %}
+                <input type="hidden" name="status" value="{{ status_filter }}">
+            {% endif %}
+        </form>
         <button class="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
             <i data-lucide="bell" class="w-[18px] h-[18px] text-navy-500"></i>
             <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -23,8 +26,6 @@
 </header>
 {% endblock topbar %}
 {% block content %}
-<div class="p-8 space-y-6">
-
     <!-- Page Header -->
     <div class="flex items-center justify-between">
         <div>
@@ -40,50 +41,77 @@
 
     <!-- Filter Tabs -->
     <div class="flex items-center gap-1 bg-white border border-navy-100 rounded-lg p-1 w-fit">
-        <button class="text-sm font-medium px-4 py-2 rounded-md bg-navy-900 text-white">Semua <span
-                class="ml-1 text-xs opacity-70">8</span></button>
-        <button
-            class="text-sm font-medium px-4 py-2 rounded-md text-navy-500 hover:text-navy-700 hover:bg-navy-50 transition-colors">Aktif
-            <span class="ml-1 text-xs opacity-60">5</span></button>
-        <button
-            class="text-sm font-medium px-4 py-2 rounded-md text-navy-500 hover:text-navy-700 hover:bg-navy-50 transition-colors">Draft
-            <span class="ml-1 text-xs opacity-60">2</span></button>
+        <a href="?status=all{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'all' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Semua <span class="ml-1 text-xs opacity-70">{{ total_count }}</span>
+        </a>
+        <a href="?status=active{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'active' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Aktif <span class="ml-1 text-xs opacity-60">{{ active_count }}</span>
+        </a>
+        <a href="?status=draft{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'draft' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Draft <span class="ml-1 text-xs opacity-60">{{ draft_count }}</span>
+        </a>
     </div>
 
-    <!-- Course List -->
     <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100">
-
-        <!-- Course Item 1 -->
+        {% for course in page_obj %}
         <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
-            <img src="https://picsum.photos/seed/uiux-course/240/160.jpg"
-                class="w-32 h-20 rounded-lg object-cover shrink-0" alt="">
+            {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="w-32 h-20 rounded-lg object-cover shrink-0" alt="{{ course.title }}">
+            {% else %}
+                <div class="w-32 h-20 rounded-lg bg-navy-100 flex items-center justify-center shrink-0">
+                    <i data-lucide="image" class="w-8 h-8 text-navy-300"></i>
+                </div>
+            {% endif %}
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
-                    <span
-                        class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Aktif</span>
-                    <span
-                        class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Design</span>
+                    {% if course.is_published %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Aktif</span>
+                    {% else %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Draft</span>
+                    {% endif %}
+                    
+                    {% if course.is_online %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Online</span>
+                    {% else %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-600 bg-slate-50 px-2 py-0.5 rounded">Offline</span>
+                    {% endif %}
+
+                    {% if course.is_lesson_finished %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Selesai</span>
+                    {% else %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-navy-500 bg-navy-50 px-2 py-0.5 rounded">Berjalan</span>
+                    {% endif %}
+                    
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">{{ course.category.name }}</span>
                 </div>
-                <h3 class="text-sm font-semibold text-navy-900 truncate">UI/UX Design: Dari Nol Hingga
-                    Portfolio</h3>
+                <h3 class="text-sm font-semibold text-navy-900 truncate">{{ course.title }}</h3>
                 <div class="flex items-center gap-4 mt-2">
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="users"
-                            class="w-3 h-3"></i> 482 siswa</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
-                            class="w-3 h-3"></i> 24 modul</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="star"
-                            class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.9</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock"
-                            class="w-3 h-3"></i> 18 jam</span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="users" class="w-3 h-3"></i> {{ course.student_count_ann }} siswa</span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers" class="w-3 h-3"></i> {{ course.module_count }} modul</span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="star" class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.9</span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock" class="w-3 h-3"></i> {{ course.total_hours_ann|floatformat:1 }} jam</span>
                 </div>
             </div>
             <!-- Actions -->
             <div class="flex items-center gap-1.5 shrink-0">
-                <button title="Lihat"
+                <a href="{% url 'course_detail' course.slug %}" title="Lihat"
                     class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
                     <i data-lucide="eye" class="w-4 h-4"></i>
-                </button>
+                </a>
                 <button title="Edit"
+                    onclick="openEditModal(this)"
+                    data-id="{{ course.id }}"
+                    data-title="{{ course.title }}"
+                    data-category="{{ course.category.id }}"
+                    data-level="{{ course.level }}"
+                    data-price="{{ course.price|floatformat:0 }}"
+                    data-is-online="{{ course.is_online|yesno:'true,false' }}"
+                    data-description="{{ course.description }}"
+                    data-thumbnail="{% if course.thumbnail %}{{ course.thumbnail.url }}{% endif %}"
+                    data-tags="[{% for tag in course.tags.all %}{{ tag.id }}{% if not forloop.last %},{% endif %}{% endfor %}]"
                     class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
                     <i data-lucide="pencil" class="w-4 h-4"></i>
                 </button>
@@ -97,151 +125,403 @@
                 </button>
             </div>
         </div>
-
-        <!-- Course Item 2 -->
-        <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
-            <img src="https://picsum.photos/seed/figma-mastery/240/160.jpg"
-                class="w-32 h-20 rounded-lg object-cover shrink-0" alt="">
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                    <span
-                        class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Aktif</span>
-                    <span
-                        class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Design</span>
-                </div>
-                <h3 class="text-sm font-semibold text-navy-900 truncate">Figma Mastery: Auto Layout &
-                    Component</h3>
-                <div class="flex items-center gap-4 mt-2">
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="users"
-                            class="w-3 h-3"></i> 356 siswa</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
-                            class="w-3 h-3"></i> 18 modul</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="star"
-                            class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.8</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock"
-                            class="w-3 h-3"></i> 12 jam</span>
-                </div>
+        {% empty %}
+        <div class="p-10 text-center">
+            <div class="w-16 h-16 bg-navy-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="book-open" class="w-8 h-8 text-navy-300"></i>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-                <button title="Lihat"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="eye" class="w-4 h-4"></i>
-                </button>
-                <button title="Edit"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="pencil" class="w-4 h-4"></i>
-                </button>
-                <button title="Duplikat"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="copy" class="w-4 h-4"></i>
-                </button>
-                <button onclick="document.getElementById('modal-delete').classList.remove('hidden')" title="Hapus"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-            </div>
+            <h3 class="text-navy-900 font-semibold">Belum ada kelas</h3>
+            <p class="text-sm text-navy-400 mt-1">Kamu belum membuat kelas apapun. Mulai buat kelas pertamamu!</p>
         </div>
-
-        <!-- Course Item 3 — Draft -->
-        <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
-            <img src="https://picsum.photos/seed/react-course/240/160.jpg"
-                class="w-32 h-20 rounded-lg object-cover shrink-0 opacity-75" alt="">
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                    <span
-                        class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Draft</span>
-                    <span
-                        class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Development</span>
-                </div>
-                <h3 class="text-sm font-semibold text-navy-900 truncate">React.js untuk Pemula: Bangun
-                    Aplikasi Modern</h3>
-                <div class="flex items-center gap-4 mt-2">
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
-                            class="w-3 h-3"></i> 12/20 modul</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock"
-                            class="w-3 h-3"></i> 10 jam</span>
-                    <span class="text-xs text-amber-500 font-medium">Belum dipublikasi</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-                <button title="Lihat"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="eye" class="w-4 h-4"></i>
-                </button>
-                <button title="Edit"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="pencil" class="w-4 h-4"></i>
-                </button>
-                <button title="Duplikat"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="copy" class="w-4 h-4"></i>
-                </button>
-                <button onclick="document.getElementById('modal-delete').classList.remove('hidden')" title="Hapus"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Course Item 4 — Arsip -->
-        <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors opacity-60">
-            <img src="https://picsum.photos/seed/html-css-old/240/160.jpg"
-                class="w-32 h-20 rounded-lg object-cover shrink-0 grayscale" alt="">
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                    <span
-                        class="text-[10px] font-bold uppercase tracking-widest text-navy-400 bg-navy-100 px-2 py-0.5 rounded">Arsip</span>
-                    <span
-                        class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Development</span>
-                </div>
-                <h3 class="text-sm font-semibold text-navy-900 truncate line-through decoration-navy-300">
-                    HTML & CSS Fundamental 2023</h3>
-                <div class="flex items-center gap-4 mt-2">
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="users"
-                            class="w-3 h-3"></i> 210 siswa</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
-                            class="w-3 h-3"></i> 15 modul</span>
-                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="star"
-                            class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.5</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-                <button title="Pulihkan"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="archive-restore" class="w-4 h-4"></i>
-                </button>
-                <button title="Edit"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
-                    <i data-lucide="pencil" class="w-4 h-4"></i>
-                </button>
-                <button onclick="document.getElementById('modal-delete').classList.remove('hidden')"
-                    title="Hapus Permanen"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-
+        {% endfor %}
     </div>
-
     <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
     <div class="flex items-center justify-between">
-        <p class="text-xs text-navy-400">Menampilkan 1–4 dari 8 kelas</p>
+        <p class="text-xs text-navy-400">
+            Menampilkan {{ page_obj.start_index }}–{{ page_obj.end_index }} dari {{ page_obj.paginator.count }} kelas
+        </p>
         <div class="flex items-center gap-1">
-            <button
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:text-navy-500 transition-colors">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 transition-colors">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </a>
+            {% else %}
+            <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-200 cursor-not-allowed">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
             </button>
-            <button
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium bg-navy-900 text-white">1</button>
-            <button
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors">2</button>
-            <button
-                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-500 transition-colors">
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium bg-navy-900 text-white">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 transition-colors">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </a>
+            {% else %}
+            <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-200 cursor-not-allowed">
                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </button>
+            {% endif %}
+        </div>
+    </div>
+    {% elif page_obj.paginator.count > 0 %}
+    <div class="flex items-center justify-between">
+        <p class="text-xs text-navy-400">
+            Menampilkan {{ page_obj.paginator.count }} kelas
+        </p>
+    </div>
+    {% endif %}
+{% endblock content %}
+
+{% block modals %}
+    <!-- Create Course Modal -->
+    <div id="modal-create" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm transition-opacity" 
+             onclick="document.getElementById('modal-create').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <!-- Modal Header -->
+            <div class="px-8 py-5 border-b border-navy-50 flex items-center justify-between bg-white sticky top-0 z-10">
+                <div>
+                    <h2 class="text-xl font-bold text-navy-900">Buat Kelas Baru</h2>
+                    <p class="text-sm text-navy-400 mt-0.5">Isi detail kelas untuk mulai mengajar</p>
+                </div>
+                <button onclick="document.getElementById('modal-create').classList.add('hidden')"
+                    class="w-10 h-10 flex items-center justify-center rounded-xl text-navy-400 hover:text-navy-900 hover:bg-navy-50 transition-all">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form action="{% url 'course_create' %}" method="POST" enctype="multipart/form-data" class="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <!-- Basic Info Section -->
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="col-span-2 space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Judul Kelas</label>
+                            <input type="text" name="title" required placeholder="Contoh: Belajar UI/UX dari Dasar"
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all placeholder:text-navy-300">
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Kategori</label>
+                            <select name="category" required
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all appearance-none cursor-pointer">
+                                <option value="" disabled selected>Pilih Kategori</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Level</label>
+                            <select name="level" required
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all appearance-none cursor-pointer">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Harga (Rp)</label>
+                            <input type="number" name="price" required placeholder="0"
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all placeholder:text-navy-300">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Tipe Kelas</label>
+                            <div class="flex items-center gap-4 h-[50px]">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="is_online" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-navy-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-navy-900"></div>
+                                    <span class="ml-3 text-sm font-medium text-navy-700">Online</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-navy-900 ml-1">Deskripsi Singkat</label>
+                        <textarea name="description" rows="3" placeholder="Jelaskan apa yang akan dipelajari di kelas ini..."
+                            class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all placeholder:text-navy-300 resize-none"></textarea>
+                    </div>
+
+                    <!-- Thumbnail Section -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-navy-900 ml-1">Thumbnail Kelas</label>
+                        <div class="relative group">
+                            <input type="file" name="thumbnail" accept="image/*" required
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                onchange="previewImage(this)">
+                            <div id="thumbnail-placeholder" class="w-full h-32 border-2 border-dashed border-navy-100 rounded-2xl flex flex-col items-center justify-center gap-2 bg-navy-50/50 group-hover:bg-navy-50 transition-colors">
+                                <i data-lucide="upload-cloud" class="w-8 h-8 text-navy-300"></i>
+                                <span class="text-xs text-navy-400 font-medium">Klik atau drop gambar di sini</span>
+                            </div>
+                            <img id="thumbnail-preview" class="hidden w-full h-32 object-cover rounded-2xl border border-navy-100">
+                        </div>
+                    </div>
+
+                    <!-- Tags Section -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-navy-900 ml-1">Tags</label>
+                        <div class="flex flex-wrap gap-2 p-4 bg-navy-50 border border-navy-100 rounded-xl">
+                            {% for tag in tags %}
+                            <label class="flex items-center gap-2 px-3 py-1.5 bg-white border border-navy-100 rounded-lg cursor-pointer hover:border-navy-300 transition-all group">
+                                <input type="checkbox" name="tags" value="{{ tag.id }}" class="w-4 h-4 rounded border-navy-200 text-navy-900 focus:ring-navy-900/20">
+                                <span class="text-xs font-medium text-navy-600 group-hover:text-navy-900">{{ tag.name }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-3 pt-8">
+                    <button type="button" onclick="document.getElementById('modal-create').classList.add('hidden')"
+                        class="px-6 py-2.5 text-sm font-semibold text-navy-500 hover:text-navy-700 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="px-8 py-2.5 bg-navy-900 hover:bg-navy-950 text-white text-sm font-semibold rounded-xl shadow-lg shadow-navy-900/10 transition-all transform active:scale-[0.98]">
+                        Simpan Kelas
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-</div>
-{% endblock content %}
+    <!-- Edit Course Modal -->
+    <div id="modal-edit" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm transition-opacity" 
+             onclick="document.getElementById('modal-edit').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <!-- Modal Header -->
+            <div class="px-8 py-5 border-b border-navy-50 flex items-center justify-between bg-white sticky top-0 z-10">
+                <div>
+                    <h2 class="text-xl font-bold text-navy-900">Edit Kelas</h2>
+                    <p class="text-sm text-navy-400 mt-0.5">Perbarui informasi detail kelas Anda</p>
+                </div>
+                <button onclick="document.getElementById('modal-edit').classList.add('hidden')"
+                    class="w-10 h-10 flex items-center justify-center rounded-xl text-navy-400 hover:text-navy-900 hover:bg-navy-50 transition-all">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="edit-course-form" method="POST" enctype="multipart/form-data" class="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <!-- Basic Info Section -->
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="col-span-2 space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Judul Kelas</label>
+                            <input type="text" name="title" id="edit-title" required
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all">
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Kategori</label>
+                            <select name="category" id="edit-category" required
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all appearance-none cursor-pointer">
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Level</label>
+                            <select name="level" id="edit-level" required
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all appearance-none cursor-pointer">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Harga (Rp)</label>
+                            <input type="number" name="price" id="edit-price" required
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Tipe Kelas</label>
+                            <div class="flex items-center gap-4 h-[50px]">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="is_online" id="edit-is-online" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-navy-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-navy-900"></div>
+                                    <span class="ml-3 text-sm font-medium text-navy-700">Online</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-navy-900 ml-1">Deskripsi Singkat</label>
+                        <textarea name="description" id="edit-description" rows="3"
+                            class="w-full px-4 py-3 bg-navy-50 border border-navy-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all resize-none"></textarea>
+                    </div>
+
+                    <!-- Thumbnail Section -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-navy-900 ml-1">Thumbnail Kelas (Biarkan kosong jika tidak ingin mengubah)</label>
+                        <div class="relative group">
+                            <input type="file" name="thumbnail" accept="image/*"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                onchange="previewEditImage(this)">
+                            <div id="edit-thumbnail-placeholder" class="w-full h-32 border-2 border-dashed border-navy-100 rounded-2xl flex flex-col items-center justify-center gap-2 bg-navy-50/50 group-hover:bg-navy-50 transition-colors">
+                                <i data-lucide="upload-cloud" class="w-8 h-8 text-navy-300"></i>
+                                <span class="text-xs text-navy-400 font-medium">Klik atau drop gambar baru</span>
+                            </div>
+                            <img id="edit-thumbnail-preview" class="hidden w-full h-32 object-cover rounded-2xl border border-navy-100">
+                        </div>
+                    </div>
+
+                    <!-- Tags Section -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-navy-900 ml-1">Tags</label>
+                        <div class="flex flex-wrap gap-2 p-4 bg-navy-50 border border-navy-100 rounded-xl">
+                            {% for tag in tags %}
+                            <label class="flex items-center gap-2 px-3 py-1.5 bg-white border border-navy-100 rounded-lg cursor-pointer hover:border-navy-300 transition-all group">
+                                <input type="checkbox" name="tags" value="{{ tag.id }}" class="edit-tag-checkbox w-4 h-4 rounded border-navy-200 text-navy-900 focus:ring-navy-900/20">
+                                <span class="text-xs font-medium text-navy-600 group-hover:text-navy-900">{{ tag.name }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-3 pt-8">
+                    <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
+                        class="px-6 py-2.5 text-sm font-semibold text-navy-500 hover:text-navy-700 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="px-8 py-2.5 bg-navy-900 hover:bg-navy-950 text-white text-sm font-semibold rounded-xl shadow-lg shadow-navy-900/10 transition-all transform active:scale-[0.98]">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(input) {
+            const placeholder = document.getElementById('thumbnail-placeholder');
+            const preview = document.getElementById('thumbnail-preview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewEditImage(input) {
+            const placeholder = document.getElementById('edit-thumbnail-placeholder');
+            const preview = document.getElementById('edit-thumbnail-preview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function openEditModal(btn) {
+            const id = btn.getAttribute('data-id');
+            const title = btn.getAttribute('data-title');
+            const category = btn.getAttribute('data-category');
+            const level = btn.getAttribute('data-level');
+            const price = btn.getAttribute('data-price');
+            const isOnline = btn.getAttribute('data-is-online') === 'true';
+            const description = btn.getAttribute('data-description');
+            const thumbnail = btn.getAttribute('data-thumbnail');
+            const tags = JSON.parse(btn.getAttribute('data-tags'));
+
+            const form = document.getElementById('edit-course-form');
+            form.action = `/instructor/courses/edit/${id}/`;
+
+            document.getElementById('edit-title').value = title;
+            document.getElementById('edit-category').value = category;
+            document.getElementById('edit-level').value = level;
+            document.getElementById('edit-price').value = price;
+            document.getElementById('edit-is-online').checked = isOnline;
+            document.getElementById('edit-description').value = description;
+
+            const preview = document.getElementById('edit-thumbnail-preview');
+            const placeholder = document.getElementById('edit-thumbnail-placeholder');
+            if (thumbnail) {
+                preview.src = thumbnail;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                preview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+
+            // Reset and Set Tags
+            const checkboxes = document.querySelectorAll('.edit-tag-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = tags.includes(parseInt(cb.value));
+            });
+
+            document.getElementById('modal-edit').classList.remove('hidden');
+        }
+    </script>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+        
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes zoom-in {
+            from { opacity: 0; transform: scale(0.95) translate(-50%, -50%); }
+            to { opacity: 1; transform: scale(1) translate(-50%, -50%); }
+        }
+        .animate-in {
+            animation: fade-in 0.2s ease-out;
+        }
+        .zoom-in {
+            animation: zoom-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+{% endblock modals %}

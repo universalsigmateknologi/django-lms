@@ -1,11 +1,12 @@
+# untuk sementara semuanya di redirect ke course_preview, nanti bisa disesuaikan lagi sesuai kebutuhan
 def redirect_user_by_role(user):
     if user.role == 'admin':
-        return 'dashboard_admin'
+        return 'course_preview'
     elif user.role == 'instructor':
-        return 'dashboard_instructor'
+        return 'instructor_course_list'
     elif user.role == 'staff':
-        return 'dashboard_staff'
+        return 'course_preview'
     elif user.role == 'student':
-        return 'dashboard_student'
+        return 'course_preview'
     else:
         return 'login'

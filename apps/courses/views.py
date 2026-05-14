@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from apps.accounts.decorators import role_required
 from .models import Course, Category, Tag
 from django.db.models import Q, Count, Sum, ExpressionWrapper, FloatField, F
 from django.db.models.functions import Coalesce
@@ -161,3 +162,116 @@ def course_detail_view(request, slug):
         'OrderStatus': OrderStatus,
     }
     return render(request, 'courses/detail.html', context)
+
+@login_required
+@role_required(allowed_roles=['instructor'])
+def instructor_course_list(request):
+    courses_list = Course.objects.filter(instructor=request.user).annotate(
+        total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
+        student_count_ann=Count('enrollments', distinct=True),
+        module_count=Count('modules', distinct=True)
+    ).annotate(
+        total_hours_ann=ExpressionWrapper(
+            F('total_duration_sec') / 3600.0,
+            output_field=FloatField()
+        )
+    ).order_by('-created_at')
+
+    # Status counts
+    active_count = Course.objects.filter(instructor=request.user, is_published=True).count()
+    draft_count = Course.objects.filter(instructor=request.user, is_published=False).count()
+    total_count = Course.objects.filter(instructor=request.user).count()
+
+    # Filter by status if requested
+    status_filter = request.GET.get('status', 'all')
+    if status_filter == 'active':
+        courses_list = courses_list.filter(is_published=True)
+    elif status_filter == 'draft':
+        courses_list = courses_list.filter(is_published=False)
+
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        courses_list = courses_list.filter(title__icontains=search_query)
+
+    # Pagination
+    paginator = Paginator(courses_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'total_count': total_count,
+        'active_count': active_count,
+        'draft_count': draft_count,
+        'status_filter': status_filter,
+        'search_query': search_query,
+        'categories': Category.objects.all(),
+        'tags': Tag.objects.all(),
+        'menu': 'instructor_courses',
+    }
+    return render(request, 'courses/instructor/course_list.html', context)
+
+@login_required
+@role_required(allowed_roles=['instructor'])
+def course_create_view(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        category_id = request.POST.get('category')
+        level = request.POST.get('level')
+        price = request.POST.get('price')
+        is_online = request.POST.get('is_online') == 'on'
+        description = request.POST.get('description')
+        thumbnail = request.FILES.get('thumbnail')
+        tag_ids = request.POST.getlist('tags')
+
+        category = get_object_or_404(Category, id=category_id)
+        
+        course = Course.objects.create(
+            instructor=request.user,
+            title=title,
+            category=category,
+            level=level,
+            price=price,
+            is_online=is_online,
+            description=description,
+            thumbnail=thumbnail,
+            is_published=False # Default to draft
+        )
+        
+        if tag_ids:
+            course.tags.set(tag_ids)
+            
+        return redirect('instructor_course_list')
+    
+    return redirect('instructor_course_list')
+
+@login_required
+@role_required(allowed_roles=['instructor'])
+def course_edit_view(request, pk):
+    course = get_object_or_404(Course, pk=pk, instructor=request.user)
+    
+    if request.method == 'POST':
+        course.title = request.POST.get('title')
+        category_id = request.POST.get('category')
+        course.level = request.POST.get('level')
+        course.price = request.POST.get('price')
+        course.is_online = request.POST.get('is_online') == 'on'
+        course.description = request.POST.get('description')
+        
+        thumbnail = request.FILES.get('thumbnail')
+        if thumbnail:
+            course.thumbnail = thumbnail
+            
+        course.category = get_object_or_404(Category, id=category_id)
+        course.save()
+        
+        tag_ids = request.POST.getlist('tags')
+        if tag_ids:
+            course.tags.set(tag_ids)
+        else:
+            course.tags.clear()
+            
+        return redirect('instructor_course_list')
+    
+    return redirect('instructor_course_list')

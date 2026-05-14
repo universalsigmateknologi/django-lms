@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Instruktur — SigmaCourse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            300: '#9fb3c8',
+                            400: '#829ab1',
+                            500: '#627d98',
+                            600: '#486581',
+                            700: '#334e68',
+                            800: '#243b53',
+                            900: '#102a43',
+                            950: '#0a1929',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="bg-navy-50 font-sans text-navy-900 antialiased">
+
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-navy-100 flex flex-col shrink-0">
+            <!-- Brand -->
+            <div class="h-16 flex items-center gap-2.5 px-6 border-b border-navy-100">
+                <div class="w-8 h-8 rounded-lg bg-navy-900 flex items-center justify-center">
+                    <i data-lucide="graduation-cap" class="w-4 h-4 text-white"></i>
+                </div>
+                <span class="text-lg font-bold tracking-tight text-navy-900">SigmaCourse</span>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex-1 px-4 py-5 space-y-1">
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-navy-900 text-white text-sm font-medium">
+                    <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
+                    Dashboard
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="book-open" class="w-[18px] h-[18px]"></i>
+                    Kelas Saya
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="calendar-days" class="w-[18px] h-[18px]"></i>
+                    Jadwal
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="message-square" class="w-[18px] h-[18px]"></i>
+                    Pesan
+                    <span
+                        class="ml-auto text-xs bg-navy-900 text-white w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="bar-chart-3" class="w-[18px] h-[18px]"></i>
+                    Laporan
+                </a>
+
+                <div class="pt-4 mt-4 border-t border-navy-100">
+                    <a href="#"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                        <i data-lucide="settings" class="w-[18px] h-[18px]"></i>
+                        Pengaturan
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                        <i data-lucide="life-buoy" class="w-[18px] h-[18px]"></i>
+                        Bantuan
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Profile -->
+            <div class="px-4 py-4 border-t border-navy-100">
+                <div class="flex items-center gap-3 px-2">
+                    <img src="https://picsum.photos/seed/instructor-adi/80/80.jpg"
+                        class="w-9 h-9 rounded-full object-cover" alt="Avatar">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-navy-900 truncate">Adi Nugraha</p>
+                        <p class="text-xs text-navy-400 truncate">Instruktur</p>
+                    </div>
+                    <button class="text-navy-400 hover:text-navy-700 transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+
+        <!-- Main -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Top Bar -->
+            <header
+                class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1.5 text-xs text-navy-400">
+                        <span>Dashboard</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        <span class="text-navy-900 font-medium">Kelas Saya</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <i data-lucide="search"
+                            class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-navy-300"></i>
+                        <input type="text" placeholder="Cari kelas..."
+                            class="pl-9 pr-4 py-2 text-sm bg-navy-50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 w-56 placeholder:text-navy-300 transition-all">
+                    </div>
+                    <button
+                        class="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+                        <i data-lucide="bell" class="w-[18px] h-[18px] text-navy-500"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                </div>
+            </header>
+
+
+            <div class="p-8 space-y-6">
+
+                <!-- Page Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-xl font-bold text-navy-900">Kelas Saya</h1>
+                        <p class="text-sm text-navy-400 mt-0.5">Kelola semua kelas yang telah kamu buat</p>
+                    </div>
+                    <button onclick="document.getElementById('modal-create').classList.remove('hidden')"
+                        class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Buat Kelas Baru
+                    </button>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex items-center gap-1 bg-white border border-navy-100 rounded-lg p-1 w-fit">
+                    <button class="text-sm font-medium px-4 py-2 rounded-md bg-navy-900 text-white">Semua <span
+                            class="ml-1 text-xs opacity-70">8</span></button>
+                    <button
+                        class="text-sm font-medium px-4 py-2 rounded-md text-navy-500 hover:text-navy-700 hover:bg-navy-50 transition-colors">Aktif
+                        <span class="ml-1 text-xs opacity-60">5</span></button>
+                    <button
+                        class="text-sm font-medium px-4 py-2 rounded-md text-navy-500 hover:text-navy-700 hover:bg-navy-50 transition-colors">Draft
+                        <span class="ml-1 text-xs opacity-60">2</span></button>
+                </div>
+
+                <!-- Course List -->
+                <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100">
+
+                    <!-- Course Item 1 -->
+                    <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
+                        <img src="https://picsum.photos/seed/uiux-course/240/160.jpg"
+                            class="w-32 h-20 rounded-lg object-cover shrink-0" alt="">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span
+                                    class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Aktif</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Design</span>
+                            </div>
+                            <h3 class="text-sm font-semibold text-navy-900 truncate">UI/UX Design: Dari Nol Hingga
+                                Portfolio</h3>
+                            <div class="flex items-center gap-4 mt-2">
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="users"
+                                        class="w-3 h-3"></i> 482 siswa</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
+                                        class="w-3 h-3"></i> 24 modul</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="star"
+                                        class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.9</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock"
+                                        class="w-3 h-3"></i> 18 jam</span>
+                            </div>
+                        </div>
+                        <!-- Actions -->
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button title="Lihat"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                            <button title="Edit"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                            </button>
+                            <button title="Duplikat"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="document.getElementById('modal-delete').classList.remove('hidden')"
+                                title="Hapus"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Course Item 2 -->
+                    <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
+                        <img src="https://picsum.photos/seed/figma-mastery/240/160.jpg"
+                            class="w-32 h-20 rounded-lg object-cover shrink-0" alt="">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span
+                                    class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Aktif</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Design</span>
+                            </div>
+                            <h3 class="text-sm font-semibold text-navy-900 truncate">Figma Mastery: Auto Layout &
+                                Component</h3>
+                            <div class="flex items-center gap-4 mt-2">
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="users"
+                                        class="w-3 h-3"></i> 356 siswa</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
+                                        class="w-3 h-3"></i> 18 modul</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="star"
+                                        class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.8</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock"
+                                        class="w-3 h-3"></i> 12 jam</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button title="Lihat"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                            <button title="Edit"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                            </button>
+                            <button title="Duplikat"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="document.getElementById('modal-delete').classList.remove('hidden')"
+                                title="Hapus"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Course Item 3 — Draft -->
+                    <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
+                        <img src="https://picsum.photos/seed/react-course/240/160.jpg"
+                            class="w-32 h-20 rounded-lg object-cover shrink-0 opacity-75" alt="">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span
+                                    class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Draft</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Development</span>
+                            </div>
+                            <h3 class="text-sm font-semibold text-navy-900 truncate">React.js untuk Pemula: Bangun
+                                Aplikasi Modern</h3>
+                            <div class="flex items-center gap-4 mt-2">
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
+                                        class="w-3 h-3"></i> 12/20 modul</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock"
+                                        class="w-3 h-3"></i> 10 jam</span>
+                                <span class="text-xs text-amber-500 font-medium">Belum dipublikasi</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button title="Lihat"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                            <button title="Edit"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                            </button>
+                            <button title="Duplikat"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="document.getElementById('modal-delete').classList.remove('hidden')"
+                                title="Hapus"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Course Item 4 — Arsip -->
+                    <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors opacity-60">
+                        <img src="https://picsum.photos/seed/html-css-old/240/160.jpg"
+                            class="w-32 h-20 rounded-lg object-cover shrink-0 grayscale" alt="">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span
+                                    class="text-[10px] font-bold uppercase tracking-widest text-navy-400 bg-navy-100 px-2 py-0.5 rounded">Arsip</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">Development</span>
+                            </div>
+                            <h3 class="text-sm font-semibold text-navy-900 truncate line-through decoration-navy-300">
+                                HTML & CSS Fundamental 2023</h3>
+                            <div class="flex items-center gap-4 mt-2">
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="users"
+                                        class="w-3 h-3"></i> 210 siswa</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers"
+                                        class="w-3 h-3"></i> 15 modul</span>
+                                <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="star"
+                                        class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.5</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button title="Pulihkan"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="archive-restore" class="w-4 h-4"></i>
+                            </button>
+                            <button title="Edit"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="document.getElementById('modal-delete').classList.remove('hidden')"
+                                title="Hapus Permanen"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex items-center justify-between">
+                    <p class="text-xs text-navy-400">Menampilkan 1–4 dari 8 kelas</p>
+                    <div class="flex items-center gap-1">
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:text-navy-500 transition-colors">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        </button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium bg-navy-900 text-white">1</button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors">2</button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-500 transition-colors">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal: Buat Kelas Baru -->
+            <div id="modal-create" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm"
+                    onclick="document.getElementById('modal-create').classList.add('hidden')"></div>
+                <div class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-lg p-6 mx-4">
+                    <div class="flex items-center justify-between mb-5">
+                        <h2 class="text-base font-semibold text-navy-900">Buat Kelas Baru</h2>
+                        <button onclick="document.getElementById('modal-create').classList.add('hidden')"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+                            <i data-lucide="x" class="w-4 h-4 text-navy-400"></i>
+                        </button>
+                    </div>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-navy-700 mb-1.5">Nama Kelas</label>
+                            <input type="text" placeholder="Contoh: React.js untuk Pemula"
+                                class="w-full px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 placeholder:text-navy-300 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-navy-700 mb-1.5">Kategori</label>
+                            <select
+                                class="w-full px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 text-navy-500 transition-all appearance-none bg-white">
+                                <option>Pilih kategori</option>
+                                <option>Design</option>
+                                <option>Development</option>
+                                <option>Marketing</option>
+                                <option>Data Science</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-navy-700 mb-1.5">Deskripsi Singkat</label>
+                            <textarea rows="3" placeholder="Jelaskan secara singkat tentang kelas ini..."
+                                class="w-full px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 placeholder:text-navy-300 resize-none transition-all"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-navy-700 mb-1.5">Thumbnail</label>
+                            <div
+                                class="border-2 border-dashed border-navy-200 rounded-lg p-6 flex flex-col items-center gap-2 hover:border-navy-400 transition-colors cursor-pointer">
+                                <i data-lucide="upload-cloud" class="w-8 h-8 text-navy-300"></i>
+                                <p class="text-xs text-navy-400">Klik atau drag & drop gambar</p>
+                                <p class="text-[10px] text-navy-300">PNG, JPG max 2MB</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <button type="button"
+                                onclick="document.getElementById('modal-create').classList.add('hidden')"
+                                class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+                            <button type="button"
+                                class="flex-1 py-2.5 text-sm font-medium text-white bg-navy-900 hover:bg-navy-950 rounded-lg transition-colors">Simpan
+                                Draft</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal: Hapus -->
+            <div id="modal-delete" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm"
+                    onclick="document.getElementById('modal-delete').classList.add('hidden')"></div>
+                <div class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-sm p-6 mx-4">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+                            <i data-lucide="alert-triangle" class="w-6 h-6 text-red-500"></i>
+                        </div>
+                        <h2 class="text-base font-semibold text-navy-900 mb-1">Hapus Kelas?</h2>
+                        <p class="text-sm text-navy-400 leading-relaxed mb-5">Kelas <span
+                                class="font-medium text-navy-600">"UI/UX Design: Dari Nol Hingga Portfolio"</span> akan
+                            dihapus secara permanen. Tindakan ini tidak bisa dibatalkan.</p>
+                        <div class="flex items-center gap-3 w-full">
+                            <button onclick="document.getElementById('modal-delete').classList.add('hidden')"
+                                class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+                            <button onclick="document.getElementById('modal-delete').classList.add('hidden')"
+                                class="flex-1 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">Ya,
+                                Hapus</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

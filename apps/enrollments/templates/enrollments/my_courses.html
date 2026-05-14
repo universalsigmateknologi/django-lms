@@ -27,6 +27,11 @@
     .dropdown-menu.open {
         display: block;
     }
+
+    .course-card.z-active {
+        z-index: 50;
+        position: relative;
+    }
 </style>
 <!-- ========== COURSES GRID ========== -->
 <div class="flex-1">
@@ -95,7 +100,7 @@
 
             <!-- Dynamic Course Cards -->
             {% for enrollment in enrollments %}
-            <div class="course-card bg-white border border-navy-100 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 group"
+            <div class="course-card bg-white border border-navy-100 rounded-xl hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 group relative"
                 data-status="{% if enrollment.is_active %}progress{% elif enrollment.is_completed %}done{% else %}archived{% endif %}" 
                 data-title="{{ enrollment.course.title|lower }}" 
                 data-progress="{{ enrollment.progress_pct|floatformat:0 }}"
@@ -356,13 +361,21 @@
     function toggleDropdown(e, id) {
         e.stopPropagation();
         const dd = document.getElementById(id);
+        const card = dd.closest('.course-card');
         const isOpen = dd.classList.contains('open');
-        // Close all
+        
+        // Close all dropdowns and reset z-indexes
         document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
-        if (!isOpen) dd.classList.add('open');
+        document.querySelectorAll('.course-card').forEach(c => c.classList.remove('z-active'));
+        
+        if (!isOpen) {
+            dd.classList.add('open');
+            card.classList.add('z-active');
+        }
     }
     document.addEventListener('click', () => {
         document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('open'));
+        document.querySelectorAll('.course-card').forEach(c => c.classList.remove('z-active'));
     });
 
     // ===== Archive =====

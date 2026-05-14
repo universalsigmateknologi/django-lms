@@ -101,7 +101,7 @@
             <!-- Dynamic Course Cards -->
             {% for enrollment in enrollments %}
             <div class="course-card bg-white border border-navy-100 rounded-xl hover:shadow-lg hover:shadow-navy-900/5 hover:border-navy-200 group relative"
-                data-status="{% if enrollment.is_active %}progress{% elif enrollment.is_completed %}done{% else %}archived{% endif %}" 
+                data-status="{% if enrollment.is_active or not enrollment.course.is_lesson_finished %}progress{% elif enrollment.is_completed %}done{% else %}archived{% endif %}" 
                 data-title="{{ enrollment.course.title|lower }}" 
                 data-progress="{{ enrollment.progress_pct|floatformat:0 }}"
                 data-recent="{{ forloop.counter }}">
@@ -137,7 +137,7 @@
 
                     <!-- Badge -->
                     <div class="absolute top-2.5 left-2.5">
-                        {% if enrollment.is_active %}
+                        {% if enrollment.is_active or not enrollment.course.is_lesson_finished %}
                             <div class="flex items-center gap-1.5 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded">
                                 <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                                 Berlangsung
@@ -165,12 +165,12 @@
                     </h3>
                     <p class="text-[11px] text-navy-400 mt-0.5">
                         {{ enrollment.course.instructor.get_full_name|default:enrollment.course.instructor.username }}
-                        {% if enrollment.is_completed %}
+                        {% if enrollment.is_completed and enrollment.course.is_lesson_finished %}
                             · Diselesaikan {{ enrollment.completed_at|date:"d M Y" }}
                         {% endif %}
                     </p>
 
-                    {% if enrollment.is_active %}
+                    {% if enrollment.is_active or not enrollment.course.is_lesson_finished %}
                         <!-- Current lesson -->
                         <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
                             <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Sedang dipelajari</p>
@@ -182,8 +182,7 @@
                                 {% endif %}
                             </p>
                         </div>
-                    {% endif %}
-                    {% if enrollment.is_completed %}
+                    {% elif enrollment.is_completed %}
                         <!-- Current lesson -->
                         <div class="mt-3 px-3 py-2 bg-navy-50 rounded-lg">
                             <p class="text-[10px] text-navy-400 font-medium uppercase tracking-wider">Sudah Dipelajari</p>
@@ -215,7 +214,7 @@
 
                     <!-- Action -->
                     <div class="mt-3 flex gap-2">
-                        {% if enrollment.is_active %}
+                        {% if enrollment.is_active or not enrollment.course.is_lesson_finished %}
                             {% if enrollment.latest_progress %}
                                 <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.latest_progress.lesson.id %}" class="flex-1 block text-center text-sm font-semibold bg-navy-900 hover:bg-navy-950 text-white py-2.5 rounded-lg">
                                     Lanjutkan Belajar
@@ -229,7 +228,7 @@
                                     Belum ada materi
                                 </span>
                             {% endif %}
-                        {% elif enrollment.is_completed %}
+                        {% elif enrollment.is_completed and enrollment.course.is_lesson_finished %}
                             <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.first_lesson.id %}" class="flex-1 text-center text-sm font-semibold bg-navy-50 py-2.5 rounded-lg text-navy-700 hover:bg-navy-100">
                                 Pelajari Lagi
                             </a>

@@ -164,6 +164,9 @@
                         <input type="hidden" name="level" value="{{ lev }}">
                     {% endfor %}
                     <input type="hidden" name="sort" value="{{ sort_by }}">
+                    {% if selected_is_online %}
+                        <input type="hidden" name="is_online" value="{{ selected_is_online }}">
+                    {% endif %}
                 </form>
 
                 <!-- Mobile filter toggle -->
@@ -233,8 +236,12 @@
                     <div class="p-4">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="text-[10px] font-semibold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded">{{ course.category.name }}</span>
-                            <span
-                                class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">{{ course.get_level_display }}</span>
+                            <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">{{ course.get_level_display }}</span>
+                            {% if course.is_online %}
+                            <span class="text-[10px] font-semibold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">Online</span>
+                            {% else %}
+                            <span class="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Offline</span>
+                            {% endif %}
                         </div>
                         <h3 class="text-sm font-bold text-navy-900 group-hover:underline leading-snug line-clamp-2">
                             {{ course.title }}</h3>
@@ -382,13 +389,13 @@
         });
 
         // Collect non-default radio values
-        ['price', 'rating'].forEach(name => {
+        ['price', 'rating', 'is_online'].forEach(name => {
             const checked = document.querySelector(`#sidebar input[name="${name}"]:checked`);
             if (checked) {
                 const label = checked.closest('label');
                 const text = label?.querySelector('span')?.textContent?.trim() ||
                     label?.querySelector('.text-sm')?.textContent?.trim();
-                if (text && text !== 'Semua' && text !== 'Semua Harga') {
+                if (text && text !== 'Semua' && text !== 'Semua Harga' && text !== 'Semua Tipe') {
                     activeTags.push({ text, type: 'radio', name, el: checked });
                 }
             }

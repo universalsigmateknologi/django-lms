@@ -60,7 +60,7 @@ class CourseAdmin(admin.ModelAdmin):
     fieldsets = (
         (_("Informasi Kursus"), {
             "fields": (
-                "instructor", "title", "slug",
+                "instructor", "title", "description", "slug",
                 "category", "tags", "level",
             ),
         }),

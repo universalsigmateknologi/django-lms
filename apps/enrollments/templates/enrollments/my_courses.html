@@ -116,20 +116,10 @@
                     {% if enrollment.latest_progress %}
                         <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.latest_progress.lesson.id %}"
                             class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 z-10">
-                            <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30">
-                                <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
-                            </div>
                         </a>
                     {% elif enrollment.first_lesson %}
                         <a href="{% url 'enrollments:learn' enrollment.course.slug enrollment.first_lesson.id %}"
                             class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 z-10">
-                            <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30">
-                                <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
-                            </div>
                         </a>
                     {% endif %}
 

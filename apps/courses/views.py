@@ -72,6 +72,13 @@ def course_list_view(request):
                 duration_q |= Q(total_duration_sec__gt=20*3600)
         courses = courses.filter(duration_q)
 
+    # Filter by Type (Online/Offline)
+    is_online_filter = request.GET.get('is_online', 'all')
+    if is_online_filter == 'online':
+        courses = courses.filter(is_online=True)
+    elif is_online_filter == 'offline':
+        courses = courses.filter(is_online=False)
+
     # Sort
     sort_by = request.GET.get('sort', 'popular')
     if sort_by == 'newest':
@@ -94,6 +101,7 @@ def course_list_view(request):
         'selected_levels': levels,
         'selected_price': price_filter,
         'selected_durations': durations,
+        'selected_is_online': is_online_filter,
         'search_query': search_query,
         'sort_by': sort_by,
         'course_count': courses.count(),

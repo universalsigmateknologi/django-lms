@@ -65,7 +65,7 @@ class CourseAdmin(admin.ModelAdmin):
             ),
         }),
         (_("Harga & Status"), {
-            "fields": ("price", "is_published", "is_lesson_finished"),
+            "fields": ("price", "is_published", "is_lesson_finished", "is_online"),
         }),
         (_("Thumbnail"), {
             "fields": ("thumbnail", "thumbnail_preview"),

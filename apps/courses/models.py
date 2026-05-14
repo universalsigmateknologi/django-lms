@@ -42,6 +42,7 @@ class Course(models.Model):
     is_published = models.BooleanField(default=False)
     thumbnail = models.ImageField(upload_to='course_thumbnails/')
     is_lesson_finished = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

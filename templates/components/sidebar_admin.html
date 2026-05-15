@@ -42,15 +42,22 @@
     <!-- Profile -->
     <div class="px-4 py-4 border-t border-navy-100">
         <div class="flex items-center gap-3 px-2">
-            <img src="https://picsum.photos/seed/instructor-adi/80/80.jpg" class="w-9 h-9 rounded-full object-cover"
-                alt="Avatar">
+            {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" class="w-9 h-9 rounded-full object-cover" alt="Avatar">
+            {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=0D1B3E&color=fff"
+                class="w-9 h-9 rounded-full object-cover" alt="Avatar">
+            {% endif %}
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-navy-900 truncate">Adi Nugraha</p>
-                <p class="text-xs text-navy-400 truncate">Instruktur</p>
+                <p class="text-sm font-semibold text-navy-900 truncate">{{ user.username }}</p>
+                <p class="text-xs text-navy-400 truncate">{{ user.get_role_display }}</p>
             </div>
-            <button class="text-navy-400 hover:text-navy-700 transition-colors">
-                <i data-lucide="log-out" class="w-4 h-4"></i>
-            </button>
+            <form action="{% url 'logout' %}" method="post" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="text-navy-400 hover:text-navy-700 transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+            </form>
         </div>
     </div>
 </aside>

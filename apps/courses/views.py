@@ -348,5 +348,36 @@ def module_create_view(request, course_id):
         
     return redirect('instructor_module_list', course_id=course.id)
 
+@login_required
+@role_required(allowed_roles=['instructor'])
+def module_edit_view(request, pk):
+    module = get_object_or_404(Module, pk=pk, course__instructor=request.user)
+    
+    if request.method == 'POST':
+        module.title = request.POST.get('title')
+        module.order = request.POST.get('order')
+        module.save()
+        return redirect('instructor_module_list', course_id=module.course.id)
+        
+    return redirect('instructor_module_list', course_id=module.course.id)
 
+@login_required
+@role_required(allowed_roles=['instructor'])
+def module_delete_view(request, pk):
+    module = get_object_or_404(Module, pk=pk, course__instructor=request.user)
+    course_id = module.course.id
+    
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        if request.user.check_password(password):
+            module.delete()
+            # Reorder remaining modules? Maybe not necessary if we allow gaps, 
+            # but let's keep it simple for now.
+            return redirect('instructor_module_list', course_id=course_id)
+        else:
+            # Handle incorrect password - maybe with a message
+            from django.contrib import messages
+            messages.error(request, 'Password salah. Modul gagal dihapus.')
+            
+    return redirect('instructor_module_list', course_id=course_id)
 

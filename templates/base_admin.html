@@ -27,7 +27,20 @@
 
       <!-- Content -->
       <div class="p-8 space-y-8">
-        <!-- container -->
+         {% if messages %}
+            <div class="fixed top-4 right-4 z-[100] space-y-2">
+               {% for message in messages %}
+                  <div class="px-4 py-3 rounded-xl shadow-lg border {% if message.tags == 'error' %}bg-red-50 border-red-100 text-red-600{% else %}bg-emerald-50 border-emerald-100 text-emerald-600{% endif %} flex items-center gap-3">
+                     <i data-lucide="{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}" class="w-5 h-5"></i>
+                     <span class="text-sm font-medium">{{ message }}</span>
+                     <button onclick="this.parentElement.remove()" class="ml-2 hover:opacity-70 transition-opacity">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                     </button>
+                  </div>
+               {% endfor %}
+            </div>
+         {% endif %}
+         <!-- container -->
          {% block content %}
             
          {% endblock content %}

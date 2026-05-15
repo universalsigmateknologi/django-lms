@@ -1,187 +1,155 @@
 {% extends 'base_admin.html' %}
+
 {% block topbar %}
+<!-- Top Bar -->
 <header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
     <div class="flex items-center gap-3">
-        <a href="{% url 'instructor_module_list' module.course.id %}" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
-            <i data-lucide="arrow-left" class="w-4 h-4 text-navy-500"></i>
-        </a>
         <div class="flex items-center gap-1.5 text-xs text-navy-400">
             <a href="{% url 'instructor_course_list' %}" class="hover:text-navy-900 transition-colors">Kelas Saya</a>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
             <a href="{% url 'instructor_module_list' module.course.id %}" class="hover:text-navy-900 transition-colors">{{ module.course.title }}</a>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-navy-900 font-medium">{{ module.title }}</span>
+            <span class="text-navy-900 font-medium">Materi</span>
         </div>
     </div>
-
-    <div class="flex items-center gap-2">
-        <button onclick="document.getElementById('modal-lesson').classList.remove('hidden')"
-            class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            Tambah Materi
+    <div class="flex items-center gap-3">
+        <form action="" method="GET" class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-navy-300"></i>
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Cari materi..."
+                class="pl-9 pr-4 py-2 text-sm bg-navy-50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 w-56 placeholder:text-navy-300 transition-all">
+        </form>
+        <button class="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+            <i data-lucide="bell" class="w-[18px] h-[18px] text-navy-500"></i>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
     </div>
 </header>
 {% endblock topbar %}
+
 {% block content %}
-<!-- Page Title -->
-<div class="flex items-center justify-between">
-    <div>
-        <div class="flex items-center gap-2.5 mb-1">
-            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <i data-lucide="folder" class="w-4 h-4 text-blue-500"></i>
+    <!-- Page Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'instructor_module_list' module.course.id %}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-navy-100 text-navy-400 hover:text-navy-900 hover:border-navy-200 transition-all shadow-sm">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </a>
+            <div>
+                <h1 class="text-xl font-bold text-navy-900">Daftar Materi</h1>
+                <p class="text-sm text-navy-400 mt-0.5">{{ module.title }}</p>
             </div>
-            <h1 class="text-xl font-bold text-navy-900">{{ module.title }}</h1>
         </div>
-        <p class="text-sm text-navy-400 ml-[42px]">Modul {{ module.order }} · {{ page_obj.paginator.count }} materi</p>
-
-    </div>
-</div>
-
-<!-- Filter Bar -->
-<div class="flex items-center gap-2 flex-wrap">
-    <div class="relative" id="filter-type-wrapper">
-        <button onclick="toggleFilter('filter-type')"
-            class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
-            <span>Jenis</span>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+        <button onclick="document.getElementById('modal-create-lesson').classList.remove('hidden')"
+            class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Tambah Materi
         </button>
-        <div id="filter-type"
-            class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-48 z-30">
-            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
-                <input type="checkbox" checked
-                    class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
-                <span class="text-sm text-navy-700">Semua Jenis</span>
-            </label>
-            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
-                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
-                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="play-circle"
-                        class="w-3.5 h-3.5 text-navy-400"></i> Video</span>
-            </label>
-            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
-                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
-                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="file-text"
-                        class="w-3.5 h-3.5 text-navy-400"></i> Dokumen</span>
-            </label>
-            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
-                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
-                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="help-circle"
-                        class="w-3.5 h-3.5 text-navy-400"></i> Kuis</span>
-            </label>
-            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
-                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
-                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="clipboard-list"
-                        class="w-3.5 h-3.5 text-navy-400"></i> Tugas</span>
-            </label>
-        </div>
     </div>
 
-    <div class="relative" id="filter-sort-wrapper">
-        <button onclick="toggleFilter('filter-sort')"
-            class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
-            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-navy-400"></i>
-            <span>Urutkan</span>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
-        </button>
-        <div id="filter-sort"
-            class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-40 z-30">
-            <button
-                class="w-full text-left px-3.5 py-2 text-sm text-navy-900 font-medium bg-navy-50 transition-colors">Urutan
-                Default</button>
-            <button
-                class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Terlama</button>
-            <button
-                class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Terbaru</button>
-            <button class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Nama
-                A-Z</button>
-        </div>
-    </div>
-</div>
-
-<!-- Table -->
-<div class="bg-white rounded-xl border border-navy-100 overflow-hidden">
-
-    <!-- Table Header -->
-    <div
-        class="grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-navy-100 text-[10px] font-bold uppercase tracking-widest text-navy-400 select-none">
-        <div class="col-span-1 text-center">#</div>
-        <div class="col-span-4">Nama</div>
-        <div class="col-span-2">Jenis</div>
-        <div class="col-span-2">Dibuat</div>
-        <div class="col-span-1 text-right">Aksi</div>
-    </div>
-
-    {% for lesson in page_obj %}
-    <div
-        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer {% if not forloop.first %}border-t border-navy-50{% endif %}">
-        <div class="col-span-1 text-center text-sm font-medium text-navy-300">{{ lesson.order }}</div>
-        <div class="col-span-4 flex items-center gap-3 min-w-0">
-            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                {% if lesson.lesson_type == 'video' %}
-                    <i data-lucide="play-circle" class="w-4.5 h-4.5 text-blue-500"></i>
-                {% elif lesson.lesson_type == 'text' %}
-                    <i data-lucide="file-text" class="w-4.5 h-4.5 text-emerald-500"></i>
-                {% elif lesson.lesson_type == 'quiz' %}
-                    <i data-lucide="help-circle" class="w-4.5 h-4.5 text-violet-500"></i>
-                {% else %}
-                    <i data-lucide="file" class="w-4.5 h-4.5 text-navy-500"></i>
-                {% endif %}
+    <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100 shadow-sm overflow-hidden">
+        {% for lesson in page_obj %}
+        <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
+            <div class="w-10 h-10 rounded-lg bg-navy-50 flex items-center justify-center shrink-0 border border-navy-100">
+                <span class="text-sm font-bold text-navy-600">{{ lesson.order }}</span>
             </div>
-            <div class="min-w-0">
-                <p class="text-sm font-medium text-navy-900 truncate">{{ lesson.title }}</p>
-                <p class="text-xs text-navy-400 mt-0.5 truncate">{{ lesson.lesson_type|title }}</p>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest 
+                        {% if lesson.lesson_type == 'video' %}text-blue-600 bg-blue-50
+                        {% elif lesson.lesson_type == 'text' %}text-emerald-600 bg-emerald-50
+                        {% elif lesson.lesson_type == 'quiz' %}text-violet-600 bg-violet-50
+                        {% else %}text-navy-600 bg-navy-50{% endif %} px-2 py-0.5 rounded">
+                        {% if lesson.lesson_type == 'video' %}<i data-lucide="play-circle" class="w-3 h-3"></i>
+                        {% elif lesson.lesson_type == 'text' %}<i data-lucide="file-text" class="w-3 h-3"></i>
+                        {% elif lesson.lesson_type == 'quiz' %}<i data-lucide="help-circle" class="w-3 h-3"></i>
+                        {% else %}<i data-lucide="file" class="w-3 h-3"></i>{% endif %}
+                        {{ lesson.get_lesson_type_display }}
+                    </span>
+                    {% if lesson.is_free_preview %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Preview</span>
+                    {% endif %}
+                </div>
+                <h3 class="text-sm font-semibold text-navy-900 truncate">{{ lesson.title }}</h3>
+                <div class="flex items-center gap-4 mt-1">
+                    <span class="flex items-center gap-1 text-xs text-navy-400">
+                        <i data-lucide="clock" class="w-3 h-3"></i> 
+                        {{ lesson.duration_seconds }} detik
+                    </span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400">
+                        <i data-lucide="calendar" class="w-3 h-3"></i> 
+                        Dibuat {{ lesson.created_at|date:"d M Y" }}
+                    </span>
+                </div>
             </div>
-        </div>
-        <div class="col-span-2">
-            <span
-                class="inline-flex items-center gap-1.5 text-xs font-medium 
-                {% if lesson.lesson_type == 'video' %}text-blue-600 bg-blue-50
-                {% elif lesson.lesson_type == 'text' %}text-emerald-600 bg-emerald-50
-                {% elif lesson.lesson_type == 'quiz' %}text-violet-600 bg-violet-50
-                {% else %}text-navy-600 bg-navy-50{% endif %} px-2 py-1 rounded-md">
-                {% if lesson.lesson_type == 'video' %}<i data-lucide="play-circle" class="w-3 h-3"></i>
-                {% elif lesson.lesson_type == 'text' %}<i data-lucide="file-text" class="w-3 h-3"></i>
-                {% elif lesson.lesson_type == 'quiz' %}<i data-lucide="help-circle" class="w-3 h-3"></i>
-                {% else %}<i data-lucide="file" class="w-3 h-3"></i>{% endif %}
-                {{ lesson.get_lesson_type_display }}
-            </span>
-        </div>
-        <div class="col-span-2 text-sm text-navy-400">{{ lesson.created_at|date:"d M Y" }}</div>
-        <div class="col-span-1 flex justify-end">
-            <div class="relative">
-                <button onclick="event.stopPropagation();"
-                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
-                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+            <!-- Actions -->
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button title="Edit"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                </button>
+                <button title="Hapus"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
-    </div>
-    {% empty %}
-    <div class="p-16 text-center">
-        <div class="w-16 h-16 bg-navy-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i data-lucide="file-text" class="w-8 h-8 text-navy-200"></i>
+        {% empty %}
+        <div class="p-16 text-center">
+            <div class="w-20 h-20 bg-navy-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="file-text" class="w-10 h-10 text-navy-200"></i>
+            </div>
+            <h3 class="text-navy-900 font-bold text-lg">Belum ada materi</h3>
+            <p class="text-sm text-navy-400 mt-2 max-w-xs mx-auto">Mulai tambahkan materi pembelajaran ke dalam modul ini.</p>
+            <button onclick="document.getElementById('modal-create-lesson').classList.remove('hidden')"
+                class="mt-6 inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-navy-900/10">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Tambah Materi Pertama
+            </button>
         </div>
-        <h3 class="text-navy-900 font-bold">Belum ada materi</h3>
-        <p class="text-sm text-navy-400 mt-1">Modul ini belum memiliki materi pembelajaran.</p>
+        {% endfor %}
     </div>
-    {% endfor %}
 
-</div>
-
-<!-- Pagination -->
-{% include 'components/pagination.html' with page_obj=page_obj item_name="materi" %}
-
-<!-- Footer Info -->
-<div class="flex items-center justify-between pt-1">
-    <p class="text-xs text-navy-400">4 materi dalam modul ini</p>
-    <div class="flex items-center gap-4 text-xs text-navy-400">
-        <span class="flex items-center gap-1.5"><i data-lucide="play-circle" class="w-3.5 h-3.5 text-blue-400"></i>
-            2 video</span>
-        <span class="flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-400"></i>
-            1 dokumen</span>
-        <span class="flex items-center gap-1.5"><i data-lucide="help-circle" class="w-3.5 h-3.5 text-violet-400"></i> 1
-            kuis</span>
-    </div>
-</div>
+    <!-- Pagination -->
+    {% include 'components/pagination.html' with page_obj=page_obj item_name="materi" %}
 
 {% endblock content %}
+
+{% block modals %}
+    <!-- Placeholder for Create Lesson Modal -->
+    <div id="modal-create-lesson" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm transition-opacity" 
+             onclick="document.getElementById('modal-create-lesson').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="px-8 py-5 border-b border-navy-50 flex items-center justify-between bg-white">
+                <h2 class="text-lg font-bold text-navy-900">Tambah Materi Baru</h2>
+                <button onclick="document.getElementById('modal-create-lesson').classList.add('hidden')"
+                    class="text-navy-400 hover:text-navy-900 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-8">
+                <p class="text-sm text-navy-500 mb-6">Fitur penambahan materi akan segera hadir.</p>
+                <button onclick="document.getElementById('modal-create-lesson').classList.add('hidden')"
+                    class="w-full py-3 bg-navy-900 text-white font-semibold rounded-xl">Tutup</button>
+            </div>
+        </div>
+    </div>
+{% endblock modals %}
+
+{% block extra_css %}
+    <style>
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes zoom-in {
+            from { opacity: 0; transform: scale(0.95) translate(-50%, -50%); }
+            to { opacity: 1; transform: scale(1) translate(-50%, -50%); }
+        }
+        .animate-in {
+            animation: fade-in 0.2s ease-out;
+        }
+        .zoom-in {
+            animation: zoom-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+{% endblock extra_css %}

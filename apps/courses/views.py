@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from apps.accounts.decorators import role_required
-from .models import Course, Category, Tag, Module
+from .models import Course, Category, Tag, Module, Lesson
 from django.db.models import Q, Count, Sum, ExpressionWrapper, FloatField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator

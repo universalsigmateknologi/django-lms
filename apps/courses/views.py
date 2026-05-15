@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from apps.accounts.decorators import role_required
-from .models import Course, Category, Tag
+from .models import Course, Category, Tag, Module
 from django.db.models import Q, Count, Sum, ExpressionWrapper, FloatField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
@@ -274,4 +274,54 @@ def course_edit_view(request, pk):
             
         return redirect('instructor_course_list')
     
-    return redirect('instructor_course_list')
+    return redirect('instructor_course_list')
+
+@login_required
+@role_required(allowed_roles=['instructor'])
+def instructor_module_list(request, course_id):
+    course = get_object_or_404(Course, id=course_id, instructor=request.user)
+    modules_list = Module.objects.filter(course=course).order_by('order')
+
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        modules_list = modules_list.filter(title__icontains=search_query)
+
+    # Pagination
+    paginator = Paginator(modules_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'course': course,
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'menu': 'instructor_courses',
+    }
+    return render(request, 'courses/instructor/module_list.html', context)
+
+@login_required
+@role_required(allowed_roles=['instructor'])
+def instructor_lesson_list(request, module_id):
+    module = get_object_or_404(Module, id=module_id, course__instructor=request.user)
+    lessons_list = Lesson.objects.filter(module=module).order_by('order')
+
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        lessons_list = lessons_list.filter(title__icontains=search_query)
+
+    # Pagination
+    paginator = Paginator(lessons_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'module': module,
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'menu': 'instructor_courses',
+    }
+    return render(request, 'courses/instructor/lesson_list.html', context)
+
+

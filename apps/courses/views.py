@@ -324,4 +324,29 @@ def instructor_lesson_list(request, module_id):
     }
     return render(request, 'courses/instructor/lesson_list.html', context)
 
+@login_required
+@role_required(allowed_roles=['instructor'])
+def module_create_view(request, course_id):
+    course = get_object_or_404(Course, id=course_id, instructor=request.user)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        order = request.POST.get('order')
+        
+        # If order is not provided, get the next one
+        if not order:
+            from django.db.models import Max
+            max_order = Module.objects.filter(course=course).aggregate(Max('order'))['order__max'] or 0
+            order = max_order + 1
+            
+        Module.objects.create(
+            course=course,
+            title=title,
+            order=order
+        )
+        return redirect('instructor_module_list', course_id=course.id)
+        
+    return redirect('instructor_module_list', course_id=course.id)
+
+
 

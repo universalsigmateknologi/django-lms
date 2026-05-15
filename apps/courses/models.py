@@ -98,6 +98,7 @@ class Lesson(models.Model):
     lesson_type = models.CharField(max_length=10, choices=LESSON_TYPE_CHOICES)
     video_url = models.URLField(blank=True, null=True)
     content = CKEditor5Field('Content', config_name='extends')# bisa diganti RichTextField kalau pakai ckeditor
+    file = models.FileField(upload_to='lesson_files/', blank=True, null=True)
     duration_seconds = models.PositiveIntegerField(default=0)
     is_free_preview = models.BooleanField(default=False)
     order = models.PositiveSmallIntegerField()

@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from apps.accounts.decorators import role_required
 from .models import Course, Category, Tag, Module, Lesson
+from .forms import LessonForm
+
 from django.db.models import Q, Count, Sum, ExpressionWrapper, FloatField, F
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
@@ -320,8 +322,10 @@ def instructor_lesson_list(request, module_id):
         'module': module,
         'page_obj': page_obj,
         'search_query': search_query,
+        'form': LessonForm(),
         'menu': 'instructor_courses',
     }
+
     return render(request, 'courses/instructor/lesson_list.html', context)
 
 @login_required
@@ -380,4 +384,33 @@ def module_delete_view(request, pk):
             messages.error(request, 'Password salah. Modul gagal dihapus.')
             
     return redirect('instructor_module_list', course_id=course_id)
+
+@login_required
+@role_required(allowed_roles=['instructor'])
+def lesson_create_view(request, module_id):
+    module = get_object_or_404(Module, id=module_id, course__instructor=request.user)
+    
+    if request.method == 'POST':
+        form = LessonForm(request.POST, request.FILES)
+        if form.is_valid():
+            lesson = form.save(commit=False)
+            lesson.module = module
+            lesson.save()
+            return redirect('instructor_lesson_list', module_id=module.id)
+    else:
+        # Calculate next order
+        from django.db.models import Max
+        max_order = Lesson.objects.filter(module=module).aggregate(Max('order'))['order__max'] or 0
+        next_order = max_order + 1
+        form = LessonForm()
+        
+    context = {
+        'module': module,
+        'form': form,
+        'next_order': next_order,
+        'menu': 'instructor_courses',
+    }
+    return render(request, 'courses/instructor/lesson_create.html', context)
+
+
 

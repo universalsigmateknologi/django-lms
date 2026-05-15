@@ -38,11 +38,12 @@
                 <p class="text-sm text-navy-400 mt-0.5">{{ module.title }}</p>
             </div>
         </div>
-        <button onclick="document.getElementById('modal-create-lesson').classList.remove('hidden')"
+        <a href="{% url 'lesson_create' module.id %}"
             class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
             <i data-lucide="plus" class="w-4 h-4"></i>
             Tambah Materi
-        </button>
+        </a>
+
     </div>
 
     <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100 shadow-sm overflow-hidden">
@@ -99,44 +100,27 @@
             </div>
             <h3 class="text-navy-900 font-bold text-lg">Belum ada materi</h3>
             <p class="text-sm text-navy-400 mt-2 max-w-xs mx-auto">Mulai tambahkan materi pembelajaran ke dalam modul ini.</p>
-            <button onclick="document.getElementById('modal-create-lesson').classList.remove('hidden')"
+            <a href="{% url 'lesson_create' module.id %}"
                 class="mt-6 inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-navy-900/10">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 Tambah Materi Pertama
-            </button>
+            </a>
+
         </div>
         {% endfor %}
     </div>
 
     <!-- Pagination -->
     {% include 'components/pagination.html' with page_obj=page_obj item_name="materi" %}
-
 {% endblock content %}
 
-{% block modals %}
-    <!-- Placeholder for Create Lesson Modal -->
-    <div id="modal-create-lesson" class="fixed inset-0 z-[60] hidden">
-        <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm transition-opacity" 
-             onclick="document.getElementById('modal-create-lesson').classList.add('hidden')"></div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div class="px-8 py-5 border-b border-navy-50 flex items-center justify-between bg-white">
-                <h2 class="text-lg font-bold text-navy-900">Tambah Materi Baru</h2>
-                <button onclick="document.getElementById('modal-create-lesson').classList.add('hidden')"
-                    class="text-navy-400 hover:text-navy-900 transition-colors">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-            <div class="p-8">
-                <p class="text-sm text-navy-500 mb-6">Fitur penambahan materi akan segera hadir.</p>
-                <button onclick="document.getElementById('modal-create-lesson').classList.add('hidden')"
-                    class="w-full py-3 bg-navy-900 text-white font-semibold rounded-xl">Tutup</button>
-            </div>
-        </div>
-    </div>
-{% endblock modals %}
+{% block modals %}{% endblock modals %}
+
+
 
 {% block extra_css %}
     <style>
+
         @keyframes fade-in {
             from { opacity: 0; }
             to { opacity: 1; }

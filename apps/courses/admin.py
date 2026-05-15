@@ -11,7 +11,7 @@ User = get_user_model()
 class LessonInline(admin.TabularInline):
     model            = Lesson
     extra            = 0
-    fields           = ("title", "lesson_type", "order", "is_free_preview", "duration_seconds")
+    fields           = ("title", "lesson_type", "file", "order", "is_free_preview", "duration_seconds")
     ordering         = ("order",)
     show_change_link = True
 
@@ -148,7 +148,7 @@ class LessonAdmin(admin.ModelAdmin):
             "fields": ("module", "title", "lesson_type", "order", "is_free_preview"),
         }),
         (_("Konten"), {
-            "fields": ("video_url", "content", "duration_seconds"),
+            "fields": ("video_url", "content", "file", "duration_seconds"),
         }),
         (_("Timestamp"), {
             "fields": ("created_at",),

@@ -551,26 +551,6 @@
     </div>
 
     <script>
-        function toggleFilter(id) {
-            const allDropdowns = document.querySelectorAll('[id^="filter-"], [id^="action-"]');
-            allDropdowns.forEach(el => {
-                if (el.id !== id && el.tagName === 'DIV') el.classList.add('hidden');
-            });
-            document.getElementById(id).classList.toggle('hidden');
-        }
-
-        function closeAllFilters() {
-            document.querySelectorAll('[id^="filter-"], [id^="action-"]').forEach(el => {
-                if (el.tagName === 'DIV') el.classList.add('hidden');
-            });
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('[id$="-wrapper"]') && !e.target.closest('[id^="filter-"]') && !e.target.closest('[id^="action-"]')) {
-                closeAllFilters();
-            }
-        });
-
         lucide.createIcons();
     </script>
 </body>

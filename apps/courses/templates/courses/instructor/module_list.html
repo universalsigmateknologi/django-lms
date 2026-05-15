@@ -1,0 +1,361 @@
+{% extends 'base_admin.html' %}
+{% block topbar %}
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+        <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-navy-500"></i>
+        </a>
+        <div class="flex items-center gap-1.5 text-xs text-navy-400">
+            <span>Kelas Saya</span>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-navy-900 font-medium">UI/UX Design: Dari Nol Hingga Portfolio</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-2">
+        <button onclick="document.getElementById('modal-module').classList.remove('hidden')"
+            class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Modul Baru
+        </button>
+    </div>
+</header>
+{% endblock topbar %}
+{% block content %}
+<!-- Page Title -->
+<div>
+    <h1 class="text-xl font-bold text-navy-900">Modul</h1>
+    <p class="text-sm text-navy-400 mt-0.5">6 modul · 4 dipublikasi, 2 draft</p>
+</div>
+
+<!-- Filter Bar -->
+<div class="flex items-center gap-2 flex-wrap">
+
+    <!-- Dropdown: Status -->
+    <div class="relative" id="filter-status-wrapper">
+        <button onclick="toggleFilter('filter-status')"
+            class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
+            <span>Status</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+        </button>
+        <div id="filter-status"
+            class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-48 z-30">
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" checked
+                    class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="text-sm text-navy-700">Semua Status</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="flex items-center gap-2 text-sm text-navy-700"><span
+                        class="w-2 h-2 rounded-full bg-emerald-400"></span> Dipublikasi</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="flex items-center gap-2 text-sm text-navy-700"><span
+                        class="w-2 h-2 rounded-full bg-amber-400"></span> Draft</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Dropdown: Urutkan -->
+    <div class="relative" id="filter-sort-wrapper">
+        <button onclick="toggleFilter('filter-sort')"
+            class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
+            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-navy-400"></i>
+            <span>Urutkan</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+        </button>
+        <div id="filter-sort"
+            class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+            <button
+                class="w-full text-left px-3.5 py-2 text-sm text-navy-900 font-medium bg-navy-50 transition-colors">Terbaru</button>
+            <button
+                class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Terlama</button>
+            <button class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Nama
+                A-Z</button>
+            <button class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Nama
+                Z-A</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-xl border border-navy-100 overflow-hidden">
+
+    <!-- Table Header -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-navy-100 text-[10px] font-bold uppercase tracking-widest text-navy-400 select-none">
+        <div class="col-span-5">Nama</div>
+        <div class="col-span-2">Materi</div>
+        <div class="col-span-2">Durasi</div>
+        <div class="col-span-2">Diperbarui</div>
+        <div class="col-span-1 text-right">Aksi</div>
+    </div>
+
+    <!-- Row 1 — Published -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer">
+        <div class="col-span-5 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                <i data-lucide="folder" class="w-4.5 h-4.5 text-blue-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">Pengenalan UX Design</p>
+                <p class="text-xs text-navy-400 mt-0.5">Modul 1</p>
+            </div>
+        </div>
+        <div class="col-span-2 text-sm text-navy-500">4 materi</div>
+        <div class="col-span-2 text-sm text-navy-400">1 jam 20 mnt</div>
+        <div class="col-span-2 text-sm text-navy-400">14 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-1-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-1')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-1"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit Modul</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="copy" class="w-4 h-4 text-navy-400"></i> Duplikat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye-off" class="w-4 h-4 text-navy-400"></i> Buka ke
+                        Draft</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2 — Published -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50">
+        <div class="col-span-5 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
+                <i data-lucide="folder" class="w-4.5 h-4.5 text-violet-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">Research & Analisis</p>
+                <p class="text-xs text-navy-400 mt-0.5">Modul 2</p>
+            </div>
+        </div>
+        <div class="col-span-2 text-sm text-navy-500">5 materi</div>
+        <div class="col-span-2 text-sm text-navy-400">2 jam 10 mnt</div>
+        <div class="col-span-2 text-sm text-navy-400">12 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-2-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-2')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-2"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit Modul</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="copy" class="w-4 h-4 text-navy-400"></i> Duplikat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye-off" class="w-4 h-4 text-navy-400"></i> Buka ke
+                        Draft</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3 — Published -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50">
+        <div class="col-span-5 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                <i data-lucide="folder" class="w-4.5 h-4.5 text-amber-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">Wireframing</p>
+                <p class="text-xs text-navy-400 mt-0.5">Modul 3</p>
+            </div>
+        </div>
+        <div class="col-span-2 text-sm text-navy-500">4 materi</div>
+        <div class="col-span-2 text-sm text-navy-400">1 jam 45 mnt</div>
+        <div class="col-span-2 text-sm text-navy-400">10 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-3-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-3')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-3"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit Modul</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="copy" class="w-4 h-4 text-navy-400"></i> Duplikat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye-off" class="w-4 h-4 text-navy-400"></i> Buka ke
+                        Draft</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4 — Published -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50">
+        <div class="col-span-5 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                <i data-lucide="folder" class="w-4.5 h-4.5 text-emerald-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">High Fidelity Design</p>
+                <p class="text-xs text-navy-400 mt-0.5">Modul 4</p>
+            </div>
+        </div>
+        <div class="col-span-2 text-sm text-navy-500">6 materi</div>
+        <div class="col-span-2 text-sm text-navy-400">3 jam</div>
+        <div class="col-span-2 text-sm text-navy-400">8 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-4-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-4')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-4"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit Modul</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="copy" class="w-4 h-4 text-navy-400"></i> Duplikat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye-off" class="w-4 h-4 text-navy-400"></i> Buka ke
+                        Draft</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 5 — Draft -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50 bg-amber-50/20">
+        <div class="col-span-5 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-rose-50 flex items-center justify-center shrink-0">
+                <i data-lucide="folder" class="w-4.5 h-4.5 text-rose-400"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <p class="text-sm font-medium text-navy-900 truncate">Prototyping Interaktif</p>
+                    <span
+                        class="text-[10px] font-medium text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded shrink-0">Draft</span>
+                </div>
+                <p class="text-xs text-navy-400 mt-0.5">Modul 5 · 3/5 materi selesai</p>
+            </div>
+        </div>
+        <div class="col-span-2 text-sm text-navy-500">3/5 materi</div>
+        <div class="col-span-2 text-sm text-navy-400">1 jam 30 mnt</div>
+        <div class="col-span-2 text-sm text-navy-400">5 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-5-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-5')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-5"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit Modul</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="copy" class="w-4 h-4 text-navy-400"></i> Duplikat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="send" class="w-4 h-4 text-navy-400"></i> Publikasi</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 6 — Draft -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50 bg-amber-50/20">
+        <div class="col-span-5 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-cyan-50 flex items-center justify-center shrink-0">
+                <i data-lucide="folder" class="w-4.5 h-4.5 text-cyan-400"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <p class="text-sm font-medium text-navy-900 truncate">Portfolio & Studi Kasus</p>
+                    <span
+                        class="text-[10px] font-medium text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded shrink-0">Draft</span>
+                </div>
+                <p class="text-xs text-navy-400 mt-0.5">Modul 6 · 1/4 materi selesai</p>
+            </div>
+        </div>
+        <div class="col-span-2 text-sm text-navy-500">1/4 materi</div>
+        <div class="col-span-2 text-sm text-navy-400">30 menit</div>
+        <div class="col-span-2 text-sm text-navy-400">3 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-6-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-6')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-6"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit Modul</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="copy" class="w-4 h-4 text-navy-400"></i> Duplikat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="send" class="w-4 h-4 text-navy-400"></i> Publikasi</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

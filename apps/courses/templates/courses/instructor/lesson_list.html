@@ -1,0 +1,342 @@
+{% extends 'base_admin.html' %}
+{% block topbar %}
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+        <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-navy-500"></i>
+        </a>
+        <div class="flex items-center gap-1.5 text-xs text-navy-400">
+            <span>Kelas Saya</span>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="hover:text-navy-700 transition-colors cursor-pointer">UI/UX Design</span>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-navy-900 font-medium">Pengenalan UX Design</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-2">
+        <button onclick="document.getElementById('modal-lesson').classList.remove('hidden')"
+            class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Tambah Materi
+        </button>
+    </div>
+</header>
+{% endblock topbar %}
+{% block content %}
+<!-- Page Title -->
+<div class="flex items-center justify-between">
+    <div>
+        <div class="flex items-center gap-2.5 mb-1">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                <i data-lucide="folder" class="w-4 h-4 text-blue-500"></i>
+            </div>
+            <h1 class="text-xl font-bold text-navy-900">Pengenalan UX Design</h1>
+            <span
+                class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Dipublikasi</span>
+        </div>
+        <p class="text-sm text-navy-400 ml-[42px]">Modul 1 · 4 materi · 1 jam 20 menit total</p>
+    </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="flex items-center gap-2 flex-wrap">
+    <div class="relative" id="filter-type-wrapper">
+        <button onclick="toggleFilter('filter-type')"
+            class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
+            <span>Jenis</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+        </button>
+        <div id="filter-type"
+            class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-48 z-30">
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" checked
+                    class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="text-sm text-navy-700">Semua Jenis</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="play-circle"
+                        class="w-3.5 h-3.5 text-navy-400"></i> Video</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="file-text"
+                        class="w-3.5 h-3.5 text-navy-400"></i> Dokumen</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="help-circle"
+                        class="w-3.5 h-3.5 text-navy-400"></i> Kuis</span>
+            </label>
+            <label class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                <input type="checkbox" class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                <span class="flex items-center gap-2 text-sm text-navy-700"><i data-lucide="clipboard-list"
+                        class="w-3.5 h-3.5 text-navy-400"></i> Tugas</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="relative" id="filter-sort-wrapper">
+        <button onclick="toggleFilter('filter-sort')"
+            class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
+            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-navy-400"></i>
+            <span>Urutkan</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+        </button>
+        <div id="filter-sort"
+            class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-40 z-30">
+            <button
+                class="w-full text-left px-3.5 py-2 text-sm text-navy-900 font-medium bg-navy-50 transition-colors">Urutan
+                Default</button>
+            <button
+                class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Terlama</button>
+            <button
+                class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Terbaru</button>
+            <button class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Nama
+                A-Z</button>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-xl border border-navy-100 overflow-hidden">
+
+    <!-- Table Header -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-navy-100 text-[10px] font-bold uppercase tracking-widest text-navy-400 select-none">
+        <div class="col-span-1 text-center">#</div>
+        <div class="col-span-4">Nama</div>
+        <div class="col-span-2">Jenis</div>
+        <div class="col-span-2">Diperbarui</div>
+        <div class="col-span-1 text-right">Aksi</div>
+    </div>
+
+    <!-- Row 1 — Video -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer">
+        <div class="col-span-1 text-center text-sm font-medium text-navy-300">1</div>
+        <div class="col-span-4 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                <i data-lucide="play-circle" class="w-4.5 h-4.5 text-blue-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">Apa itu UX Design?</p>
+                <p class="text-xs text-navy-400 mt-0.5 truncate">Pengenalan konsep dasar UX</p>
+            </div>
+        </div>
+        <div class="col-span-2">
+            <span
+                class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                <i data-lucide="play-circle" class="w-3 h-3"></i> Video
+            </span>
+        </div>
+        <div class="col-span-2 text-sm text-navy-400">14 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-1-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-1')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-1"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-up" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Atas</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-down" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Bawah</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2 — Video -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50">
+        <div class="col-span-1 text-center text-sm font-medium text-navy-300">2</div>
+        <div class="col-span-4 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                <i data-lucide="play-circle" class="w-4.5 h-4.5 text-blue-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">Perbedaan UI dan UX</p>
+                <p class="text-xs text-navy-400 mt-0.5 truncate">Memahami batasan UI vs UX</p>
+            </div>
+        </div>
+        <div class="col-span-2">
+            <span
+                class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                <i data-lucide="play-circle" class="w-3 h-3"></i> Video
+            </span>
+        </div>
+        <div class="col-span-2 text-sm text-navy-400">14 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-2-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-2')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-2"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-up" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Atas</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-down" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Bawah</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3 — Dokumen -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50">
+        <div class="col-span-1 text-center text-sm font-medium text-navy-300">3</div>
+        <div class="col-span-4 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                <i data-lucide="file-text" class="w-4.5 h-4.5 text-emerald-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">Template Design Thinking</p>
+                <p class="text-xs text-navy-400 mt-0.5 truncate">File PDF · 2 halaman</p>
+            </div>
+        </div>
+        <div class="col-span-2">
+            <span
+                class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
+                <i data-lucide="file-text" class="w-3 h-3"></i> Dokumen
+            </span>
+        </div>
+        <div class="col-span-2 text-sm text-navy-400">13 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-3-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-3')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-3"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="download" class="w-4 h-4 text-navy-400"></i> Unduh</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-up" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Atas</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-down" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Bawah</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4 — Kuis -->
+    <div
+        class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group cursor-pointer border-t border-navy-50">
+        <div class="col-span-1 text-center text-sm font-medium text-navy-300">4</div>
+        <div class="col-span-4 flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
+                <i data-lucide="help-circle" class="w-4.5 h-4.5 text-violet-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-navy-900 truncate">Kuis: Dasar-Dasar UX</p>
+                <p class="text-xs text-navy-400 mt-0.5 truncate">10 soal pilihan ganda</p>
+            </div>
+        </div>
+        <div class="col-span-2">
+            <span
+                class="inline-flex items-center gap-1.5 text-xs font-medium text-violet-600 bg-violet-50 px-2 py-1 rounded-md">
+                <i data-lucide="help-circle" class="w-3 h-3"></i> Kuis
+            </span>
+        </div>
+        <div class="col-span-2 text-sm text-navy-400">12 Des 2025</div>
+        <div class="col-span-1 flex justify-end">
+            <div class="relative" id="action-4-wrapper">
+                <button onclick="event.stopPropagation(); toggleFilter('action-4')"
+                    class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </button>
+                <div id="action-4"
+                    class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit Soal</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-up" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Atas</button>
+                    <button
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                            data-lucide="arrow-down" class="w-4 h-4 text-navy-400"></i> Pindah
+                        Bawah</button>
+                    <div class="my-1 border-t border-navy-50"></div>
+                    <button
+                        onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                        class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                            data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State (hidden, shown as reference) -->
+
+</div>
+
+<!-- Footer Info -->
+<div class="flex items-center justify-between pt-1">
+    <p class="text-xs text-navy-400">4 materi dalam modul ini</p>
+    <div class="flex items-center gap-4 text-xs text-navy-400">
+        <span class="flex items-center gap-1.5"><i data-lucide="play-circle" class="w-3.5 h-3.5 text-blue-400"></i>
+            2 video</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-400"></i>
+            1 dokumen</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="help-circle" class="w-3.5 h-3.5 text-violet-400"></i> 1
+            kuis</span>
+    </div>
+</div>
+
+{% endblock content %}

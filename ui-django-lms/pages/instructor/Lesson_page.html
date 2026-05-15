@@ -237,7 +237,6 @@
                         <div class="col-span-1 text-center">#</div>
                         <div class="col-span-4">Nama</div>
                         <div class="col-span-2">Jenis</div>
-                        <div class="col-span-2">Durasi</div>
                         <div class="col-span-2">Diperbarui</div>
                         <div class="col-span-1 text-right">Aksi</div>
                     </div>
@@ -261,7 +260,6 @@
                                 <i data-lucide="play-circle" class="w-3 h-3"></i> Video
                             </span>
                         </div>
-                        <div class="col-span-2 text-sm text-navy-400">15 menit</div>
                         <div class="col-span-2 text-sm text-navy-400">14 Des 2025</div>
                         <div class="col-span-1 flex justify-end">
                             <div class="relative" id="action-1-wrapper">
@@ -314,7 +312,6 @@
                                 <i data-lucide="play-circle" class="w-3 h-3"></i> Video
                             </span>
                         </div>
-                        <div class="col-span-2 text-sm text-navy-400">22 menit</div>
                         <div class="col-span-2 text-sm text-navy-400">14 Des 2025</div>
                         <div class="col-span-1 flex justify-end">
                             <div class="relative" id="action-2-wrapper">
@@ -367,7 +364,6 @@
                                 <i data-lucide="file-text" class="w-3 h-3"></i> Dokumen
                             </span>
                         </div>
-                        <div class="col-span-2 text-sm text-navy-400">—</div>
                         <div class="col-span-2 text-sm text-navy-400">13 Des 2025</div>
                         <div class="col-span-1 flex justify-end">
                             <div class="relative" id="action-3-wrapper">
@@ -423,7 +419,6 @@
                                 <i data-lucide="help-circle" class="w-3 h-3"></i> Kuis
                             </span>
                         </div>
-                        <div class="col-span-2 text-sm text-navy-400">20 menit</div>
                         <div class="col-span-2 text-sm text-navy-400">12 Des 2025</div>
                         <div class="col-span-1 flex justify-end">
                             <div class="relative" id="action-4-wrapper">
@@ -568,7 +563,6 @@
                                 <div class="flex items-center gap-2">
                                     <input type="number" placeholder="20"
                                         class="w-24 px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 placeholder:text-navy-300 transition-all">
-                                    <span class="text-sm text-navy-400">menit</span>
                                 </div>
                             </div>
                             <label class="flex items-center gap-2.5 cursor-pointer">
@@ -629,44 +623,6 @@
     </div>
 
     <script>
-        // Dropdown toggle
-        function toggleFilter(id) {
-            const allDropdowns = document.querySelectorAll('[id^="filter-"], [id^="action-"]');
-            allDropdowns.forEach(el => {
-                if (el.id !== id && el.tagName === 'DIV') el.classList.add('hidden');
-            });
-            document.getElementById(id).classList.toggle('hidden');
-        }
-
-        function closeAllFilters() {
-            document.querySelectorAll('[id^="filter-"], [id^="action-"]').forEach(el => {
-                if (el.tagName === 'DIV') el.classList.add('hidden');
-            });
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('[id$="-wrapper"]') && !e.target.closest('[id^="filter-"]') && !e.target.closest('[id^="action-"]')) {
-                closeAllFilters();
-            }
-        });
-
-        // Type selection in modal
-        const types = ['video', 'document', 'quiz', 'task'];
-        function selectType(selected) {
-            types.forEach(type => {
-                const btn = document.getElementById('type-' + type);
-                const upload = document.getElementById('upload-' + type);
-                if (type === selected) {
-                    btn.classList.add('border-navy-900', 'bg-navy-900/5', 'text-navy-900');
-                    btn.classList.remove('border-navy-100', 'text-navy-500');
-                    upload.classList.remove('hidden');
-                } else {
-                    btn.classList.remove('border-navy-900', 'bg-navy-900/5', 'text-navy-900');
-                    btn.classList.add('border-navy-100', 'text-navy-500');
-                    upload.classList.add('hidden');
-                }
-            });
-        }
         lucide.createIcons();
     </script>
 </body>

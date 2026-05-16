@@ -1,9 +1,10 @@
 from django.urls import path
-from apps.courses.views import (
+from .views import (
     course_detail_view, course_list_view, landing_view, 
     instructor_course_list, course_create_view, course_edit_view,
     instructor_module_list, instructor_lesson_list, module_create_view,
-    module_edit_view, module_delete_view, lesson_create_view
+    module_edit_view, module_delete_view, lesson_create_view,
+    lesson_edit_view, lesson_delete_view
 )
 
 
@@ -18,6 +19,8 @@ urlpatterns = [
     path('instructor/modules/delete/<int:pk>/', module_delete_view, name='module_delete'),
     path('instructor/modules/<int:module_id>/lessons/', instructor_lesson_list, name='instructor_lesson_list'),
     path('instructor/modules/<int:module_id>/lessons/create/', lesson_create_view, name='lesson_create'),
+    path('instructor/lessons/edit/<int:pk>/', lesson_edit_view, name='lesson_edit'),
+    path('instructor/lessons/delete/<int:pk>/', lesson_delete_view, name='lesson_delete'),
 
     path('instructor/courses/create/', course_create_view, name='course_create'),
     path('instructor/courses/edit/<int:pk>/', course_edit_view, name='course_edit'),

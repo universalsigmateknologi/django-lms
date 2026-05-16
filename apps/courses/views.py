@@ -410,7 +410,43 @@ def lesson_create_view(request, module_id):
         'next_order': next_order,
         'menu': 'instructor_courses',
     }
-    return render(request, 'courses/instructor/lesson_create.html', context)
+@login_required
+@role_required(allowed_roles=['instructor'])
+def lesson_edit_view(request, pk):
+    lesson = get_object_or_404(Lesson, pk=pk, module__course__instructor=request.user)
+    
+    if request.method == 'POST':
+        form = LessonForm(request.POST, request.FILES, instance=lesson)
+        if form.is_valid():
+            form.save()
+            return redirect('instructor_lesson_list', module_id=lesson.module.id)
+    else:
+        form = LessonForm(instance=lesson)
+        
+    context = {
+        'lesson': lesson,
+        'module': lesson.module,
+        'form': form,
+        'menu': 'instructor_courses',
+    }
+    return render(request, 'courses/instructor/lesson_edit.html', context)
+
+@login_required
+@role_required(allowed_roles=['instructor'])
+def lesson_delete_view(request, pk):
+    lesson = get_object_or_404(Lesson, pk=pk, module__course__instructor=request.user)
+    module_id = lesson.module.id
+    
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        if request.user.check_password(password):
+            lesson.delete()
+            return redirect('instructor_lesson_list', module_id=module_id)
+        else:
+            from django.contrib import messages
+            messages.error(request, 'Password salah. Materi gagal dihapus.')
+            
+    return redirect('instructor_lesson_list', module_id=module_id)
 
 
 

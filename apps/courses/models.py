@@ -66,6 +66,11 @@ class Course(models.Model):
         )['total'] or 0
         return round(total_seconds / 3600, 1)
 
+    @property
+    def first_lesson(self):
+        """Returns the first lesson of the course based on module and lesson order."""
+        return Lesson.objects.filter(module__course=self).order_by('module__order', 'order').first()
+
     def __str__(self):
         return self.title
 

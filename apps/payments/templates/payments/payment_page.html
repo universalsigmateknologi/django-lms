@@ -40,7 +40,13 @@
       <h2 class="text-lg font-bold text-emerald-800">Pembayaran Berhasil!</h2>
       <p class="text-sm text-emerald-600 mt-1">Kamu sudah terdaftar di kursus ini.</p>
       {% for item in order_items %}
-      <a href="{% url 'enrollments:my_courses' %}" class="inline-block mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors">Mulai Belajar</a>
+        {% with first_lesson=item.course.first_lesson %}
+          {% if first_lesson %}
+            <a href="{% url 'enrollments:learn' item.course.slug first_lesson.id %}" class="inline-block mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors">Mulai Belajar</a>
+          {% else %}
+            <a href="{% url 'enrollments:my_courses' %}" class="inline-block mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors">Mulai Belajar</a>
+          {% endif %}
+        {% endwith %}
       {% endfor %}
     </div>
 

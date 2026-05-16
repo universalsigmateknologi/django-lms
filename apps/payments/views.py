@@ -134,10 +134,9 @@ def payment_page_view(request, order_number):
         order.save(update_fields=["status", "updated_at"])
 
     config = PaymentSettings.load()
-    form = PaymentProofForm()
-
     # Check if proof already uploaded
     existing_proof = order.payment_proofs.first()
+    form = PaymentProofForm(instance=existing_proof) if existing_proof else PaymentProofForm()
 
     context = {
 
@@ -183,7 +182,8 @@ def upload_proof_view(request, order_number):
         messages.error(request, "Order sudah expired. Silakan buat order baru.")
         return redirect("course_detail", slug=order.items.first().course.slug)
 
-    form = PaymentProofForm(request.POST, request.FILES)
+    existing_proof = order.payment_proofs.first()
+    form = PaymentProofForm(request.POST, request.FILES, instance=existing_proof)
 
     if form.is_valid():
         with transaction.atomic():

@@ -91,7 +91,7 @@
     {% endif %}
   {% endif %}
 
-  {% if is_new_order or order.status == 'pending' %}
+  {% if is_new_order or order.status == 'pending' or order.status == 'waiting_verification' %}
   <!-- Bank Transfer Info -->
   <div class="bg-white border border-navy-100 rounded-2xl p-5">
     <h3 class="text-sm font-bold text-navy-900 mb-4">Transfer ke Salah Satu Rekening</h3>
@@ -110,8 +110,13 @@
   </div>
 
   <!-- Upload Bukti Transfer -->
-  <div class="bg-white border border-navy-100 rounded-2xl p-5">
-    <h3 class="text-sm font-bold text-navy-900 mb-4">Upload Bukti Transfer</h3>
+  <div class="bg-white border border-navy-100 rounded-2xl p-5 {% if existing_proof and order.status == 'waiting_verification' %}hidden{% endif %}" id="upload-form-container">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-bold text-navy-900">{% if existing_proof %}Edit Bukti Transfer{% else %}Upload Bukti Transfer{% endif %}</h3>
+      {% if existing_proof and order.status == 'waiting_verification' %}
+      <button type="button" onclick="toggleEditForm()" class="text-xs font-semibold text-navy-500 hover:text-navy-700">Batal Edit</button>
+      {% endif %}
+    </div>
     <form method="post" action="{% if is_new_order %}{% url 'payments:create_order' course.slug %}{% else %}{% url 'payments:upload_proof' order.order_number %}{% endif %}" enctype="multipart/form-data" id="proof-form">
       {% csrf_token %}
       <!-- Image Upload Area -->
@@ -150,7 +155,7 @@
       </div>
 
       <button type="submit" id="submit-btn" disabled class="w-full mt-5 py-3 bg-navy-900 hover:bg-navy-950 disabled:bg-navy-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors">
-        Upload Bukti Transfer
+        {% if existing_proof %}Update Bukti Transfer{% else %}Upload Bukti Transfer{% endif %}
       </button>
     </form>
   </div>
@@ -158,8 +163,13 @@
 
   {% if existing_proof and order.status == 'waiting_verification' %}
   <!-- Uploaded Proof Preview -->
-  <div class="bg-white border border-navy-100 rounded-2xl p-5">
-    <h3 class="text-sm font-bold text-navy-900 mb-3">Bukti Transfer yang Diupload</h3>
+  <div class="bg-white border border-navy-100 rounded-2xl p-5" id="proof-preview-container">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-bold text-navy-900">Bukti Transfer yang Diupload</h3>
+      <button type="button" onclick="toggleEditForm()" class="px-3 py-1 text-xs font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors">
+        Edit Data
+      </button>
+    </div>
     <div class="rounded-xl overflow-hidden border border-navy-100">
       <img src="{{ existing_proof.proof_image.url }}" class="w-full max-h-64 object-contain bg-navy-50" />
     </div>
@@ -330,7 +340,40 @@ function checkSubmit(){
   if(!submitBtn)return;
   const hasFile=fileInput&&fileInput.files.length>0;
   const hasName=senderInput&&senderInput.value.trim().length>0;
+  // If it's an edit, we might already have a file, but for now let's require selecting a file if they want to update
+  // Actually, if we use instance=existing_proof, we don't necessarily need to re-upload the image.
+  // But the current form logic expects a file if it's an upload.
+  {% if existing_proof %}
+  submitBtn.disabled = !hasName; // Allow updating name only
+  {% else %}
   submitBtn.disabled=!(hasFile&&hasName);
+  {% endif %}
 }
+
+function toggleEditForm(){
+  const form = document.getElementById('upload-form-container');
+  const preview = document.getElementById('proof-preview-container');
+  if(form.classList.contains('hidden')){
+    form.classList.remove('hidden');
+    preview.classList.add('hidden');
+  } else {
+    form.classList.add('hidden');
+    preview.classList.remove('hidden');
+  }
+}
+
+// Pre-fill preview if editing
+{% if existing_proof %}
+window.addEventListener('DOMContentLoaded', () => {
+  {% if existing_proof.proof_image %}
+  document.getElementById('upload-placeholder').classList.add('hidden');
+  const prev=document.getElementById('upload-preview');
+  prev.classList.remove('hidden');
+  document.getElementById('preview-img').src="{{ existing_proof.proof_image.url }}";
+  document.getElementById('preview-name').textContent="Bukti yang sudah ada";
+  {% endif %}
+  checkSubmit();
+});
+{% endif %}
 </script>
 {% endblock content %}

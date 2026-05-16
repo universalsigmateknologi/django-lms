@@ -36,5 +36,6 @@ def instructor_question_list(request, lesson_id):
         'quiz': quiz,
         'page_obj': page_obj,
         'search_query': search_query,
+        'menu': 'instructor_courses',
     }
     return render(request, 'quizzes/instructor/question_list.html', context)

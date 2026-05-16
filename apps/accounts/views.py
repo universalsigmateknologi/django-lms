@@ -90,3 +90,6 @@ def verify_email(request, uidb64, token):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def no_permission(request):
+    return render(request, 'accounts/no_permission.html')

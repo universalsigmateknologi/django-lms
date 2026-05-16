@@ -13,7 +13,7 @@ from apps.enrollments.models import Enrollment, EnrollmentStatus
 def landing_view(request):
     return render(request, 'courses/landing.html')
 
-@login_required
+@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 def course_list_view(request):
 
     courses = Course.objects.filter(is_published=True).annotate(
@@ -165,8 +165,7 @@ def course_detail_view(request, slug):
     }
     return render(request, 'courses/detail.html', context)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def instructor_course_list(request):
     courses_list = Course.objects.filter(instructor=request.user).annotate(
         total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
@@ -214,8 +213,7 @@ def instructor_course_list(request):
     }
     return render(request, 'courses/instructor/course_list.html', context)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def course_create_view(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -248,8 +246,7 @@ def course_create_view(request):
     
     return redirect('instructor_course_list')
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def course_edit_view(request, pk):
     course = get_object_or_404(Course, pk=pk, instructor=request.user)
     
@@ -278,8 +275,7 @@ def course_edit_view(request, pk):
     
     return redirect('instructor_course_list')
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def instructor_module_list(request, course_id):
     course = get_object_or_404(Course, id=course_id, instructor=request.user)
     modules_list = Module.objects.filter(course=course).order_by('order')
@@ -302,8 +298,7 @@ def instructor_module_list(request, course_id):
     }
     return render(request, 'courses/instructor/module_list.html', context)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def instructor_lesson_list(request, module_id):
     module = get_object_or_404(Module, id=module_id, course__instructor=request.user)
     lessons_list = Lesson.objects.filter(module=module).order_by('order')
@@ -328,8 +323,7 @@ def instructor_lesson_list(request, module_id):
 
     return render(request, 'courses/instructor/lesson_list.html', context)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def module_create_view(request, course_id):
     course = get_object_or_404(Course, id=course_id, instructor=request.user)
     
@@ -352,8 +346,7 @@ def module_create_view(request, course_id):
         
     return redirect('instructor_module_list', course_id=course.id)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def module_edit_view(request, pk):
     module = get_object_or_404(Module, pk=pk, course__instructor=request.user)
     
@@ -365,8 +358,7 @@ def module_edit_view(request, pk):
         
     return redirect('instructor_module_list', course_id=module.course.id)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def module_delete_view(request, pk):
     module = get_object_or_404(Module, pk=pk, course__instructor=request.user)
     course_id = module.course.id
@@ -385,8 +377,7 @@ def module_delete_view(request, pk):
             
     return redirect('instructor_module_list', course_id=course_id)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def lesson_create_view(request, module_id):
     module = get_object_or_404(Module, id=module_id, course__instructor=request.user)
     
@@ -413,8 +404,7 @@ def lesson_create_view(request, module_id):
     }
     return render(request, 'courses/instructor/lesson_create.html', context)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def lesson_edit_view(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk, module__course__instructor=request.user)
     
@@ -434,8 +424,7 @@ def lesson_edit_view(request, pk):
     }
     return render(request, 'courses/instructor/lesson_edit.html', context)
 
-@login_required
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def lesson_delete_view(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk, module__course__instructor=request.user)
     module_id = lesson.module.id

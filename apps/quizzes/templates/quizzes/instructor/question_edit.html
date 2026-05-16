@@ -13,7 +13,7 @@
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
             <a href="{% url 'instructor_question_list' lesson.id %}" class="hover:text-navy-900 transition-colors">Kelola Soal</a>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-navy-900 font-medium">Tambah Soal</span>
+            <span class="text-navy-900 font-medium">Edit Soal</span>
         </div>
     </div>
 </header>
@@ -27,7 +27,7 @@
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </a>
                 <div>
-                    <h1 class="text-xl font-bold text-navy-900">Tambah Soal Baru</h1>
+                    <h1 class="text-xl font-bold text-navy-900">Edit Soal</h1>
                     <p class="text-sm text-navy-400 mt-0.5">{{ quiz.title }}</p>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <div class="flex items-center gap-4">
                         <div class="w-32">
                             <label class="block text-[10px] font-bold uppercase tracking-wider text-navy-400 mb-1">Poin</label>
-                            <input type="number" name="points" value="1" min="1" required
+                            <input type="number" name="points" value="{{ question.points }}" min="1" required
                                 class="w-full px-3 py-1.5 bg-white border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-bold text-center">
                         </div>
                     </div>
@@ -54,19 +54,19 @@
                         <select name="question_type" id="questionType" required
                             class="w-full px-4 py-2.5 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
                             {% for val, label in question_types %}
-                                <option value="{{ val }}">{{ label }}</option>
+                                <option value="{{ val }}" {% if question.question_type == val %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Pertanyaan</label>
                         <textarea name="text" rows="4" required placeholder="Tuliskan pertanyaan Anda di sini..."
-                            class="w-full px-4 py-3 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium"></textarea>
+                            class="w-full px-4 py-3 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">{{ question.text }}</textarea>
                     </div>
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Penjelasan (Opsional)</label>
                         <textarea name="explanation" rows="2" placeholder="Penjelasan jawaban yang benar..."
-                            class="w-full px-4 py-3 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium italic"></textarea>
+                            class="w-full px-4 py-3 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium italic">{{ question.explanation }}</textarea>
                         <p class="text-[10px] text-navy-400 mt-1">Ditampilkan kepada siswa setelah mereka menjawab soal ini.</p>
                     </div>
                 </div>
@@ -85,10 +85,11 @@
                 </a>
                 <button type="submit"
                     class="px-8 py-3 bg-navy-900 hover:bg-navy-950 text-white text-sm font-bold rounded-xl transition-all shadow-xl shadow-navy-900/10 active:scale-[0.98]">
-                    Simpan Pertanyaan
+                    Simpan Perubahan
                 </button>
             </div>
         </form>
+
     <!-- Templates for Dynamic Sections -->
     <template id="tpl-multiple_choice">
         <div class="p-6 border-b border-navy-50 bg-navy-50/30 flex items-center justify-between">
@@ -99,22 +100,7 @@
             </button>
         </div>
         <div class="p-6 space-y-3" id="answerContainer">
-            <!-- Initial 3 answers -->
-            <div class="answer-item flex items-center gap-3">
-                <input type="radio" name="is_correct" value="0" checked required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
-                <input type="text" name="answer_text" placeholder="Pilihan A" required
-                    class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
-            </div>
-            <div class="answer-item flex items-center gap-3">
-                <input type="radio" name="is_correct" value="1" required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
-                <input type="text" name="answer_text" placeholder="Pilihan B" required
-                    class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
-            </div>
-            <div class="answer-item flex items-center gap-3">
-                <input type="radio" name="is_correct" value="2" required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
-                <input type="text" name="answer_text" placeholder="Pilihan C" required
-                    class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
-            </div>
+            <!-- Will be populated by JS for edit or initial for create -->
         </div>
     </template>
 
@@ -124,7 +110,7 @@
         </div>
         <div class="p-6 space-y-4">
             <label class="flex items-center gap-4 p-4 border border-navy-100 rounded-xl hover:bg-navy-50 cursor-pointer transition-all">
-                <input type="radio" name="is_correct" value="0" checked required class="w-5 h-5 text-navy-900 focus:ring-navy-900 border-navy-200">
+                <input type="radio" name="is_correct" value="0" id="tf_true" required class="w-5 h-5 text-navy-900 focus:ring-navy-900 border-navy-200">
                 <div class="flex-1">
                     <p class="text-sm font-bold text-navy-900">Benar (True)</p>
                     <input type="hidden" name="answer_text" value="True">
@@ -132,7 +118,7 @@
                 <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
             </label>
             <label class="flex items-center gap-4 p-4 border border-navy-100 rounded-xl hover:bg-navy-50 cursor-pointer transition-all">
-                <input type="radio" name="is_correct" value="1" required class="w-5 h-5 text-navy-900 focus:ring-navy-900 border-navy-200">
+                <input type="radio" name="is_correct" value="1" id="tf_false" required class="w-5 h-5 text-navy-900 focus:ring-navy-900 border-navy-200">
                 <div class="flex-1">
                     <p class="text-sm font-bold text-navy-900">Salah (False)</p>
                     <input type="hidden" name="answer_text" value="False">
@@ -149,12 +135,12 @@
         <div class="p-6 space-y-5">
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Bahasa Pemrograman</label>
-                <input type="text" name="code_language" placeholder="contoh: python, javascript, sql" required
+                <input type="text" name="code_language" id="code_language" placeholder="contoh: python, javascript, sql" required
                     class="w-full px-4 py-2.5 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Template Kode</label>
-                <textarea name="code_template" rows="8" placeholder="Tuliskan kode awal yang akan dilihat siswa..." required
+                <textarea name="code_template" id="code_template" rows="8" placeholder="Tuliskan kode awal yang akan dilihat siswa..." required
                     class="w-full px-4 py-3 bg-navy-900 text-navy-50 border border-navy-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/20 font-mono text-sm"></textarea>
             </div>
         </div>
@@ -175,8 +161,18 @@
 <script>
     const typeSelect = document.getElementById('questionType');
     const dynamicSection = document.getElementById('dynamicSection');
+    
+    // Initial data from server
+    const initialType = "{{ question.question_type }}";
+    const initialAnswers = [
+        {% for answer in question.answers.all %}
+        { text: "{{ answer.text|escapejs }}", is_correct: {{ answer.is_correct|yesno:"true,false" }} },
+        {% endfor %}
+    ];
+    const initialCodeLanguage = "{{ question.code_language|escapejs }}";
+    const initialCodeTemplate = `{{ question.code_template|escapejs }}`;
 
-    function updateForm() {
+    function updateForm(isInitial = false) {
         const type = typeSelect.value;
         const template = document.getElementById('tpl-' + type);
         
@@ -189,12 +185,41 @@
             if (btnAdd) {
                 btnAdd.onclick = addAnswerField;
             }
+
+            // Populate initial data if it's the first load
+            if (isInitial && type === initialType) {
+                if (type === 'multiple_choice') {
+                    const container = document.getElementById('answerContainer');
+                    container.innerHTML = '';
+                    initialAnswers.forEach((ans, idx) => {
+                        addAnswerField(ans.text, ans.is_correct);
+                    });
+                } else if (type === 'true_false') {
+                    if (initialAnswers.length > 0) {
+                        if (initialAnswers[0].is_correct) {
+                            document.getElementById('tf_true').checked = true;
+                        } else {
+                            document.getElementById('tf_false').checked = true;
+                        }
+                    }
+                } else if (type === 'code') {
+                    document.getElementById('code_language').value = initialCodeLanguage;
+                    document.getElementById('code_template').value = initialCodeTemplate;
+                }
+            } else if (!isInitial) {
+                // If type changed, provide some defaults
+                if (type === 'multiple_choice') {
+                    addAnswerField('', true);
+                    addAnswerField('', false);
+                    addAnswerField('', false);
+                }
+            }
         } else {
             dynamicSection.innerHTML = '';
         }
     }
 
-    function addAnswerField() {
+    function addAnswerField(text = '', isCorrect = false) {
         const container = document.getElementById('answerContainer');
         const index = container.querySelectorAll('.answer-item').length;
         const char = String.fromCharCode(65 + index); // A, B, C...
@@ -202,8 +227,8 @@
         const div = document.createElement('div');
         div.className = 'answer-item flex items-center gap-3 animate-in';
         div.innerHTML = `
-            <input type="radio" name="is_correct" value="${index}" required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
-            <input type="text" name="answer_text" placeholder="Pilihan ${char}" required
+            <input type="radio" name="is_correct" value="${index}" ${isCorrect ? 'checked' : ''} required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
+            <input type="text" name="answer_text" value="${text}" placeholder="Pilihan ${char}" required
                 class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
             <button type="button" onclick="this.parentElement.remove()" class="text-navy-300 hover:text-red-500 transition-colors">
                 <i data-lucide="x" class="w-4 h-4"></i>
@@ -213,11 +238,11 @@
         lucide.createIcons();
     }
 
-    typeSelect.addEventListener('change', updateForm);
+    typeSelect.addEventListener('change', () => updateForm(false));
     
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-        updateForm();
+        updateForm(true);
         lucide.createIcons();
     });
 </script>

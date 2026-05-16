@@ -10,7 +10,7 @@ from apps.accounts.decorators import role_required
 def index(request):
     return render(request, 'quizzes/start.html')
 
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def instructor_question_list(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     
@@ -41,7 +41,7 @@ def instructor_question_list(request, lesson_id):
     }
     return render(request, 'quizzes/instructor/question_list.html', context)
 
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def instructor_quiz_settings(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     lesson = quiz.lesson
@@ -68,7 +68,7 @@ def instructor_quiz_settings(request, quiz_id):
     }
     return render(request, 'quizzes/instructor/quiz_settings.html', context)
 
-@role_required(allowed_roles=['instructor'])
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def instructor_question_create(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     lesson = quiz.lesson
@@ -121,3 +121,71 @@ def instructor_question_create(request, quiz_id):
         'menu': 'instructor_courses',
     }
     return render(request, 'quizzes/instructor/question_create.html', context)
+
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
+def instructor_question_edit(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    quiz = question.quiz
+    lesson = quiz.lesson
+    
+    if request.method == 'POST':
+        question_type = request.POST.get('question_type')
+        text = request.POST.get('text')
+        points = int(request.POST.get('points', 1))
+        explanation = request.POST.get('explanation', '')
+        
+        # Update Question
+        question.question_type = question_type
+        question.text = text
+        question.points = points
+        question.explanation = explanation
+        
+        if question_type == QuestionType.CODE:
+            question.code_language = request.POST.get('code_language')
+            question.code_template = request.POST.get('code_template')
+        else:
+            # Clear code fields if not code type
+            question.code_language = ''
+            question.code_template = ''
+            
+        question.save()
+        
+        # Handle Answers based on type
+        if question_type in [QuestionType.MULTIPLE_CHOICE, QuestionType.TRUE_FALSE]:
+            # Delete old answers and create new ones
+            question.answers.all().delete()
+            
+            answer_texts = request.POST.getlist('answer_text')
+            correct_indices = request.POST.getlist('is_correct')
+            
+            for i, ans_text in enumerate(answer_texts):
+                is_correct = str(i) in correct_indices
+                Answer.objects.create(
+                    question=question,
+                    text=ans_text,
+                    is_correct=is_correct,
+                    order=i
+                )
+        else:
+            # Delete answers if changed to essay or code
+            question.answers.all().delete()
+            
+        messages.success(request, 'Soal berhasil diperbarui.')
+        return redirect('instructor_question_list', lesson_id=lesson.id)
+        
+    context = {
+        'question': question,
+        'quiz': quiz,
+        'lesson': lesson,
+        'question_types': QuestionType.choices,
+        'menu': 'instructor_courses',
+    }
+    return render(request, 'quizzes/instructor/question_edit.html', context)
+
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
+def instructor_question_delete(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    lesson_id = question.quiz.lesson.id
+    question.delete()
+    messages.success(request, 'Soal berhasil dihapus.')
+    return redirect('instructor_question_list', lesson_id=lesson_id)

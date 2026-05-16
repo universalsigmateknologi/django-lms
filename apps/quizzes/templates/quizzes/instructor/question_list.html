@@ -83,11 +83,11 @@
             </div>
             <!-- Actions -->
             <div class="flex items-center gap-1.5 shrink-0">
-                <a href="#" title="Edit Soal"
+                <a href="{% url 'question_edit' question.id %}" title="Edit Soal"
                     class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
                     <i data-lucide="pencil" class="w-4 h-4"></i>
                 </a>
-                <button type="button" title="Hapus Soal"
+                <button type="button" onclick="confirmDelete('{% url 'question_delete' question.id %}', '{{ question.text|striptags|truncatechars:50|escapejs }}')" title="Hapus Soal"
                     class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-red-600 hover:bg-red-50 transition-colors">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
@@ -114,9 +114,33 @@
 {% endblock content %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         lucide.createIcons();
     });
+
+    function confirmDelete(url, text) {
+        Swal.fire({
+            title: 'Hapus Soal?',
+            text: `Apakah Anda yakin ingin menghapus soal: "${text}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#1e293b', // navy-900
+            cancelButtonColor: '#94a3b8', // navy-400
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            borderRadius: '1rem',
+            customClass: {
+                popup: 'rounded-2xl border-none shadow-2xl',
+                title: 'text-xl font-bold text-navy-900',
+                htmlContainer: 'text-sm text-navy-400'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
 </script>
 {% endblock extra_js %}

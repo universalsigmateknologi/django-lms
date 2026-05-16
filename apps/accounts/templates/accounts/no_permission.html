@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex-grow flex items-center justify-center py-20 px-4">
+    <div class="max-w-md w-full text-center">
+        <div class="mb-8">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-red-100 rounded-full mb-4">
+                <svg class="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h1 class="text-4xl font-extrabold text-navy-900 mb-2">Akses Ditolak</h1>
+            <p class="text-lg text-navy-600">Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.</p>
+        </div>
+        
+        <div class="space-y-4">
+            <a href="{% url 'course_preview' %}" class="block w-full py-3 px-6 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-xl transition duration-300 shadow-lg hover:shadow-navy-200">
+                Kembali ke Beranda
+            </a>
+            <p class="text-sm text-navy-500">
+                Jika Anda merasa ini adalah kesalahan, silakan hubungi administrator.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for premium look if base styles are missing */
+    .bg-navy-600 { background-color: #1e293b; }
+    .hover\:bg-navy-700:hover { background-color: #0f172a; }
+    .text-navy-900 { color: #0f172a; }
+    .text-navy-600 { color: #475569; }
+    .text-navy-500 { color: #64748b; }
+    .shadow-navy-200:hover { shadow: 0 10px 15px -3px rgba(30, 41, 59, 0.2); }
+</style>
+{% endblock %}

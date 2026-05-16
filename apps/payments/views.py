@@ -12,6 +12,7 @@ import logging
 import urllib.parse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from apps.accounts.decorators import role_required
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 
-@login_required
+@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 def create_order_view(request, slug):
     """
     GET: Tampilkan halaman pembayaran (bank info + upload form) sebelum order dibuat.
@@ -117,7 +118,7 @@ def create_order_view(request, slug):
     return render(request, "payments/payment_page.html", context)
 
 
-@login_required
+@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 def payment_page_view(request, order_number):
     """
     Halaman pembayaran: info bank, countdown, form upload bukti transfer.
@@ -157,7 +158,7 @@ def payment_page_view(request, order_number):
     return render(request, "payments/payment_page.html", context)
 
 
-@login_required
+@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 @require_POST
 def upload_proof_view(request, order_number):
     """
@@ -215,7 +216,7 @@ def upload_proof_view(request, order_number):
         return render(request, "payments/payment_page.html", context)
 
 
-@login_required
+@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 def order_history_view(request):
     """
     Daftar order milik user.
@@ -234,7 +235,7 @@ def order_history_view(request):
     return render(request, "payments/order_history.html", context)
 
 
-@login_required
+@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 def order_detail_view(request, order_number):
     """
     Detail order tunggal.
@@ -261,7 +262,7 @@ def order_detail_view(request, order_number):
 # API Endpoints (optional AJAX)
 # ─────────────────────────────────────────────────────────────────────────────
 
-@login_required
+@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 def check_order_status_api(request, order_number):
     """
     AJAX endpoint: cek status order terkini.

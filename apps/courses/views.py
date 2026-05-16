@@ -398,11 +398,12 @@ def lesson_create_view(request, module_id):
             lesson.save()
             return redirect('instructor_lesson_list', module_id=module.id)
     else:
-        # Calculate next order
-        from django.db.models import Max
-        max_order = Lesson.objects.filter(module=module).aggregate(Max('order'))['order__max'] or 0
-        next_order = max_order + 1
         form = LessonForm()
+        
+    # Calculate next order
+    from django.db.models import Max
+    max_order = Lesson.objects.filter(module=module).aggregate(Max('order'))['order__max'] or 0
+    next_order = max_order + 1
         
     context = {
         'module': module,
@@ -410,6 +411,8 @@ def lesson_create_view(request, module_id):
         'next_order': next_order,
         'menu': 'instructor_courses',
     }
+    return render(request, 'courses/instructor/lesson_create.html', context)
+
 @login_required
 @role_required(allowed_roles=['instructor'])
 def lesson_edit_view(request, pk):

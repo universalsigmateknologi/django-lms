@@ -40,11 +40,18 @@
                 <p class="text-sm text-navy-400 mt-0.5">{{ lesson.title }}</p>
             </div>
         </div>
-        <a href="#"
-            class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            Tambah Soal
-        </a>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'instructor_quiz_settings' quiz.id %}"
+                class="flex items-center gap-2 bg-white border border-navy-100 text-navy-600 hover:bg-navy-50 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors shadow-sm">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+                Pengaturan Quiz
+            </a>
+            <a href="{% url 'question_create' quiz.id %}"
+                class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Tambah Soal
+            </a>
+        </div>
     </div>
 
     <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100 shadow-sm overflow-hidden">
@@ -93,7 +100,7 @@
             </div>
             <h3 class="text-navy-900 font-bold text-lg">Belum ada soal</h3>
             <p class="text-sm text-navy-400 mt-2 max-w-xs mx-auto">Mulai tambahkan pertanyaan-pertanyaan untuk quiz ini.</p>
-            <a href="#"
+            <a href="{% url 'question_create' quiz.id %}"
                 class="mt-6 inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-navy-900/10">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 Tambah Soal Pertama

@@ -1,0 +1,237 @@
+{% extends 'base_admin.html' %}
+
+{% block topbar %}
+<!-- Top Bar -->
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5 text-xs text-navy-400">
+            <a href="{% url 'instructor_course_list' %}" class="hover:text-navy-900 transition-colors">Kelas Saya</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <a href="{% url 'instructor_module_list' lesson.module.course.id %}" class="hover:text-navy-900 transition-colors">{{ lesson.module.course.title }}</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <a href="{% url 'instructor_lesson_list' lesson.module.id %}" class="hover:text-navy-900 transition-colors">Materi</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <a href="{% url 'instructor_question_list' lesson.id %}" class="hover:text-navy-900 transition-colors">Kelola Soal</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-navy-900 font-medium">Tambah Soal</span>
+        </div>
+    </div>
+</header>
+{% endblock topbar %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto py-8">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-4">
+                <a href="{% url 'instructor_question_list' lesson.id %}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-navy-100 text-navy-400 hover:text-navy-900 hover:border-navy-200 transition-all shadow-sm">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </a>
+                <div>
+                    <h1 class="text-xl font-bold text-navy-900">Tambah Soal Baru</h1>
+                    <p class="text-sm text-navy-400 mt-0.5">{{ quiz.title }}</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="POST" class="space-y-6" id="questionForm">
+            {% csrf_token %}
+            
+            <!-- Question Content Card -->
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-navy-50 bg-navy-50/30 flex items-center justify-between">
+                    <h3 class="font-bold text-navy-900">Konten Pertanyaan</h3>
+                    <div class="flex items-center gap-4">
+                        <div class="w-32">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-navy-400 mb-1">Poin</label>
+                            <input type="number" name="points" value="1" min="1" required
+                                class="w-full px-3 py-1.5 bg-white border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-bold text-center">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Tipe Pertanyaan</label>
+                        <select name="question_type" id="questionType" required
+                            class="w-full px-4 py-2.5 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
+                            {% for val, label in question_types %}
+                                <option value="{{ val }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Pertanyaan</label>
+                        <textarea name="text" rows="4" required placeholder="Tuliskan pertanyaan Anda di sini..."
+                            class="w-full px-4 py-3 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Penjelasan (Opsional)</label>
+                        <textarea name="explanation" rows="2" placeholder="Penjelasan jawaban yang benar..."
+                            class="w-full px-4 py-3 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium italic"></textarea>
+                        <p class="text-[10px] text-navy-400 mt-1">Ditampilkan kepada siswa setelah mereka menjawab soal ini.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Section: Answers / Code Config -->
+            <div id="dynamicSection" class="bg-white rounded-2xl border border-navy-100 shadow-sm overflow-hidden">
+                <!-- Will be populated by JS -->
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end gap-3 pt-4">
+                <a href="{% url 'instructor_question_list' lesson.id %}"
+                    class="px-6 py-3 text-sm font-bold text-navy-400 hover:text-navy-900 transition-colors">
+                    Batal
+                </a>
+                <button type="submit"
+                    class="px-8 py-3 bg-navy-900 hover:bg-navy-950 text-white text-sm font-bold rounded-xl transition-all shadow-xl shadow-navy-900/10 active:scale-[0.98]">
+                    Simpan Pertanyaan
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Templates for Dynamic Sections -->
+    <template id="tpl-multiple_choice">
+        <div class="p-6 border-b border-navy-50 bg-navy-50/30 flex items-center justify-between">
+            <h3 class="font-bold text-navy-900">Pilihan Jawaban</h3>
+            <button type="button" id="btnAddAnswer" class="text-xs font-bold text-navy-600 hover:text-navy-900 flex items-center gap-1 transition-colors">
+                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                Tambah Pilihan
+            </button>
+        </div>
+        <div class="p-6 space-y-3" id="answerContainer">
+            <!-- Initial 3 answers -->
+            <div class="answer-item flex items-center gap-3">
+                <input type="radio" name="is_correct" value="0" checked required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
+                <input type="text" name="answer_text" placeholder="Pilihan A" required
+                    class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
+            </div>
+            <div class="answer-item flex items-center gap-3">
+                <input type="radio" name="is_correct" value="1" required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
+                <input type="text" name="answer_text" placeholder="Pilihan B" required
+                    class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
+            </div>
+            <div class="answer-item flex items-center gap-3">
+                <input type="radio" name="is_correct" value="2" required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
+                <input type="text" name="answer_text" placeholder="Pilihan C" required
+                    class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-true_false">
+        <div class="p-6 border-b border-navy-50 bg-navy-50/30">
+            <h3 class="font-bold text-navy-900">Pilihan Jawaban</h3>
+        </div>
+        <div class="p-6 space-y-4">
+            <label class="flex items-center gap-4 p-4 border border-navy-100 rounded-xl hover:bg-navy-50 cursor-pointer transition-all">
+                <input type="radio" name="is_correct" value="0" checked required class="w-5 h-5 text-navy-900 focus:ring-navy-900 border-navy-200">
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-navy-900">Benar (True)</p>
+                    <input type="hidden" name="answer_text" value="True">
+                </div>
+                <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
+            </label>
+            <label class="flex items-center gap-4 p-4 border border-navy-100 rounded-xl hover:bg-navy-50 cursor-pointer transition-all">
+                <input type="radio" name="is_correct" value="1" required class="w-5 h-5 text-navy-900 focus:ring-navy-900 border-navy-200">
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-navy-900">Salah (False)</p>
+                    <input type="hidden" name="answer_text" value="False">
+                </div>
+                <i data-lucide="x-circle" class="w-5 h-5 text-red-500"></i>
+            </label>
+        </div>
+    </template>
+
+    <template id="tpl-code">
+        <div class="p-6 border-b border-navy-50 bg-navy-50/30">
+            <h3 class="font-bold text-navy-900">Konfigurasi Kode</h3>
+        </div>
+        <div class="p-6 space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Bahasa Pemrograman</label>
+                <input type="text" name="code_language" placeholder="contoh: python, javascript, sql" required
+                    class="w-full px-4 py-2.5 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-navy-400 mb-2">Template Kode</label>
+                <textarea name="code_template" rows="8" placeholder="Tuliskan kode awal yang akan dilihat siswa..." required
+                    class="w-full px-4 py-3 bg-navy-900 text-navy-50 border border-navy-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/20 font-mono text-sm"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-essay">
+        <div class="p-12 text-center">
+            <div class="w-16 h-16 bg-navy-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="file-text" class="w-8 h-8 text-navy-300"></i>
+            </div>
+            <p class="text-navy-400 text-sm italic">Soal tipe essay tidak memerlukan pilihan jawaban. Siswa akan menjawab dalam bentuk teks bebas.</p>
+        </div>
+    </template>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    const typeSelect = document.getElementById('questionType');
+    const dynamicSection = document.getElementById('dynamicSection');
+
+    function updateForm() {
+        const type = typeSelect.value;
+        const template = document.getElementById('tpl-' + type);
+        
+        if (template) {
+            dynamicSection.innerHTML = template.innerHTML;
+            lucide.createIcons();
+            
+            // Re-bind Add Answer button if it exists
+            const btnAdd = document.getElementById('btnAddAnswer');
+            if (btnAdd) {
+                btnAdd.onclick = addAnswerField;
+            }
+        } else {
+            dynamicSection.innerHTML = '';
+        }
+    }
+
+    function addAnswerField() {
+        const container = document.getElementById('answerContainer');
+        const index = container.querySelectorAll('.answer-item').length;
+        const char = String.fromCharCode(65 + index); // A, B, C...
+        
+        const div = document.createElement('div');
+        div.className = 'answer-item flex items-center gap-3 animate-in';
+        div.innerHTML = `
+            <input type="radio" name="is_correct" value="${index}" required class="w-4 h-4 text-navy-900 focus:ring-navy-900 border-navy-200">
+            <input type="text" name="answer_text" placeholder="Pilihan ${char}" required
+                class="flex-1 px-4 py-2 bg-navy-50/50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 transition-all text-sm font-medium">
+            <button type="button" onclick="this.parentElement.remove()" class="text-navy-300 hover:text-red-500 transition-colors">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        `;
+        container.appendChild(div);
+        lucide.createIcons();
+    }
+
+    typeSelect.addEventListener('change', updateForm);
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        updateForm();
+        lucide.createIcons();
+    });
+</script>
+
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in {
+        animation: fade-in 0.2s ease-out forwards;
+    }
+</style>
+{% endblock extra_js %}

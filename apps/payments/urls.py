@@ -45,4 +45,16 @@ urlpatterns = [
         views.check_order_status_api,
         name="check_status",
     ),
+
+    # ── Staff Order Verification ──
+    path(
+        "staff/orders/",
+        views.staff_order_verification_view,
+        name="staff_order_verification",
+    ),
+    path(
+        "staff/orders/verify/<uuid:pk>/",
+        views.staff_verify_order_action,
+        name="staff_verify_order",
+    ),
 ]

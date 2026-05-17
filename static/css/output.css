@@ -1233,8 +1233,16 @@ video {
   max-height: 70vh;
 }
 
+.max-h-80 {
+  max-height: 20rem;
+}
+
 .min-h-screen {
   min-height: 100vh;
+}
+
+.min-h-32 {
+  min-height: 8rem;
 }
 
 .w-1\.5 {
@@ -2095,6 +2103,10 @@ video {
   background-color: rgb(255 255 255 / 0.9);
 }
 
+.bg-navy-900\/50 {
+  background-color: rgb(16 42 67 / 0.5);
+}
+
 .bg-gradient-to-t {
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
 }
@@ -2503,6 +2515,10 @@ video {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.font-normal {
+  font-weight: 400;
 }
 
 .uppercase {

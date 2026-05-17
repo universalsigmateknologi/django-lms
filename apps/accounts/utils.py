@@ -5,7 +5,7 @@ def redirect_user_by_role(user):
     elif user.role == 'instructor':
         return 'instructor_course_list'
     elif user.role == 'staff':
-        return 'course_preview'
+        return 'payments:staff_order_verification'
     elif user.role == 'student':
         return 'course_preview'
     else:

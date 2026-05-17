@@ -18,6 +18,8 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.db import transaction
 from django.utils import timezone
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import (
     Order, OrderItem, OrderStatus, PaymentSettings,
@@ -281,3 +283,93 @@ def check_order_status_api(request, order_number):
         "is_paid": order.is_paid,
         "time_remaining": order.time_remaining_seconds,
     })
+
+
+@role_required(allowed_roles=['admin', 'staff'])
+def staff_order_verification_view(request):
+    """
+    Halaman untuk staff melakukan verifikasi pesanan.
+    """
+    search_query = request.GET.get('search', '').strip()
+    status_filter = request.GET.get('status', 'all')
+    
+    orders = Order.objects.select_related('user').prefetch_related(
+        'items__course', 'payment_proofs'
+    ).order_by('-created_at')
+    
+    if status_filter != 'all':
+        orders = orders.filter(status=status_filter)
+        
+    if search_query:
+        orders = orders.filter(
+            Q(order_number__icontains=search_query) |
+            Q(user__username__icontains=search_query) |
+            Q(user__email__icontains=search_query)
+        )
+        
+    total_count = Order.objects.count()
+    waiting_count = Order.objects.filter(status=OrderStatus.WAITING_VERIFICATION).count()
+    paid_count = Order.objects.filter(status=OrderStatus.PAID).count()
+    failed_count = Order.objects.filter(status__in=[OrderStatus.FAILED, OrderStatus.CANCELLED, OrderStatus.EXPIRED]).count()
+    
+    paginator = Paginator(orders, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'status_filter': status_filter,
+        'total_count': total_count,
+        'waiting_count': waiting_count,
+        'paid_count': paid_count,
+        'failed_count': failed_count,
+        'menu': 'staff_orders',
+        'OrderStatus': OrderStatus,
+    }
+    return render(request, 'payments/staff/order_verification.html', context)
+
+
+@role_required(allowed_roles=['admin', 'staff'])
+@require_POST
+def staff_verify_order_action(request, pk):
+    """
+    Action untuk memproses perubahan status verifikasi pesanan oleh admin/staff.
+    """
+    order = get_object_or_404(Order, pk=pk)
+    status = request.POST.get('status')
+    admin_note = request.POST.get('admin_note', '').strip()
+    
+    if status in dict(OrderStatus.choices):
+        with transaction.atomic():
+            order.status = status
+            order.save(update_fields=['status', 'updated_at'])
+            
+            # Update proof note if there's any proof uploaded
+            proof = order.payment_proofs.first()
+            if proof:
+                proof.admin_note = admin_note
+                proof.reviewed_by = request.user
+                proof.reviewed_at = timezone.now()
+                proof.save(update_fields=['admin_note', 'reviewed_by', 'reviewed_at'])
+                
+            # If status becomes paid, we can do extra logic like enrolling user etc.
+            if status == OrderStatus.PAID:
+                order.paid_at = timezone.now()
+                order.save(update_fields=['paid_at'])
+                
+                # Enroll the user to the courses
+                for item in order.items.all():
+                    Enrollment.objects.get_or_create(
+                        student=order.user,
+                        course=item.course,
+                        defaults={
+                            'status': 'active'
+                        }
+                    )
+            
+        messages.success(request, f"Status pesanan {order.order_number} berhasil diubah.")
+    else:
+        messages.error(request, "Status tidak valid.")
+        
+    return redirect('payments:staff_order_verification')

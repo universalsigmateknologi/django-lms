@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instruktur — SigmaCourse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            300: '#9fb3c8',
+                            400: '#829ab1',
+                            500: '#627d98',
+                            600: '#486581',
+                            700: '#334e68',
+                            800: '#243b53',
+                            900: '#102a43',
+                            950: '#0a1929',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="bg-navy-50 font-sans text-navy-900 antialiased">
+
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-navy-100 flex flex-col shrink-0">
+            <!-- Brand -->
+            <div class="h-16 flex items-center gap-2.5 px-6 border-b border-navy-100">
+                <div class="w-8 h-8 rounded-lg bg-navy-900 flex items-center justify-center">
+                    <i data-lucide="graduation-cap" class="w-4 h-4 text-white"></i>
+                </div>
+                <span class="text-lg font-bold tracking-tight text-navy-900">SigmaCourse</span>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex-1 px-4 py-5 space-y-1">
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-navy-900 text-white text-sm font-medium">
+                    <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
+                    Dashboard
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="book-open" class="w-[18px] h-[18px]"></i>
+                    Kelas Saya
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="calendar-days" class="w-[18px] h-[18px]"></i>
+                    Jadwal
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="message-square" class="w-[18px] h-[18px]"></i>
+                    Pesan
+                    <span
+                        class="ml-auto text-xs bg-navy-900 text-white w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                    <i data-lucide="bar-chart-3" class="w-[18px] h-[18px]"></i>
+                    Laporan
+                </a>
+
+                <div class="pt-4 mt-4 border-t border-navy-100">
+                    <a href="#"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                        <i data-lucide="settings" class="w-[18px] h-[18px]"></i>
+                        Pengaturan
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-500 hover:bg-navy-50 hover:text-navy-700 text-sm font-medium transition-colors">
+                        <i data-lucide="life-buoy" class="w-[18px] h-[18px]"></i>
+                        Bantuan
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Profile -->
+            <div class="px-4 py-4 border-t border-navy-100">
+                <div class="flex items-center gap-3 px-2">
+                    <img src="https://picsum.photos/seed/instructor-adi/80/80.jpg"
+                        class="w-9 h-9 rounded-full object-cover" alt="Avatar">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-navy-900 truncate">Adi Nugraha</p>
+                        <p class="text-xs text-navy-400 truncate">Instruktur</p>
+                    </div>
+                    <button class="text-navy-400 hover:text-navy-700 transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+
+        <!-- Main -->
+        <main class="flex-1 overflow-y-auto">
+
+            <!-- Top Bar -->
+            <!-- Top Bar -->
+            <header
+                class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+                <div class="flex items-center gap-1.5 text-xs text-navy-400">
+                    <span>Dashboard</span>
+                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                    <span class="text-navy-900 font-medium">Instruktur</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <i data-lucide="search"
+                            class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-navy-300"></i>
+                        <input type="text" placeholder="Cari instruktur..."
+                            class="pl-9 pr-4 py-2 text-sm bg-navy-50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 w-56 placeholder:text-navy-300 transition-all">
+                    </div>
+                    <button onclick="document.getElementById('modal-instructor').classList.remove('hidden')"
+                        class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        Tambah Instruktur
+                    </button>
+                </div>
+            </header>
+
+
+            <!-- Content -->
+            <div class="p-8 space-y-8">
+                <!-- container -->
+                <div class="p-8 space-y-6">
+
+                    <!-- Page Header + Stats -->
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <h1 class="text-xl font-bold text-navy-900">Instruktur</h1>
+                            <p class="text-sm text-navy-400 mt-0.5">Kelola semua instruktur di platform</p>
+                        </div>
+                        <div class="flex items-center gap-5">
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-navy-900">24</p>
+                                <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Total</p>
+                            </div>
+                            <div class="w-px h-8 bg-navy-100"></div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-emerald-600">20</p>
+                                <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Aktif</p>
+                            </div>
+                            <div class="w-px h-8 bg-navy-100"></div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-amber-600">3</p>
+                                <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Pending</p>
+                            </div>
+                            <div class="w-px h-8 bg-navy-100"></div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-navy-400">1</p>
+                                <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Nonaktif</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <div class="relative" id="filter-status-wrapper">
+                            <button onclick="toggleFilter('filter-status')"
+                                class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
+                                <span>Status</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+                            </button>
+                            <div id="filter-status"
+                                class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-48 z-30">
+                                <label
+                                    class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                                    <input type="checkbox" checked
+                                        class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                                    <span class="text-sm text-navy-700">Semua Status</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                                    <input type="checkbox"
+                                        class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                                    <span class="flex items-center gap-2 text-sm text-navy-700"><span
+                                            class="w-2 h-2 rounded-full bg-emerald-400"></span> Aktif</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                                    <input type="checkbox"
+                                        class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                                    <span class="flex items-center gap-2 text-sm text-navy-700"><span
+                                            class="w-2 h-2 rounded-full bg-amber-400"></span> Pending</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-2.5 px-3.5 py-2 cursor-pointer hover:bg-navy-50 transition-colors">
+                                    <input type="checkbox"
+                                        class="w-3.5 h-3.5 rounded border-navy-300 text-navy-900 focus:ring-navy-900/20">
+                                    <span class="flex items-center gap-2 text-sm text-navy-700"><span
+                                            class="w-2 h-2 rounded-full bg-navy-300"></span> Nonaktif</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="relative" id="filter-sort-wrapper">
+                            <button onclick="toggleFilter('filter-sort')"
+                                class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors">
+                                <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-navy-400"></i>
+                                <span>Urutkan</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+                            </button>
+                            <div id="filter-sort"
+                                class="hidden absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-40 z-30">
+                                <button
+                                    class="w-full text-left px-3.5 py-2 text-sm text-navy-900 font-medium bg-navy-50 transition-colors">Terbaru</button>
+                                <button
+                                    class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Terlama</button>
+                                <button
+                                    class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Nama
+                                    A-Z</button>
+                                <button
+                                    class="w-full text-left px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors">Terbanyak
+                                    Siswa</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="bg-white rounded-xl border border-navy-100 overflow-hidden">
+
+                        <!-- Table Header -->
+                        <div
+                            class="grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-navy-100 text-[10px] font-bold uppercase tracking-widest text-navy-400 select-none">
+                            <div class="col-span-4">Instruktur</div>
+                            <div class="col-span-2 text-center">Kelas</div>
+                            <div class="col-span-2 text-center">Siswa</div>
+                            <div class="col-span-1 text-center">Rating</div>
+                            <div class="col-span-2 text-center">Status</div>
+                            <div class="col-span-1 text-right">Aksi</div>
+                        </div>
+
+                        <!-- Row 1 — Aktif -->
+                        <div
+                            class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group">
+                            <div class="col-span-4 flex items-center gap-3 min-w-0">
+                                <img src="https://picsum.photos/seed/instr-adi/80/80.jpg"
+                                    class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-navy-900 truncate">Adi Nugraha</p>
+                                    <p class="text-xs text-navy-400 truncate">adi.nugraha@email.com</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center text-sm text-navy-600 font-medium">6</div>
+                            <div class="col-span-2 text-center text-sm text-navy-600 font-medium">1,284</div>
+                            <div class="col-span-1 text-center flex items-center justify-center gap-1">
+                                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                                <span class="text-sm font-medium text-navy-700">4.87</span>
+                            </div>
+                            <div class="col-span-2 flex justify-center">
+                                <span
+                                    class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Aktif
+                                </span>
+                            </div>
+                            <div class="col-span-1 flex justify-end">
+                                <div class="relative" id="action-1-wrapper">
+                                    <button onclick="event.stopPropagation(); toggleFilter('action-1')"
+                                        class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                    </button>
+                                    <div id="action-1"
+                                        class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat
+                                            Profil</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="mail" class="w-4 h-4 text-navy-400"></i> Kirim
+                                            Email</button>
+                                        <div class="my-1 border-t border-navy-50"></div>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-deactivate').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors"><i
+                                                data-lucide="user-x" class="w-4 h-4 text-amber-400"></i>
+                                            Nonaktifkan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2 — Aktif -->
+                        <div
+                            class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group border-t border-navy-50">
+                            <div class="col-span-4 flex items-center gap-3 min-w-0">
+                                <img src="https://picsum.photos/seed/instr-sari/80/80.jpg"
+                                    class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-navy-900 truncate">Sari Dewi Putri</p>
+                                    <p class="text-xs text-navy-400 truncate">sari.dewi@email.com</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center text-sm text-navy-600 font-medium">4</div>
+                            <div class="col-span-2 text-center text-sm text-navy-600 font-medium">876</div>
+                            <div class="col-span-1 text-center flex items-center justify-center gap-1">
+                                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                                <span class="text-sm font-medium text-navy-700">4.92</span>
+                            </div>
+                            <div class="col-span-2 flex justify-center">
+                                <span
+                                    class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Aktif
+                                </span>
+                            </div>
+                            <div class="col-span-1 flex justify-end">
+                                <div class="relative" id="action-2-wrapper">
+                                    <button onclick="event.stopPropagation(); toggleFilter('action-2')"
+                                        class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                    </button>
+                                    <div id="action-2"
+                                        class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat
+                                            Profil</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="mail" class="w-4 h-4 text-navy-400"></i> Kirim
+                                            Email</button>
+                                        <div class="my-1 border-t border-navy-50"></div>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-deactivate').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors"><i
+                                                data-lucide="user-x" class="w-4 h-4 text-amber-400"></i>
+                                            Nonaktifkan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3 — Aktif -->
+                        <div
+                            class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group border-t border-navy-50">
+                            <div class="col-span-4 flex items-center gap-3 min-w-0">
+                                <img src="https://picsum.photos/seed/instr-budi/80/80.jpg"
+                                    class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-navy-900 truncate">Budi Santoso</p>
+                                    <p class="text-xs text-navy-400 truncate">budi.santoso@email.com</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center text-sm text-navy-600 font-medium">8</div>
+                            <div class="col-span-2 text-center text-sm text-navy-600 font-medium">2,103</div>
+                            <div class="col-span-1 text-center flex items-center justify-center gap-1">
+                                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                                <span class="text-sm font-medium text-navy-700">4.78</span>
+                            </div>
+                            <div class="col-span-2 flex justify-center">
+                                <span
+                                    class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Aktif
+                                </span>
+                            </div>
+                            <div class="col-span-1 flex justify-end">
+                                <div class="relative" id="action-3-wrapper">
+                                    <button onclick="event.stopPropagation(); toggleFilter('action-3')"
+                                        class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                    </button>
+                                    <div id="action-3"
+                                        class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat
+                                            Profil</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="pencil" class="w-4 h-4 text-navy-400"></i> Edit</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="mail" class="w-4 h-4 text-navy-400"></i> Kirim
+                                            Email</button>
+                                        <div class="my-1 border-t border-navy-50"></div>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-deactivate').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors"><i
+                                                data-lucide="user-x" class="w-4 h-4 text-amber-400"></i>
+                                            Nonaktifkan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 4 — Pending -->
+                        <div
+                            class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group border-t border-navy-50 bg-amber-50/20">
+                            <div class="col-span-4 flex items-center gap-3 min-w-0">
+                                <img src="https://picsum.photos/seed/instr-rina/80/80.jpg"
+                                    class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-navy-900 truncate">Rina Kartika</p>
+                                    <p class="text-xs text-navy-400 truncate">rina.kartika@email.com</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center text-sm text-navy-400">—</div>
+                            <div class="col-span-2 text-center text-sm text-navy-400">—</div>
+                            <div class="col-span-1 text-center text-sm text-navy-400">—</div>
+                            <div class="col-span-2 flex justify-center">
+                                <span
+                                    class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Pending
+                                </span>
+                            </div>
+                            <div class="col-span-1 flex justify-end">
+                                <div class="relative" id="action-4-wrapper">
+                                    <button onclick="event.stopPropagation(); toggleFilter('action-4')"
+                                        class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                    </button>
+                                    <div id="action-4"
+                                        class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat
+                                            Profil</button>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-approve').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors"><i
+                                                data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
+                                            Setujui</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="mail" class="w-4 h-4 text-navy-400"></i> Kirim
+                                            Email</button>
+                                        <div class="my-1 border-t border-navy-50"></div>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                                                data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Tolak &
+                                            Hapus</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 5 — Pending -->
+                        <div
+                            class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group border-t border-navy-50 bg-amber-50/20">
+                            <div class="col-span-4 flex items-center gap-3 min-w-0">
+                                <img src="https://picsum.photos/seed/instr-fajar/80/80.jpg"
+                                    class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-navy-900 truncate">Fajar Ramadhan</p>
+                                    <p class="text-xs text-navy-400 truncate">fajar.ramadhan@email.com</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center text-sm text-navy-400">—</div>
+                            <div class="col-span-2 text-center text-sm text-navy-400">—</div>
+                            <div class="col-span-1 text-center text-sm text-navy-400">—</div>
+                            <div class="col-span-2 flex justify-center">
+                                <span
+                                    class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Pending
+                                </span>
+                            </div>
+                            <div class="col-span-1 flex justify-end">
+                                <div class="relative" id="action-5-wrapper">
+                                    <button onclick="event.stopPropagation(); toggleFilter('action-5')"
+                                        class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                    </button>
+                                    <div id="action-5"
+                                        class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat
+                                            Profil</button>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-approve').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors"><i
+                                                data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
+                                            Setujui</button>
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="mail" class="w-4 h-4 text-navy-400"></i> Kirim
+                                            Email</button>
+                                        <div class="my-1 border-t border-navy-50"></div>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                                                data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Tolak &
+                                            Hapus</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 6 — Nonaktif -->
+                        <div
+                            class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group border-t border-navy-50 opacity-60">
+                            <div class="col-span-4 flex items-center gap-3 min-w-0">
+                                <img src="https://picsum.photos/seed/instr-maya/80/80.jpg"
+                                    class="w-10 h-10 rounded-full object-cover shrink-0 grayscale" alt="">
+                                <div class="min-w-0">
+                                    <p
+                                        class="text-sm font-medium text-navy-900 truncate line-through decoration-navy-300">
+                                        Maya Anggraini</p>
+                                    <p class="text-xs text-navy-400 truncate">maya.anggraini@email.com</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center text-sm text-navy-400">3</div>
+                            <div class="col-span-2 text-center text-sm text-navy-400">542</div>
+                            <div class="col-span-1 text-center flex items-center justify-center gap-1">
+                                <i data-lucide="star" class="w-3.5 h-3.5 text-navy-300"></i>
+                                <span class="text-sm text-navy-400">4.60</span>
+                            </div>
+                            <div class="col-span-2 flex justify-center">
+                                <span
+                                    class="inline-flex items-center gap-1.5 text-xs font-medium text-navy-400 bg-navy-100 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-navy-300"></span> Nonaktif
+                                </span>
+                            </div>
+                            <div class="col-span-1 flex justify-end">
+                                <div class="relative" id="action-6-wrapper">
+                                    <button onclick="event.stopPropagation(); toggleFilter('action-6')"
+                                        class="w-8 h-8 flex items-center justify-center rounded-md text-navy-300 hover:text-navy-600 hover:bg-navy-100 opacity-0 group-hover:opacity-100 transition-all">
+                                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                    </button>
+                                    <div id="action-6"
+                                        class="hidden absolute right-0 top-full mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+                                        <button
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-navy-600 hover:bg-navy-50 transition-colors"><i
+                                                data-lucide="eye" class="w-4 h-4 text-navy-400"></i> Lihat
+                                            Profil</button>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-activate').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors"><i
+                                                data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i> Aktifkan
+                                            Kembali</button>
+                                        <div class="my-1 border-t border-navy-50"></div>
+                                        <button
+                                            onclick="event.stopPropagation(); closeAllFilters(); document.getElementById('modal-delete').classList.remove('hidden')"
+                                            class="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"><i
+                                                data-lucide="trash-2" class="w-4 h-4 text-red-400"></i> Hapus
+                                            Permanen</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs text-navy-400">Menampilkan 1–6 dari 24 instruktur</p>
+                        <div class="flex items-center gap-1">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:text-navy-500 transition-colors">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium bg-navy-900 text-white">1</button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors">2</button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors">3</button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors">4</button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-500 transition-colors">
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Modal: Tambah Instruktur -->
+                <div id="modal-instructor" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm"
+                        onclick="document.getElementById('modal-instructor').classList.add('hidden')"></div>
+                    <div
+                        class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-md p-6 mx-4">
+                        <div class="flex items-center justify-between mb-5">
+                            <h2 class="text-base font-semibold text-navy-900">Tambah Instruktur</h2>
+                            <button onclick="document.getElementById('modal-instructor').classList.add('hidden')"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+                                <i data-lucide="x" class="w-4 h-4 text-navy-400"></i>
+                            </button>
+                        </div>
+                        <form class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-medium text-navy-700 mb-1.5">Nama Lengkap</label>
+                                <input type="text" placeholder="Contoh: Adi Nugraha"
+                                    class="w-full px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 placeholder:text-navy-300 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-navy-700 mb-1.5">Email</label>
+                                <input type="email" placeholder="contoh@email.com"
+                                    class="w-full px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 placeholder:text-navy-300 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-navy-700 mb-1.5">Keahlian</label>
+                                <input type="text" placeholder="Contoh: UI/UX Design, React.js"
+                                    class="w-full px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 placeholder:text-navy-300 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-navy-700 mb-1.5">No. Telepon <span
+                                        class="text-navy-300 font-normal">(opsional)</span></label>
+                                <input type="tel" placeholder="08xxxxxxxxxx"
+                                    class="w-full px-3.5 py-2.5 text-sm border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-400 placeholder:text-navy-300 transition-all">
+                            </div>
+                            <div class="flex items-center gap-3 pt-2">
+                                <button type="button"
+                                    onclick="document.getElementById('modal-instructor').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+                                <button type="button"
+                                    class="flex-1 py-2.5 text-sm font-medium text-white bg-navy-900 hover:bg-navy-950 rounded-lg transition-colors">Tambah</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal: Setujui -->
+                <div id="modal-approve" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm"
+                        onclick="document.getElementById('modal-approve').classList.add('hidden')"></div>
+                    <div
+                        class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-sm p-6 mx-4">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mb-4">
+                                <i data-lucide="user-check" class="w-6 h-6 text-emerald-500"></i>
+                            </div>
+                            <h2 class="text-base font-semibold text-navy-900 mb-1">Setujui Instruktur?</h2>
+                            <p class="text-sm text-navy-400 leading-relaxed mb-5">Instruktur ini akan langsung aktif dan
+                                bisa mulai membuat kelas.</p>
+                            <div class="flex items-center gap-3 w-full">
+                                <button onclick="document.getElementById('modal-approve').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+                                <button onclick="document.getElementById('modal-approve').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors">Ya,
+                                    Setujui</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Nonaktifkan -->
+                <div id="modal-deactivate" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm"
+                        onclick="document.getElementById('modal-deactivate').classList.add('hidden')"></div>
+                    <div
+                        class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-sm p-6 mx-4">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mb-4">
+                                <i data-lucide="user-x" class="w-6 h-6 text-amber-500"></i>
+                            </div>
+                            <h2 class="text-base font-semibold text-navy-900 mb-1">Nonaktifkan Instruktur?</h2>
+                            <p class="text-sm text-navy-400 leading-relaxed mb-5">Kelas yang dimiliki tidak akan
+                                dihapus, tetapi instruktur tidak bisa login atau mengelola kelas.</p>
+                            <div class="flex items-center gap-3 w-full">
+                                <button onclick="document.getElementById('modal-deactivate').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+                                <button onclick="document.getElementById('modal-deactivate').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors">Nonaktifkan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Aktifkan Kembali -->
+                <div id="modal-activate" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm"
+                        onclick="document.getElementById('modal-activate').classList.add('hidden')"></div>
+                    <div
+                        class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-sm p-6 mx-4">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mb-4">
+                                <i data-lucide="user-check" class="w-6 h-6 text-emerald-500"></i>
+                            </div>
+                            <h2 class="text-base font-semibold text-navy-900 mb-1">Aktifkan Kembali?</h2>
+                            <p class="text-sm text-navy-400 leading-relaxed mb-5">Instruktur ini akan bisa login dan
+                                kembali mengelola kelasnya.</p>
+                            <div class="flex items-center gap-3 w-full">
+                                <button onclick="document.getElementById('modal-activate').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+                                <button onclick="document.getElementById('modal-activate').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors">Ya,
+                                    Aktifkan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Hapus -->
+                <div id="modal-delete" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm"
+                        onclick="document.getElementById('modal-delete').classList.add('hidden')"></div>
+                    <div
+                        class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-sm p-6 mx-4">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+                                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-500"></i>
+                            </div>
+                            <h2 class="text-base font-semibold text-navy-900 mb-1">Hapus Instruktur?</h2>
+                            <p class="text-sm text-navy-400 leading-relaxed mb-5">Data instruktur ini akan dihapus
+                                secara permanen dan tidak bisa dikembalikan.</p>
+                            <div class="flex items-center gap-3 w-full">
+                                <button onclick="document.getElementById('modal-delete').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+                                <button onclick="document.getElementById('modal-delete').classList.add('hidden')"
+                                    class="flex-1 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">Ya,
+                                    Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleFilter(id) {
+            const allDropdowns = document.querySelectorAll('[id^="filter-"], [id^="action-"]');
+            allDropdowns.forEach(el => {
+                if (el.id !== id && el.tagName === 'DIV') el.classList.add('hidden');
+            });
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function closeAllFilters() {
+            document.querySelectorAll('[id^="filter-"], [id^="action-"]').forEach(el => {
+                if (el.tagName === 'DIV') el.classList.add('hidden');
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('[id$="-wrapper"]') && !e.target.closest('[id^="filter-"]') && !e.target.closest('[id^="action-"]')) {
+                closeAllFilters();
+            }
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

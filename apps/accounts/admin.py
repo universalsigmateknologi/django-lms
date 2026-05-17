@@ -7,13 +7,13 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
     # Field yang ditampilkan di list
-    list_display = ('email', 'username', 'role', 'is_verified', 'is_staff', 'is_active')
+    list_display = ('email', 'username', 'role', 'is_verified', 'is_staff', 'is_active', 'no_telp')
     list_filter = ('role', 'is_verified', 'is_staff', 'is_active')
 
     # Field saat edit user
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Informasi User', {'fields': ('username', 'role', 'is_verified')}),
+        ('Informasi User', {'fields': ('username', 'role', 'is_verified', 'no_telp')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
         ('Tanggal', {'fields': ('last_login', 'date_joined')}),
     )
@@ -22,7 +22,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'role', 'password1', 'password2', 'is_staff', 'is_active')
+            'fields': ('email', 'username', 'role', 'password1', 'password2', 'is_staff', 'is_active', 'no_telp')
         }),
     )
 

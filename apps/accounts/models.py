@@ -42,6 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
 
     date_joined = models.DateTimeField(auto_now_add=True)
+    no_telp = models.CharField(max_length=20, blank=True, null=True)
 
     objects = CustomUserManager()
 

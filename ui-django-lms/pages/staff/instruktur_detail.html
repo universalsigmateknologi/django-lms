@@ -1,0 +1,334 @@
+<!-- Top Bar -->
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+  <div class="flex items-center gap-3">
+    <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+      <i data-lucide="arrow-left" class="w-4 h-4 text-navy-500"></i>
+    </a>
+    <div class="flex items-center gap-1.5 text-xs text-navy-400">
+      <span>Instruktur</span>
+      <i data-lucide="chevron-right" class="w-3 h-3"></i>
+      <span class="text-navy-900 font-medium">Adi Nugraha</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button class="flex items-center gap-2 text-sm font-medium text-navy-500 hover:text-navy-900 border border-navy-200 hover:border-navy-300 px-4 py-2 rounded-lg transition-colors">
+      <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+      Kirim Email
+    </button>
+    <button class="flex items-center gap-2 text-sm font-medium text-navy-500 hover:text-navy-900 border border-navy-200 hover:border-navy-300 px-4 py-2 rounded-lg transition-colors">
+      <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+      Edit Profil
+    </button>
+    <button onclick="document.getElementById('modal-deactivate').classList.remove('hidden')" class="flex items-center gap-2 text-sm font-medium text-amber-600 hover:text-amber-700 border border-amber-200 hover:border-amber-300 hover:bg-amber-50 px-4 py-2 rounded-lg transition-colors">
+      <i data-lucide="user-x" class="w-3.5 h-3.5"></i>
+      Nonaktifkan
+    </button>
+  </div>
+</header>
+
+<!-- Content -->
+<div class="p-8 space-y-6">
+
+  <!-- Profile Header -->
+  <div class="bg-white rounded-xl border border-navy-100 p-6">
+    <div class="flex items-start gap-6">
+      <img src="https://picsum.photos/seed/instr-adi/200/200.jpg" class="w-24 h-24 rounded-2xl object-cover shrink-0" alt="">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-3 mb-1">
+          <h1 class="text-xl font-bold text-navy-900">Adi Nugraha</h1>
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Aktif
+          </span>
+        </div>
+        <p class="text-sm text-navy-500 mb-3">UI/UX Designer & Instruktur · Sejak Maret 2023</p>
+        <p class="text-sm text-navy-400 leading-relaxed max-w-2xl">Berpengalaman lebih dari 5 tahun di bidang UI/UX Design. Pernah bekerja di beberapa startup teknologi dan saat ini fokus menjadi instruktur online course untuk membagikan pengetahuan kepada lebih banyak orang.</p>
+      </div>
+      <div class="shrink-0 text-right">
+        <p class="text-xs text-navy-400 mb-1">Terakhir login</p>
+        <p class="text-sm font-medium text-navy-700">14 Des 2025, 09:42</p>
+      </div>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="grid grid-cols-4 gap-px bg-navy-100 rounded-xl overflow-hidden mt-6">
+      <div class="bg-navy-50/50 px-5 py-4">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium mb-1">Email</p>
+        <p class="text-sm font-medium text-navy-900 truncate">adi.nugraha@email.com</p>
+      </div>
+      <div class="bg-navy-50/50 px-5 py-4">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium mb-1">No. Telepon</p>
+        <p class="text-sm font-medium text-navy-900">0812-3456-7890</p>
+      </div>
+      <div class="bg-navy-50/50 px-5 py-4">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium mb-1">Keahlian</p>
+        <p class="text-sm font-medium text-navy-900 truncate">UI/UX, Figma, Design System</p>
+      </div>
+      <div class="bg-navy-50/50 px-5 py-4">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium mb-1">Bank Account</p>
+        <p class="text-sm font-medium text-navy-900 truncate">BCA · ****7842</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="grid grid-cols-5 gap-4">
+    <div class="bg-white rounded-xl border border-navy-100 p-5 text-center">
+      <p class="text-2xl font-bold text-navy-900">6</p>
+      <p class="text-xs text-navy-400 mt-1">Total Kelas</p>
+    </div>
+    <div class="bg-white rounded-xl border border-navy-100 p-5 text-center">
+      <p class="text-2xl font-bold text-navy-900">1,284</p>
+      <p class="text-xs text-navy-400 mt-1">Total Siswa</p>
+    </div>
+    <div class="bg-white rounded-xl border border-navy-100 p-5 text-center">
+      <div class="flex items-center justify-center gap-1">
+        <i data-lucide="star" class="w-5 h-5 text-amber-400 fill-amber-400"></i>
+        <p class="text-2xl font-bold text-navy-900">4.87</p>
+      </div>
+      <p class="text-xs text-navy-400 mt-1">Rating Rata-rata</p>
+    </div>
+    <div class="bg-white rounded-xl border border-navy-100 p-5 text-center">
+      <p class="text-2xl font-bold text-navy-900">Rp 84<span class="text-base font-semibold text-navy-400">jt</span></p>
+      <p class="text-xs text-navy-400 mt-1">Total Pendapatan</p>
+    </div>
+    <div class="bg-white rounded-xl border border-navy-100 p-5 text-center">
+      <p class="text-2xl font-bold text-navy-900">Rp 24.5<span class="text-base font-semibold text-navy-400">jt</span></p>
+      <p class="text-xs text-navy-400 mt-1">Pendapatan Bulan Ini</p>
+    </div>
+  </div>
+
+  <!-- Two Column -->
+  <div class="grid grid-cols-5 gap-6">
+
+    <!-- Left: Kelas (3 col) -->
+    <div class="col-span-3 space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-navy-900">Kelas Miliknya</h2>
+        <a href="#" class="text-xs font-medium text-navy-400 hover:text-navy-700 transition-colors flex items-center gap-1">Lihat Semua <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
+      </div>
+      <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100">
+
+        <!-- Course 1 -->
+        <div class="flex items-center gap-4 px-5 py-4 hover:bg-navy-50/50 transition-colors cursor-pointer">
+          <img src="https://picsum.photos/seed/uiux-course/120/80.jpg" class="w-16 h-11 rounded-lg object-cover shrink-0" alt="">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-navy-900 truncate">UI/UX Design: Dari Nol Hingga Portfolio</p>
+            <div class="flex items-center gap-3 mt-1">
+              <span class="text-xs text-navy-400">482 siswa</span>
+              <span class="text-xs text-navy-400 flex items-center gap-0.5"><i data-lucide="star" class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.9</span>
+              <span class="text-[10px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Aktif</span>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <p class="text-sm font-semibold text-navy-900">Rp 34.2<span class="text-xs text-navy-400 font-normal">jt</span></p>
+            <p class="text-[10px] text-navy-400">pendapatan</p>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="flex items-center gap-4 px-5 py-4 hover:bg-navy-50/50 transition-colors cursor-pointer">
+          <img src="https://picsum.photos/seed/figma-mastery/120/80.jpg" class="w-16 h-11 rounded-lg object-cover shrink-0" alt="">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-navy-900 truncate">Figma Mastery: Auto Layout & Component</p>
+            <div class="flex items-center gap-3 mt-1">
+              <span class="text-xs text-navy-400">356 siswa</span>
+              <span class="text-xs text-navy-400 flex items-center gap-0.5"><i data-lucide="star" class="w-3 h-3 text-amber-400 fill-amber-400"></i> 4.8</span>
+              <span class="text-[10px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Aktif</span>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <p class="text-sm font-semibold text-navy-900">Rp 22.8<span class="text-xs text-navy-400 font-normal">jt</span></p>
+            <p class="text-[10px] text-navy-400">pendapatan</p>
+          </div>
+        </div>
+
+        <!-- Course 3 — Draft -->
+        <div class="flex items-center gap-4 px-5 py-4 hover:bg-navy-50/50 transition-colors cursor-pointer">
+          <img src="https://picsum.photos/seed/react-course/120/80.jpg" class="w-16 h-11 rounded-lg object-cover shrink-0 opacity-60" alt="">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-navy-900 truncate">React.js untuk Pemula</p>
+            <div class="flex items-center gap-3 mt-1">
+              <span class="text-xs text-navy-400">0 siswa</span>
+              <span class="text-[10px] font-medium text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Draft</span>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <p class="text-sm font-semibold text-navy-400">Rp 0</p>
+            <p class="text-[10px] text-navy-400">pendapatan</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pendapatan Chart -->
+      <div class="bg-white rounded-xl border border-navy-100 p-5">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm font-semibold text-navy-900">Pendapatan 6 Bulan Terakhir</h2>
+          <span class="text-xs text-navy-400">Total: Rp 48.5 jt</span>
+        </div>
+        <div class="flex items-end gap-3 h-36">
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full rounded-t-md bg-navy-900/15" style="height:40%"><div class="w-full h-full rounded-t-md bg-navy-900/80"></div></div>
+            <span class="text-[10px] text-navy-400">Jul</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full rounded-t-md bg-navy-900/15" style="height:55%"><div class="w-full h-full rounded-t-md bg-navy-900/80"></div></div>
+            <span class="text-[10px] text-navy-400">Agu</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full rounded-t-md bg-navy-900/15" style="height:48%"><div class="w-full h-full rounded-t-md bg-navy-900/80"></div></div>
+            <span class="text-[10px] text-navy-400">Sep</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full rounded-t-md bg-navy-900/15" style="height:72%"><div class="w-full h-full rounded-t-md bg-navy-900/80"></div></div>
+            <span class="text-[10px] text-navy-400">Okt</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full rounded-t-md bg-navy-900/15" style="height:60%"><div class="w-full h-full rounded-t-md bg-navy-900/80"></div></div>
+            <span class="text-[10px] text-navy-400">Nov</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full rounded-t-md bg-navy-900/15" style="height:90%"><div class="w-full h-full rounded-t-md bg-navy-900"></div></div>
+            <span class="text-[10px] font-medium text-navy-700">Des</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Side panels (2 col) -->
+    <div class="col-span-2 space-y-4">
+
+      <!-- Pembayaran Terakhir -->
+      <div class="bg-white rounded-xl border border-navy-100 p-5">
+        <h2 class="text-sm font-semibold text-navy-900 mb-4">Pembayaran Terakhir</h2>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between py-2 border-b border-navy-50">
+            <div>
+              <p class="text-sm text-navy-700">Desember 2025</p>
+              <p class="text-xs text-navy-400 mt-0.5">6 kelas aktif</p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-semibold text-navy-900">Rp 8.2<span class="text-xs text-navy-400 font-normal">jt</span></p>
+              <span class="text-[10px] font-medium text-emerald-600">Dibayar</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-2 border-b border-navy-50">
+            <div>
+              <p class="text-sm text-navy-700">November 2025</p>
+              <p class="text-xs text-navy-400 mt-0.5">5 kelas aktif</p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-semibold text-navy-900">Rp 7.5<span class="text-xs text-navy-400 font-normal">jt</span></p>
+              <span class="text-[10px] font-medium text-emerald-600">Dibayar</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <p class="text-sm text-navy-700">Oktober 2025</p>
+              <p class="text-xs text-navy-400 mt-0.5">5 kelas aktif</p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-semibold text-navy-900">Rp 6.8<span class="text-xs text-navy-400 font-normal">jt</span></p>
+              <span class="text-[10px] font-medium text-emerald-600">Dibayar</span>
+            </div>
+          </div>
+        </div>
+        <button class="w-full mt-4 py-2 text-xs font-medium text-navy-500 hover:text-navy-700 border border-navy-100 hover:border-navy-200 rounded-lg transition-colors">
+          Lihat Riwayat Pembayaran
+        </button>
+      </div>
+
+      <!-- Sertifikat Diterbitkan -->
+      <div class="bg-white rounded-xl border border-navy-100 p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-sm font-semibold text-navy-900">Sertifikat Diterbitkan</h2>
+          <span class="text-lg font-bold text-navy-900">312</span>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-navy-500 truncate">UI/UX Design</span>
+            <span class="text-navy-700 font-medium shrink-0 ml-3">148</span>
+          </div>
+          <div class="w-full h-1 bg-navy-50 rounded-full"><div class="h-full bg-navy-900 rounded-full" style="width:47%"></div></div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-navy-500 truncate">Figma Mastery</span>
+            <span class="text-navy-700 font-medium shrink-0 ml-3">96</span>
+          </div>
+          <div class="w-full h-1 bg-navy-50 rounded-full"><div class="h-full bg-navy-900 rounded-full" style="width:31%"></div></div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-navy-500 truncate">Design System</span>
+            <span class="text-navy-700 font-medium shrink-0 ml-3">68</span>
+          </div>
+          <div class="w-full h-1 bg-navy-50 rounded-full"><div class="h-full bg-navy-900 rounded-full" style="width:22%"></div></div>
+        </div>
+      </div>
+
+      <!-- Activity Log -->
+      <div class="bg-white rounded-xl border border-navy-100 p-5">
+        <h2 class="text-sm font-semibold text-navy-900 mb-4">Aktivitas Terbaru</h2>
+        <div class="space-y-3">
+          <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-blue-500"></i>
+            </div>
+            <div>
+              <p class="text-xs text-navy-700">Membuat modul baru di <span class="font-medium text-navy-900">Figma Mastery</span></p>
+              <p class="text-[10px] text-navy-400 mt-0.5">2 jam lalu</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="upload" class="w-3.5 h-3.5 text-emerald-500"></i>
+            </div>
+            <div>
+              <p class="text-xs text-navy-700">Upload video di modul <span class="font-medium text-navy-900">Wireframing</span></p>
+              <p class="text-[10px] text-navy-400 mt-0.5">5 jam lalu</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-full bg-violet-50 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5 text-violet-500"></i>
+            </div>
+            <div>
+              <p class="text-xs text-navy-700">Membalas 3 diskusi di <span class="font-medium text-navy-900">UI/UX Design</span></p>
+              <p class="text-[10px] text-navy-400 mt-0.5">Kemarin, 16:20</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-full bg-amber-50 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="pencil" class="w-3.5 h-3.5 text-amber-500"></i>
+            </div>
+            <div>
+              <p class="text-xs text-navy-700">Mengedit deskripsi kelas <span class="font-medium text-navy-900">React.js</span></p>
+              <p class="text-[10px] text-navy-400 mt-0.5">Kemarin, 10:05</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal: Nonaktifkan -->
+<div id="modal-deactivate" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-navy-950/40 backdrop-blur-sm" onclick="document.getElementById('modal-deactivate').classList.add('hidden')"></div>
+  <div class="relative bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-sm p-6 mx-4">
+    <div class="flex flex-col items-center text-center">
+      <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mb-4">
+        <i data-lucide="user-x" class="w-6 h-6 text-amber-500"></i>
+      </div>
+      <h2 class="text-base font-semibold text-navy-900 mb-1">Nonaktifkan Adi Nugraha?</h2>
+      <p class="text-sm text-navy-400 leading-relaxed mb-5">Instruktur tidak bisa login atau mengelola kelas. Semua kelas dan data siswa tetap aman.</p>
+      <div class="flex items-center gap-3 w-full">
+        <button onclick="document.getElementById('modal-deactivate').classList.add('hidden')" class="flex-1 py-2.5 text-sm font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">Batal</button>
+        <button onclick="document.getElementById('modal-deactivate').classList.add('hidden')" class="flex-1 py-2.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors">Nonaktifkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>

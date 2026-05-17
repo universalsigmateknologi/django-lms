@@ -1875,6 +1875,11 @@ video {
   border-top-right-radius: 0.375rem;
 }
 
+.rounded-t-lg {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
 .border {
   border-width: 1px;
 }
@@ -2223,6 +2228,10 @@ video {
 
 .bg-navy-800\/60 {
   background-color: rgb(36 59 83 / 0.6);
+}
+
+.bg-navy-800\/80 {
+  background-color: rgb(36 59 83 / 0.8);
 }
 
 .bg-gradient-to-t {
@@ -3596,6 +3605,11 @@ video {
 .group:hover .group-hover\:bg-navy-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(240 244 248 / var(--tw-bg-opacity, 1));
+}
+
+.group:hover .group-hover\:bg-navy-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(16 42 67 / var(--tw-bg-opacity, 1));
 }
 
 .group:hover .group-hover\:text-navy-700 {

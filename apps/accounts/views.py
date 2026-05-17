@@ -213,6 +213,39 @@ def staff_instructor_detail_view(request, pk):
     monthly_income_res = monthly_paid_items.aggregate(total=Sum('price_snapshot'))
     monthly_income = float(monthly_income_res['total'] or 0)
 
+    # Calculate revenue for the last 12 months
+    monthly_revenues = []
+    month_names = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"]
+    
+    for i in range(11, -1, -1):
+        m = now.month - i
+        y = now.year
+        while m <= 0:
+            m += 12
+            y -= 1
+        
+        start_date = timezone.datetime(y, m, 1, 0, 0, 0, tzinfo=timezone.get_current_timezone())
+        if m == 12:
+            end_date = timezone.datetime(y + 1, 1, 1, 0, 0, 0, tzinfo=timezone.get_current_timezone())
+        else:
+            end_date = timezone.datetime(y, m + 1, 1, 0, 0, 0, tzinfo=timezone.get_current_timezone())
+            
+        month_income_val = paid_items.filter(
+            order__created_at__gte=start_date, 
+            order__created_at__lt=end_date
+        ).aggregate(total=Sum('price_snapshot'))['total'] or 0
+        
+        monthly_revenues.append({
+            'name': month_names[m - 1],
+            'year': y,
+            'amount': float(month_income_val)
+        })
+
+    # Calculate percentage heights based on the maximum monthly revenue
+    max_amount = max([mr['amount'] for mr in monthly_revenues] + [1.0])
+    for mr in monthly_revenues:
+        mr['pct'] = int(max(5, (mr['amount'] / max_amount) * 100))
+
     # Get courses and annotate them with student count and revenue
     courses_list = instructor.courses.all().order_by('title')
     courses_page = request.GET.get('page')
@@ -244,6 +277,7 @@ def staff_instructor_detail_view(request, pk):
         'avg_rating': avg_rating,
         'total_income': total_income,
         'monthly_income': monthly_income,
+        'monthly_revenues': monthly_revenues,
         'courses_page_obj': courses_page_obj,
         'wa_link': wa_link,
         'menu': 'staff_instructors',

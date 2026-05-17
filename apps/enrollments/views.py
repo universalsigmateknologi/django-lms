@@ -9,7 +9,7 @@ from apps.quizzes.models import Quiz, Question, Answer, QuestionType
 from django.db.models import Count, Q, Max
 import random
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def my_courses_view(request):
     enrollments = Enrollment.objects.filter(student=request.user).select_related(
         'course', 'course__instructor'
@@ -95,7 +95,7 @@ def get_sidebar_context(enrollment, current_lesson=None):
         
     return context
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def mark_lesson_complete_view(request, lesson_id):
     if request.method == 'POST':
         lesson = get_object_or_404(Lesson, id=lesson_id)
@@ -115,7 +115,7 @@ def mark_lesson_complete_view(request, lesson_id):
     
     return redirect('enrollments:my_courses')
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def learn_view(request, course_slug, lesson_id):
     course = get_object_or_404(Course, slug=course_slug)
     enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
@@ -162,7 +162,7 @@ def learn_view(request, course_slug, lesson_id):
     return render(request, 'enrollments/learn.html', context)
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def quiz_start_view(request, course_slug, quiz_id):
     course = get_object_or_404(Course, slug=course_slug)
     enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
@@ -190,7 +190,7 @@ def quiz_start_view(request, course_slug, quiz_id):
     return render(request, 'enrollments/quiz_start.html', context)
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def quiz_attempt_view(request, course_slug, quiz_id):
     course = get_object_or_404(Course, slug=course_slug)
     enrollment = get_object_or_404(Enrollment, course=course, student=request.user)
@@ -301,7 +301,7 @@ def quiz_attempt_view(request, course_slug, quiz_id):
     return render(request, 'enrollments/quiz_attempt.html', context)
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def quiz_result_view(request, course_slug, quiz_id, attempt_id):
     course = get_object_or_404(Course, slug=course_slug)
     enrollment = get_object_or_404(Enrollment, course=course, student=request.user)

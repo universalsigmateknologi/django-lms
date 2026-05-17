@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def create_order_view(request, slug):
     """
     GET: Tampilkan halaman pembayaran (bank info + upload form) sebelum order dibuat.
@@ -120,7 +120,7 @@ def create_order_view(request, slug):
     return render(request, "payments/payment_page.html", context)
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def payment_page_view(request, order_number):
     """
     Halaman pembayaran: info bank, countdown, form upload bukti transfer.
@@ -160,7 +160,7 @@ def payment_page_view(request, order_number):
     return render(request, "payments/payment_page.html", context)
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 @require_POST
 def upload_proof_view(request, order_number):
     """
@@ -218,7 +218,7 @@ def upload_proof_view(request, order_number):
         return render(request, "payments/payment_page.html", context)
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def order_history_view(request):
     """
     Daftar order milik user.
@@ -237,7 +237,7 @@ def order_history_view(request):
     return render(request, "payments/order_history.html", context)
 
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def order_detail_view(request, order_number):
     """
     Detail order tunggal.
@@ -264,7 +264,7 @@ def order_detail_view(request, order_number):
 # API Endpoints (optional AJAX)
 # ─────────────────────────────────────────────────────────────────────────────
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def check_order_status_api(request, order_number):
     """
     AJAX endpoint: cek status order terkini.

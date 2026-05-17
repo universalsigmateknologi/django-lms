@@ -5,7 +5,7 @@ from apps.accounts.decorators import role_required
 from .models import Certificate
 from apps.courses.models import Category
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def certificate_list_view(request):
     queryset = Certificate.objects.filter(student=request.user)
     
@@ -66,8 +66,9 @@ def certificate_list_view(request):
     
     return render(request, 'certificates/list.html', context)
 
+@role_required(allowed_roles=['student'])
 def certificate_detail_view(request, cert_number):
-    # Bisa diakses publik untuk keperluan verifikasi sertifikat
+    # Bisa diakses publik untuk keperluan verifikasi sertifikat (Dibatasi ke student sesuai request)
     certificate = get_object_or_404(Certificate, certificate_number=cert_number, is_valid=True)
     
     # Sertifikat hanya bisa diakses jika is_accessible adalah True

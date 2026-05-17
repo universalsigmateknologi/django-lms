@@ -13,7 +13,7 @@ from apps.enrollments.models import Enrollment, EnrollmentStatus
 def landing_view(request):
     return render(request, 'courses/landing.html')
 
-@role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
+@role_required(allowed_roles=['student'])
 def course_list_view(request):
 
     courses = Course.objects.filter(status='published').annotate(
@@ -113,6 +113,7 @@ def course_list_view(request):
     return render(request, 'courses/preview.html', context)
 
 
+@role_required(allowed_roles=['student'])
 def course_detail_view(request, slug):
     course = get_object_or_404(
         Course.objects.annotate(

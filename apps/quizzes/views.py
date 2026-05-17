@@ -7,6 +7,7 @@ from apps.courses.models import Lesson
 from apps.accounts.decorators import role_required
 
 # Create your views here.
+@role_required(allowed_roles=['student'])
 def index(request):
     return render(request, 'quizzes/start.html')
 

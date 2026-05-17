@@ -1,0 +1,143 @@
+{% extends 'base_admin.html' %}
+{% block topbar %}
+<!-- Top Bar -->
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5 text-xs text-navy-400">
+            <span>Dashboard</span>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-navy-900 font-medium">Verifikasi Kursus</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-3">
+        <form action="" method="GET" class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-navy-300"></i>
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Cari kursus..."
+                class="pl-9 pr-4 py-2 text-sm bg-navy-50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 w-56 placeholder:text-navy-300 transition-all">
+            {% if status_filter and status_filter != 'all' %}
+                <input type="hidden" name="status" value="{{ status_filter }}">
+            {% endif %}
+        </form>
+        <button class="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-navy-50 transition-colors">
+            <i data-lucide="bell" class="w-[18px] h-[18px] text-navy-500"></i>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+    </div>
+</header>
+{% endblock topbar %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-bold text-navy-900">Verifikasi Kursus</h1>
+            <p class="text-sm text-navy-400 mt-0.5">Kelola dan verifikasi pengajuan publikasi kursus dari instruktur</p>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="flex items-center gap-1 bg-white border border-navy-100 rounded-lg p-1 w-fit mt-6">
+        <a href="?status=all{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'all' or not status_filter %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Semua <span class="ml-1 text-xs opacity-70">{{ total_count }}</span>
+        </a>
+        <a href="?status=pending{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'pending' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Menunggu Verifikasi <span class="ml-1 text-xs opacity-60">{{ pending_count }}</span>
+        </a>
+        <a href="?status=published{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'published' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Dipublikasikan <span class="ml-1 text-xs opacity-60">{{ published_count }}</span>
+        </a>
+        <a href="?status=rejected{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'rejected' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Ditolak <span class="ml-1 text-xs opacity-60">{{ rejected_count }}</span>
+        </a>
+    </div>
+
+    <!-- Course List -->
+    <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100 mt-6">
+        {% for course in page_obj %}
+        <div class="flex items-center gap-5 p-5 hover:bg-navy-50/40 transition-colors">
+            {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="w-32 h-20 rounded-lg object-cover shrink-0 border border-navy-100" alt="{{ course.title }}">
+            {% else %}
+                <div class="w-32 h-20 rounded-lg bg-navy-100 flex items-center justify-center shrink-0 border border-navy-100">
+                    <i data-lucide="image" class="w-8 h-8 text-navy-300"></i>
+                </div>
+            {% endif %}
+            
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                    {% if course.status == 'published' %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Dipublikasikan</span>
+                    {% elif course.status == 'pending' %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Menunggu Verifikasi</span>
+                    {% elif course.status == 'rejected' %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-red-600 bg-red-50 px-2 py-0.5 rounded">Ditolak</span>
+                    {% else %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 bg-slate-50 px-2 py-0.5 rounded">Draft</span>
+                    {% endif %}
+                    
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-navy-400 bg-navy-50 px-2 py-0.5 rounded">{{ course.category.name }}</span>
+                    <span class="text-[10px] font-medium text-navy-500">Oleh: <span class="font-semibold text-navy-700">{{ course.instructor.get_full_name|default:course.instructor.username }}</span></span>
+                </div>
+                <h3 class="text-sm font-semibold text-navy-900 truncate">
+                    <a href="{% url 'course_detail' course.slug %}" target="_blank" class="hover:text-navy-700 transition-colors inline-flex items-center gap-1.5">
+                        {{ course.title }}
+                        <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                    </a>
+                </h3>
+                <div class="flex items-center gap-4 mt-2">
+                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="layers" class="w-3 h-3"></i> {{ course.module_count }} modul</span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="clock" class="w-3 h-3"></i> {{ course.total_hours_ann|floatformat:1 }} jam</span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400">
+                        <i data-lucide="credit-card" class="w-3 h-3"></i> 
+                        {% if course.price > 0 %}
+                            Rp{{ course.price|floatformat:"0g" }}
+                        {% else %}
+                            Gratis
+                        {% endif %}
+                    </span>
+                    <span class="flex items-center gap-1 text-xs text-navy-400"><i data-lucide="calendar" class="w-3 h-3"></i> {{ course.updated_at|date:"d M Y, H:i" }}</span>
+                </div>
+            </div>
+            
+            <!-- Actions: Clean UI Style Buttons directly on the list item -->
+            <div class="flex items-center gap-2 shrink-0">
+                {% if course.status == 'pending' or course.status == 'rejected' %}
+                <form action="{% url 'staff_verify_course_action' course.id 'publish' %}" method="POST" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" title="Terbitkan Kursus"
+                        class="flex items-center gap-1.5 px-4 py-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white text-xs font-semibold rounded-xl transition-all active:scale-[0.95] border border-emerald-100 shadow-sm">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        Terbitkan
+                    </button>
+                </form>
+                {% endif %}
+                {% if course.status == 'pending' or course.status == 'published' %}
+                <form action="{% url 'staff_verify_course_action' course.id 'reject' %}" method="POST" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" title="Tolak Pengajuan"
+                        class="flex items-center gap-1.5 px-4 py-2 bg-red-50 hover:bg-red-600 text-red-700 hover:text-white text-xs font-semibold rounded-xl transition-all active:scale-[0.95] border border-red-100 shadow-sm">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                        Tolak
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="p-10 text-center">
+            <div class="w-16 h-16 bg-navy-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="book-open" class="w-8 h-8 text-navy-300"></i>
+            </div>
+            <h3 class="text-navy-900 font-semibold">Tidak ada pengajuan kelas</h3>
+            <p class="text-sm text-navy-400 mt-1">Tidak ada pengajuan kelas yang sesuai dengan filter saat ini.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% include 'components/pagination.html' with page_obj=page_obj item_name="kelas" %}
+{% endblock content %}

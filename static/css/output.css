@@ -1229,20 +1229,20 @@ video {
   max-height: 16rem;
 }
 
-.max-h-\[70vh\] {
-  max-height: 70vh;
-}
-
 .max-h-80 {
   max-height: 20rem;
 }
 
-.min-h-screen {
-  min-height: 100vh;
+.max-h-\[70vh\] {
+  max-height: 70vh;
 }
 
 .min-h-32 {
   min-height: 8rem;
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .w-1\.5 {
@@ -2044,6 +2044,10 @@ video {
   background-color: rgb(16 42 67 / 0.4);
 }
 
+.bg-navy-900\/50 {
+  background-color: rgb(16 42 67 / 0.5);
+}
+
 .bg-navy-900\/80 {
   background-color: rgb(16 42 67 / 0.8);
 }
@@ -2101,10 +2105,6 @@ video {
 
 .bg-white\/90 {
   background-color: rgb(255 255 255 / 0.9);
-}
-
-.bg-navy-900\/50 {
-  background-color: rgb(16 42 67 / 0.5);
 }
 
 .bg-gradient-to-t {
@@ -2513,12 +2513,12 @@ video {
   font-weight: 500;
 }
 
-.font-semibold {
-  font-weight: 600;
-}
-
 .font-normal {
   font-weight: 400;
+}
+
+.font-semibold {
+  font-weight: 600;
 }
 
 .uppercase {
@@ -3191,6 +3191,11 @@ video {
   background-color: rgb(255 255 255 / 0.6);
 }
 
+.hover\:bg-red-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:text-emerald-700:hover {
   --tw-text-opacity: 1;
   color: rgb(4 120 87 / var(--tw-text-opacity, 1));
@@ -3229,6 +3234,11 @@ video {
 .hover\:text-violet-700:hover {
   --tw-text-opacity: 1;
   color: rgb(109 40 217 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-white:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {
@@ -3356,6 +3366,12 @@ video {
 .active\:scale-\[0\.98\]:active {
   --tw-scale-x: 0.98;
   --tw-scale-y: 0.98;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.active\:scale-\[0\.95\]:active {
+  --tw-scale-x: 0.95;
+  --tw-scale-y: 0.95;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 

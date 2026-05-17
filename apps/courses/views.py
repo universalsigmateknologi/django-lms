@@ -462,5 +462,82 @@ def course_publish_request(request, pk):
     return redirect('instructor_course_list')
 
 
+@role_required(allowed_roles=['admin', 'staff'])
+def staff_course_verification_view(request):
+    """
+    Halaman untuk staff melakukan verifikasi pengajuan publikasi kursus.
+    """
+    search_query = request.GET.get('search', '').strip()
+    status_filter = request.GET.get('status', 'all')
+    
+    courses = Course.objects.select_related('instructor', 'category').annotate(
+        total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
+        student_count_ann=Count('enrollments', distinct=True),
+        module_count=Count('modules', distinct=True)
+    ).annotate(
+        total_hours_ann=ExpressionWrapper(
+            F('total_duration_sec') / 3600.0,
+            output_field=FloatField()
+        )
+    ).order_by('-updated_at')
+    
+    if status_filter != 'all':
+        courses = courses.filter(status=status_filter)
+    else:
+        # Exclude draft to only show courses submitted/processed for verification
+        courses = courses.exclude(status='draft')
+        
+    if search_query:
+        courses = courses.filter(
+            Q(title__icontains=search_query) |
+            Q(instructor__username__icontains=search_query) |
+            Q(instructor__email__icontains=search_query)
+        )
+        
+    total_count = Course.objects.exclude(status='draft').count()
+    pending_count = Course.objects.filter(status='pending').count()
+    published_count = Course.objects.filter(status='published').count()
+    rejected_count = Course.objects.filter(status='rejected').count()
+    
+    paginator = Paginator(courses, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'status_filter': status_filter,
+        'total_count': total_count,
+        'pending_count': pending_count,
+        'published_count': published_count,
+        'rejected_count': rejected_count,
+        'menu': 'staff_course_verification',
+    }
+    return render(request, 'courses/staff/course_publish_verification.html', context)
+
+
+@role_required(allowed_roles=['admin', 'staff'])
+def staff_verify_course_action(request, pk, action):
+    """
+    Action untuk mempublikasikan atau menolak pengajuan kursus.
+    """
+    from django.contrib import messages
+    course = get_object_or_404(Course, pk=pk)
+    
+    if action == 'publish':
+        course.status = 'published'
+        course.save()
+        messages.success(request, f'Kursus "{course.title}" berhasil dipublikasikan.')
+    elif action == 'reject':
+        course.status = 'rejected'
+        course.save()
+        messages.success(request, f'Pengajuan kursus "{course.title}" berhasil ditolak.')
+    else:
+        messages.error(request, 'Aksi tidak valid.')
+        
+    return redirect('staff_course_verification')
+
+
+
 
 

@@ -14,9 +14,25 @@
         </div>
         
         <div class="space-y-4">
-            <a href="{% url 'course_preview' %}" class="block w-full py-3 px-6 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-xl transition duration-300 shadow-lg hover:shadow-navy-200">
-                Kembali ke Beranda
-            </a>
+            {% if user.is_authenticated %}
+                {% if user.role == 'instructor' %}
+                <a href="{% url 'instructor_course_list' %}" class="block w-full py-3 px-6 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-xl transition duration-300 shadow-lg hover:shadow-navy-200">
+                    Kembali ke Beranda
+                </a>
+                {% elif user.role == 'staff' %}
+                <a href="{% url 'payments:staff_order_verification' %}" class="block w-full py-3 px-6 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-xl transition duration-300 shadow-lg hover:shadow-navy-200">
+                    Kembali ke Beranda
+                </a>
+                {% else %}
+                <a href="{% url 'course_preview' %}" class="block w-full py-3 px-6 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-xl transition duration-300 shadow-lg hover:shadow-navy-200">
+                    Kembali ke Beranda
+                </a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="block w-full py-3 px-6 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-xl transition duration-300 shadow-lg hover:shadow-navy-200">
+                    Kembali ke Halaman Login
+                </a>
+            {% endif %}
             <p class="text-sm text-navy-500">
                 Jika Anda merasa ini adalah kesalahan, silakan hubungi administrator.
             </p>

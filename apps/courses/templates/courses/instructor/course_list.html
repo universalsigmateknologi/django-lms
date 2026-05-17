@@ -53,6 +53,10 @@
             class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'draft' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
             Draft <span class="ml-1 text-xs opacity-60">{{ draft_count }}</span>
         </a>
+        <a href="?status=pending{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'pending' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Pending <span class="ml-1 text-xs opacity-60">{{ pending_count }}</span>
+        </a>
     </div>
 
     <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100">
@@ -67,10 +71,14 @@
             {% endif %}
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
-                    {% if course.is_published %}
+                    {% if course.status == 'published' %}
                         <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Aktif</span>
+                    {% elif course.status == 'pending' %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Menunggu Verifikasi</span>
+                    {% elif course.status == 'rejected' %}
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-red-600 bg-red-50 px-2 py-0.5 rounded">Ditolak</span>
                     {% else %}
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Draft</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 bg-slate-50 px-2 py-0.5 rounded">Draft</span>
                     {% endif %}
                     
                     {% if course.is_online %}
@@ -113,9 +121,11 @@
                     data-level="{{ course.level }}"
                     data-price="{{ course.price|floatformat:0 }}"
                     data-is-online="{{ course.is_online|yesno:'true,false' }}"
+                    data-is-lesson-finished="{{ course.is_lesson_finished|yesno:'true,false' }}"
                     data-description="{{ course.description }}"
                     data-thumbnail="{% if course.thumbnail %}{{ course.thumbnail.url }}{% endif %}"
                     data-tags="[{% for tag in course.tags.all %}{{ tag.id }}{% if not forloop.last %},{% endif %}{% endfor %}]"
+                    data-status="{{ course.status }}"
                     class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
                     <i data-lucide="pencil" class="w-4 h-4"></i>
                 </button>
@@ -324,6 +334,17 @@
                                 </label>
                             </div>
                         </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-navy-900 ml-1">Status Materi</label>
+                            <div class="flex items-center gap-4 h-[50px]">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="is_lesson_finished" id="edit-is-lesson-finished" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-navy-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-navy-900"></div>
+                                    <span class="ml-3 text-sm font-medium text-navy-700">Selesai</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Description Section -->
@@ -363,15 +384,24 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="flex items-center justify-end gap-3 pt-8">
-                    <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                        class="px-6 py-2.5 text-sm font-semibold text-navy-500 hover:text-navy-700 transition-colors">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="px-8 py-2.5 bg-navy-900 hover:bg-navy-950 text-white text-sm font-semibold rounded-xl shadow-lg shadow-navy-900/10 transition-all transform active:scale-[0.98]">
-                        Simpan Perubahan
-                    </button>
+                <div class="flex items-center justify-between pt-8 border-t border-navy-50 mt-8">
+                    <div id="publish-container">
+                        <button type="button" id="btn-publish" onclick="requestPublish()"
+                            class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-emerald-900/10 transition-all transform active:scale-[0.98] flex items-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            Ajukan Publikasi
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
+                            class="px-6 py-2.5 text-sm font-semibold text-navy-500 hover:text-navy-700 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="px-8 py-2.5 bg-navy-900 hover:bg-navy-950 text-white text-sm font-semibold rounded-xl shadow-lg shadow-navy-900/10 transition-all transform active:scale-[0.98]">
+                            Simpan Perubahan
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -415,6 +445,7 @@
             const level = btn.getAttribute('data-level');
             const price = btn.getAttribute('data-price');
             const isOnline = btn.getAttribute('data-is-online') === 'true';
+            const isLessonFinished = btn.getAttribute('data-is-lesson-finished') === 'true';
             const description = btn.getAttribute('data-description');
             const thumbnail = btn.getAttribute('data-thumbnail');
             const tags = JSON.parse(btn.getAttribute('data-tags'));
@@ -427,6 +458,7 @@
             document.getElementById('edit-level').value = level;
             document.getElementById('edit-price').value = price;
             document.getElementById('edit-is-online').checked = isOnline;
+            document.getElementById('edit-is-lesson-finished').checked = isLessonFinished;
             document.getElementById('edit-description').value = description;
 
             const preview = document.getElementById('edit-thumbnail-preview');
@@ -446,7 +478,36 @@
                 cb.checked = tags.includes(parseInt(cb.value));
             });
 
+            // Handle Publish Button visibility
+            const status = btn.getAttribute('data-status');
+            const publishBtn = document.getElementById('btn-publish');
+            if (status === 'draft' || status === 'rejected') {
+                publishBtn.parentElement.classList.remove('hidden');
+            } else {
+                publishBtn.parentElement.classList.add('hidden');
+            }
+
             document.getElementById('modal-edit').classList.remove('hidden');
+        }
+
+        function requestPublish() {
+            if (confirm('Apakah Anda yakin ingin mengajukan publikasi untuk kelas ini? Setelah diajukan, Anda masih bisa mengedit namun status akan kembali ke menunggu verifikasi.')) {
+                const form = document.getElementById('edit-course-form');
+                const courseId = form.action.split('/').filter(Boolean).pop();
+                
+                const publishForm = document.createElement('form');
+                publishForm.method = 'POST';
+                publishForm.action = `/instructor/courses/publish/${courseId}/`;
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                publishForm.appendChild(csrfInput);
+                document.body.appendChild(publishForm);
+                publishForm.submit();
+            }
         }
     </script>
 

@@ -4,7 +4,7 @@ from .views import (
     instructor_course_list, course_create_view, course_edit_view,
     instructor_module_list, instructor_lesson_list, module_create_view,
     module_edit_view, module_delete_view, lesson_create_view,
-    lesson_edit_view, lesson_delete_view
+    lesson_edit_view, lesson_delete_view, course_publish_request
 )
 
 
@@ -24,6 +24,7 @@ urlpatterns = [
 
     path('instructor/courses/create/', course_create_view, name='course_create'),
     path('instructor/courses/edit/<int:pk>/', course_edit_view, name='course_edit'),
+    path('instructor/courses/publish/<int:pk>/', course_publish_request, name='course_publish'),
 ]
 
 

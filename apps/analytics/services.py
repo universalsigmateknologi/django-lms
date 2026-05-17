@@ -64,7 +64,7 @@ class PlatformAnalyticService:
             "total_students":    CustomUser.objects.filter(role=UserRole.STUDENT).count(),
             "total_instructors": CustomUser.objects.filter(role=UserRole.INSTRUCTOR).count(),
             "total_courses":     Course.objects.count(),
-            "published_courses": Course.objects.filter(is_published=True).count(),
+            "published_courses": Course.objects.filter(status='published').count(),
             "total_enrollments": Enrollment.objects.count(),
             "new_enrollments":   Enrollment.objects.filter(enrolled_at__date=today).count(),
             "total_completions": Enrollment.objects.filter(status=EnrollmentStatus.COMPLETED).count(),

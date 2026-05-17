@@ -37,7 +37,7 @@ def create_order_view(request, slug):
     GET: Tampilkan halaman pembayaran (bank info + upload form) sebelum order dibuat.
     POST: Buat order sekaligus upload bukti transfer.
     """
-    course = get_object_or_404(Course, slug=slug, is_published=True)
+    course = get_object_or_404(Course, slug=slug, status='published')
 
     # ── Guard: Sudah terdaftar? ──
     if Enrollment.objects.filter(student=request.user, course=course).exists():

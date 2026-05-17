@@ -45,10 +45,10 @@ class TagAdmin(admin.ModelAdmin):
 class CourseAdmin(admin.ModelAdmin):
     list_display  = (
         "title", "instructor_email", "category",
-        "level", "price", "is_published", "is_lesson_finished",
+        "level", "price", "status",
         "created_at", "updated_at",
     )
-    list_filter   = ("is_published", "level", "category")
+    list_filter   = ("status", "level", "category")
     search_fields = ("title", "instructor__email", "instructor__username")
     ordering      = ("-created_at",)
     prepopulated_fields  = {"slug": ("title",)}
@@ -65,7 +65,7 @@ class CourseAdmin(admin.ModelAdmin):
             ),
         }),
         (_("Harga & Status"), {
-            "fields": ("price", "is_published", "is_lesson_finished", "is_online"),
+            "fields": ("price", "status", "is_lesson_finished", "is_online"),
         }),
         (_("Thumbnail"), {
             "fields": ("thumbnail", "thumbnail_preview"),
@@ -89,16 +89,26 @@ class CourseAdmin(admin.ModelAdmin):
             )
         return "-"
 
-    actions = ["publish_courses", "unpublish_courses"]
+    actions = ["approve_courses", "reject_courses", "publish_courses", "unpublish_courses"]
+
+    @admin.action(description="Approve and Publish selected courses")
+    def approve_courses(self, request, queryset):
+        updated = queryset.update(status='published')
+        self.message_user(request, f"{updated} courses approved and published.")
+
+    @admin.action(description="Reject selected courses")
+    def reject_courses(self, request, queryset):
+        updated = queryset.update(status='rejected')
+        self.message_user(request, f"{updated} courses rejected.")
 
     @admin.action(description="Publikasikan kursus terpilih")
     def publish_courses(self, request, queryset):
-        updated = queryset.update(is_published=True)
+        updated = queryset.update(status='published')
         self.message_user(request, f"{updated} kursus dipublikasikan.")
 
     @admin.action(description="Sembunyikan kursus terpilih")
     def unpublish_courses(self, request, queryset):
-        updated = queryset.update(is_published=False)
+        updated = queryset.update(status='draft')
         self.message_user(request, f"{updated} kursus disembunyikan.")
         
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

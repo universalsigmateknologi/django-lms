@@ -16,7 +16,7 @@ def landing_view(request):
 @role_required(allowed_roles=['student', 'instructor', 'admin', 'staff'])
 def course_list_view(request):
 
-    courses = Course.objects.filter(is_published=True).annotate(
+    courses = Course.objects.filter(status='published').annotate(
         total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
         student_count_ann=Count('enrollments', distinct=True)
     ).annotate(
@@ -26,7 +26,7 @@ def course_list_view(request):
         )
     )
     
-    categories = Category.objects.annotate(course_count=Count('courses', filter=Q(courses__is_published=True)))
+    categories = Category.objects.annotate(course_count=Count('courses', filter=Q(courses__status='published')))
     
     # Search
     search_query = request.GET.get('search', '')
@@ -179,16 +179,19 @@ def instructor_course_list(request):
     ).order_by('-created_at')
 
     # Status counts
-    active_count = Course.objects.filter(instructor=request.user, is_published=True).count()
-    draft_count = Course.objects.filter(instructor=request.user, is_published=False).count()
+    active_count = Course.objects.filter(instructor=request.user, status='published').count()
+    draft_count = Course.objects.filter(instructor=request.user, status='draft').count()
+    pending_count = Course.objects.filter(instructor=request.user, status='pending').count()
     total_count = Course.objects.filter(instructor=request.user).count()
 
     # Filter by status if requested
     status_filter = request.GET.get('status', 'all')
     if status_filter == 'active':
-        courses_list = courses_list.filter(is_published=True)
+        courses_list = courses_list.filter(status='published')
     elif status_filter == 'draft':
-        courses_list = courses_list.filter(is_published=False)
+        courses_list = courses_list.filter(status='draft')
+    elif status_filter == 'pending':
+        courses_list = courses_list.filter(status='pending')
 
     # Search
     search_query = request.GET.get('search', '')
@@ -204,7 +207,8 @@ def instructor_course_list(request):
         'page_obj': page_obj,
         'total_count': total_count,
         'active_count': active_count,
-        'draft_count': draft_count,
+        'draft_count': Course.objects.filter(instructor=request.user, status='draft').count(),
+        'pending_count': Course.objects.filter(instructor=request.user, status='pending').count(),
         'status_filter': status_filter,
         'search_query': search_query,
         'categories': Category.objects.all(),
@@ -236,7 +240,7 @@ def course_create_view(request):
             is_online=is_online,
             description=description,
             thumbnail=thumbnail,
-            is_published=False # Default to draft
+            status='draft' # Default to draft
         )
         
         if tag_ids:
@@ -256,6 +260,7 @@ def course_edit_view(request, pk):
         course.level = request.POST.get('level')
         course.price = request.POST.get('price')
         course.is_online = request.POST.get('is_online') == 'on'
+        course.is_lesson_finished = request.POST.get('is_lesson_finished') == 'on'
         course.description = request.POST.get('description')
         
         thumbnail = request.FILES.get('thumbnail')
@@ -301,7 +306,7 @@ def instructor_module_list(request, course_id):
 @role_required(allowed_roles=['instructor', 'admin', 'staff'])
 def instructor_lesson_list(request, module_id):
     module = get_object_or_404(Module, id=module_id, course__instructor=request.user)
-    lessons_list = Lesson.objects.filter(module=module).order_by('order')
+    lessons_list = Lesson.objects.filter(module=module).prefetch_related('quiz__questions').order_by('order')
 
     # Search
     search_query = request.GET.get('search', '')
@@ -439,6 +444,22 @@ def lesson_delete_view(request, pk):
             messages.error(request, 'Password salah. Materi gagal dihapus.')
             
     return redirect('instructor_lesson_list', module_id=module_id)
+
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
+def course_publish_request(request, pk):
+    course = get_object_or_404(Course, pk=pk, instructor=request.user)
+    if request.method == 'POST':
+        if course.status in ['draft', 'rejected']:
+            course.status = 'pending'
+            course.save()
+            from django.contrib import messages
+            messages.success(request, f'Kursus "{course.title}" telah diajukan untuk verifikasi.')
+        else:
+            from django.contrib import messages
+            messages.warning(request, 'Kursus sudah dalam status pending atau sudah terbit.')
+            
+    return redirect('instructor_course_list')
+
 
 
 

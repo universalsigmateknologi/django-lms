@@ -80,6 +80,14 @@
                         Dibuat {{ lesson.created_at|date:"d M Y" }}
                     </span>
                 </div>
+                {% if lesson.lesson_type == 'quiz' %}
+                    {% if not lesson.quiz or lesson.quiz.questions.count == 0 %}
+                    <div class="mt-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-red-50 border border-red-100 text-[10px] font-bold uppercase tracking-wider text-red-600">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+                        Belum ada pertanyaan
+                    </div>
+                    {% endif %}
+                {% endif %}
             </div>
             <!-- Actions -->
             <div class="flex items-center gap-1.5 shrink-0">

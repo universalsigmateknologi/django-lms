@@ -33,6 +33,13 @@ class Course(models.Model):
         ('advanced', 'Advanced'),
     ]
 
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('pending', 'Pending Verification'),
+        ('published', 'Published'),
+        ('rejected', 'Rejected'),
+    ]
+
     instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
@@ -40,7 +47,7 @@ class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='courses')
     level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    is_published = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     thumbnail = models.ImageField(upload_to='course_thumbnails/')
     is_lesson_finished = models.BooleanField(default=False)
     is_online = models.BooleanField(default=True)

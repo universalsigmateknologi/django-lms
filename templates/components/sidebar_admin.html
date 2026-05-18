@@ -7,7 +7,7 @@
     <!-- Nav -->
     <nav class="flex-1 px-4 py-5 space-y-1">
         {% if user.is_instructor %}
-        <a href="#"
+        <a href="{% url 'instructor_dashboard' %}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'instructor_dashboard' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
             <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
             Dashboard

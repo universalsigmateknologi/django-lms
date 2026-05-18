@@ -1289,6 +1289,10 @@ video {
   max-height: 70vh;
 }
 
+.max-h-60 {
+  max-height: 15rem;
+}
+
 .min-h-32 {
   min-height: 8rem;
 }
@@ -1428,6 +1432,10 @@ video {
 
 .w-px {
   width: 1px;
+}
+
+.w-44 {
+  width: 11rem;
 }
 
 .min-w-0 {
@@ -1623,6 +1631,10 @@ video {
 
 .resize {
   resize: both;
+}
+
+.list-none {
+  list-style-type: none;
 }
 
 .appearance-none {
@@ -2367,6 +2379,10 @@ video {
   fill: #fbbf24;
 }
 
+.fill-current {
+  fill: currentColor;
+}
+
 .stroke-green-500 {
   stroke: #22c55e;
 }
@@ -2712,6 +2728,10 @@ video {
   text-align: right;
 }
 
+.align-text-bottom {
+  vertical-align: text-bottom;
+}
+
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -2800,6 +2820,10 @@ video {
   text-transform: uppercase;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
+
 .italic {
   font-style: italic;
 }
@@ -2823,6 +2847,10 @@ video {
 
 .leading-tight {
   line-height: 1.25;
+}
+
+.leading-none {
+  line-height: 1;
 }
 
 .tracking-tight {
@@ -3532,6 +3560,11 @@ video {
   background-color: rgb(240 244 248 / 0.2);
 }
 
+.hover\:bg-emerald-50:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(236 253 245 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:text-emerald-700:hover {
   --tw-text-opacity: 1;
   color: rgb(4 120 87 / var(--tw-text-opacity, 1));
@@ -3580,6 +3613,16 @@ video {
 .hover\:text-indigo-800:hover {
   --tw-text-opacity: 1;
   color: rgb(55 48 163 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-emerald-600:hover {
+  --tw-text-opacity: 1;
+  color: rgb(5 150 105 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-navy-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(98 125 152 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {
@@ -4228,4 +4271,8 @@ video {
   .xl\:text-\[3\.4rem\] {
     font-size: 3.4rem;
   }
+}
+
+.\[\&\:\:-webkit-details-marker\]\:hidden::-webkit-details-marker {
+  display: none;
 }

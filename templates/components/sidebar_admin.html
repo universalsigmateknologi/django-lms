@@ -22,7 +22,7 @@
             <i data-lucide="bar-chart-3" class="w-[18px] h-[18px]"></i>
             Analisis
         </a>
-        <a href="#"
+        <a href="{% url 'instructor_student_list' %}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'instructor_students' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
             <i data-lucide="users" class="w-[18px] h-[18px]"></i>
             Siswa

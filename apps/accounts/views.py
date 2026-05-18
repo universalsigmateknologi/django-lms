@@ -756,4 +756,105 @@ def instructor_dashboard_view(request):
         'menu': 'instructor_dashboard',
     }
     return render(request, 'accounts/instructor/dashboard_instructor.html', context)
+
+
+@role_required(allowed_roles=['instructor'])
+def instructor_student_list_view(request):
+    from apps.enrollments.models import Enrollment
+    from apps.courses.models import Course
+    from apps.certificates.models import Certificate
+
+    instructor = request.user
+
+    # Base enrollment queryset for the instructor's courses
+    base_enrollments = Enrollment.objects.filter(course__instructor=instructor)
+
+    # Calculate overall stats for stats badges (before search/filters)
+    total_count = base_enrollments.count()
+    completed_count = base_enrollments.filter(progress_pct=100.0).count()
+    learning_count = base_enrollments.filter(progress_pct__gt=0.0, progress_pct__lt=100.0).count()
+    not_started_count = base_enrollments.filter(progress_pct=0.0).count()
+
+    # Get search & filter values from GET request
+    search_query = request.GET.get('search', '').strip()
+    course_filter = request.GET.get('course', 'all')
+    progress_filter = request.GET.get('progress', 'all')
+    certificate_filter = request.GET.get('certificate', 'all')
+    sort_by = request.GET.get('sort', 'newest')
+
+    enrollments = base_enrollments.select_related('student', 'course').prefetch_related('certificate')
+
+    # Apply search filter
+    if search_query:
+        enrollments = enrollments.filter(
+            Q(student__username__icontains=search_query) |
+            Q(student__email__icontains=search_query) |
+            Q(student__first_name__icontains=search_query) |
+            Q(student__last_name__icontains=search_query)
+        )
+
+    # Apply course filter
+    if course_filter != 'all':
+        enrollments = enrollments.filter(course_id=course_filter)
+
+    # Apply progress filter
+    if progress_filter == 'completed':
+        enrollments = enrollments.filter(progress_pct=100.0)
+    elif progress_filter == 'learning':
+        enrollments = enrollments.filter(progress_pct__gt=0.0, progress_pct__lt=100.0)
+    elif progress_filter == 'not_started':
+        enrollments = enrollments.filter(progress_pct=0.0)
+
+    # Apply certificate filter
+    if certificate_filter == 'issued':
+        enrollments = enrollments.filter(certificate__is_valid=True)
+    elif certificate_filter == 'not_issued':
+        enrollments = enrollments.filter(Q(certificate__isnull=True) | Q(certificate__is_valid=False))
+
+    # Apply sorting
+    if sort_by == 'oldest':
+        enrollments = enrollments.order_by('enrolled_at')
+    elif sort_by == 'highest_progress':
+        enrollments = enrollments.order_by('-progress_pct')
+    elif sort_by == 'lowest_progress':
+        enrollments = enrollments.order_by('progress_pct')
+    elif sort_by == 'name':
+        enrollments = enrollments.order_by('student__username')
+    else: # newest
+        enrollments = enrollments.order_by('-enrolled_at')
+
+    # Pagination: 10 students per page
+    paginator = Paginator(enrollments, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Generate WhatsApp link for each student on this page if no_telp exists
+    for enr in page_obj:
+        if enr.student.no_telp:
+            clean_num = ''.join(filter(str.isdigit, str(enr.student.no_telp)))
+            if clean_num.startswith('0'):
+                clean_num = '62' + clean_num[1:]
+            enr.wa_link = f"https://wa.me/{clean_num}"
+        else:
+            enr.wa_link = None
+
+    # Get instructor's courses for filter dropdown
+    courses = Course.objects.filter(instructor=instructor)
+
+    context = {
+        'page_obj': page_obj,
+        'courses': courses,
+        'search_query': search_query,
+        'course_filter': course_filter,
+        'progress_filter': progress_filter,
+        'certificate_filter': certificate_filter,
+        'sort_by': sort_by,
+        'total_count': total_count,
+        'completed_count': completed_count,
+        'learning_count': learning_count,
+        'not_started_count': not_started_count,
+        'menu': 'instructor_students',
+    }
+    return render(request, 'accounts/instructor/student/student_list.html', context)
+
 

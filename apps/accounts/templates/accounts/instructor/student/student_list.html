@@ -1,0 +1,386 @@
+{% extends 'base_admin.html' %}
+
+{% block extra_css %}
+<style>
+  /* Style summary to look premium and remove default browser arrows across all browsers */
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+  details summary {
+    list-style: none;
+    outline: none;
+  }
+</style>
+{% endblock extra_css %}
+
+{% block topbar %}
+<!-- Top Bar -->
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+  <div class="flex items-center gap-1.5 text-xs text-navy-400">
+    <a href="{% url 'instructor_dashboard' %}" class="hover:text-navy-900 transition-colors">Dashboard</a>
+    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+    <span class="text-navy-900 font-medium">Siswa</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <form method="GET" action="" class="relative">
+      <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-navy-300"></i>
+      <input type="text" name="search" value="{{ search_query }}" placeholder="Cari nama atau email siswa..." class="pl-9 pr-4 py-2 text-sm bg-navy-50 border border-navy-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-900/10 focus:border-navy-300 w-64 placeholder:text-navy-300 transition-all">
+      
+      <!-- Preserve other active filters -->
+      {% if course_filter != 'all' %}<input type="hidden" name="course" value="{{ course_filter }}">{% endif %}
+      {% if progress_filter != 'all' %}<input type="hidden" name="progress" value="{{ progress_filter }}">{% endif %}
+      {% if certificate_filter != 'all' %}<input type="hidden" name="certificate" value="{{ certificate_filter }}">{% endif %}
+      {% if sort_by != 'newest' %}<input type="hidden" name="sort" value="{{ sort_by }}">{% endif %}
+    </form>
+  </div>
+</header>
+{% endblock topbar %}
+
+{% block content %}
+<!-- Page Header + Stats -->
+<div class="flex items-end justify-between">
+  <div>
+    <h1 class="text-xl font-bold text-navy-900">Siswa</h1>
+    <p class="text-sm text-navy-400 mt-0.5">Daftar siswa yang terdaftar di kelasmu</p>
+  </div>
+  <div class="flex items-center gap-5 select-none">
+    <div class="text-right">
+      <p class="text-lg font-bold text-navy-900">{{ total_count }}</p>
+      <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Total</p>
+    </div>
+    <div class="w-px h-8 bg-navy-100"></div>
+    <div class="text-right">
+      <p class="text-lg font-bold text-emerald-600">{{ completed_count }}</p>
+      <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Lulus</p>
+    </div>
+    <div class="w-px h-8 bg-navy-100"></div>
+    <div class="text-right">
+      <p class="text-lg font-bold text-navy-600">{{ learning_count }}</p>
+      <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Belajar</p>
+    </div>
+    <div class="w-px h-8 bg-navy-100"></div>
+    <div class="text-right">
+      <p class="text-lg font-bold text-navy-400">{{ not_started_count }}</p>
+      <p class="text-[10px] uppercase tracking-widest text-navy-400 font-medium">Belum Mulai</p>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="flex items-center gap-2 flex-wrap">
+  <!-- Filter Kelas -->
+  <details class="relative group" id="filter-course-wrapper">
+    <summary class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+      <span>
+        {% if course_filter == 'all' %}
+          Kelas
+        {% else %}
+          {% for course in courses %}
+            {% if course.id|stringformat:"s" == course_filter %}
+              {{ course.title|truncatechars:20 }}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </span>
+      <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+    </summary>
+    <div class="absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-64 z-30 max-h-60 overflow-y-auto">
+      <a href="?course=all&search={{ search_query }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+         class="block px-3.5 py-2 text-sm {% if course_filter == 'all' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+        Semua Kelas
+      </a>
+      {% for course in courses %}
+        <a href="?course={{ course.id }}&search={{ search_query }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+           class="block px-3.5 py-2 text-sm {% if course_filter == course.id|stringformat:"s" %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors truncate" title="{{ course.title }}">
+          {{ course.title }}
+        </a>
+      {% endfor %}
+    </div>
+  </details>
+
+  <!-- Filter Progress -->
+  <details class="relative group" id="filter-progress-wrapper">
+    <summary class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+      <span>
+        {% if progress_filter == 'completed' %}
+          Lulus (100%)
+        {% elif progress_filter == 'learning' %}
+          Sedang Belajar
+        {% elif progress_filter == 'not_started' %}
+          Belum Mulai
+        {% else %}
+          Progress
+        {% endif %}
+      </span>
+      <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+    </summary>
+    <div class="absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+      <a href="?progress=all&search={{ search_query }}&course={{ course_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+         class="block px-3.5 py-2 text-sm {% if progress_filter == 'all' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Semua</a>
+      
+      <a href="?progress=completed&search={{ search_query }}&course={{ course_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+         class="flex items-center gap-2 px-3.5 py-2 text-sm {% if progress_filter == 'completed' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Lulus (100%)
+      </a>
+      
+      <a href="?progress=learning&search={{ search_query }}&course={{ course_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+         class="flex items-center gap-2 px-3.5 py-2 text-sm {% if progress_filter == 'learning' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+        <span class="w-2 h-2 rounded-full bg-navy-600"></span> Sedang Belajar
+      </a>
+      
+      <a href="?progress=not_started&search={{ search_query }}&course={{ course_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+         class="flex items-center gap-2 px-3.5 py-2 text-sm {% if progress_filter == 'not_started' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+        <span class="w-2 h-2 rounded-full bg-navy-200"></span> Belum Mulai
+      </a>
+    </div>
+  </details>
+
+  <!-- Filter Sertifikat -->
+  <details class="relative group" id="filter-cert-wrapper">
+    <summary class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+      <span>
+        {% if certificate_filter == 'issued' %}
+          Sudah Diterbitkan
+        {% elif certificate_filter == 'not_issued' %}
+          Belum Diterbitkan
+        {% else %}
+          Sertifikat
+        {% endif %}
+      </span>
+      <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+    </summary>
+    <div class="absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+      <a href="?certificate=all&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&sort={{ sort_by }}" 
+         class="block px-3.5 py-2 text-sm {% if certificate_filter == 'all' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Semua</a>
+      
+      <a href="?certificate=issued&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&sort={{ sort_by }}" 
+         class="block px-3.5 py-2 text-sm {% if certificate_filter == 'issued' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Sudah Diterbitkan</a>
+      
+      <a href="?certificate=not_issued&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&sort={{ sort_by }}" 
+         class="block px-3.5 py-2 text-sm {% if certificate_filter == 'not_issued' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Belum Diterbitkan</a>
+    </div>
+  </details>
+
+  <!-- Urutkan -->
+  <details class="relative group" id="filter-sort-wrapper">
+    <summary class="flex items-center gap-1.5 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 px-3.5 py-2 rounded-lg transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+      <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-navy-400"></i>
+      <span>
+        {% if sort_by == 'oldest' %}
+          Terlama
+        {% elif sort_by == 'highest_progress' %}
+          Progress Tertinggi
+        {% elif sort_by == 'lowest_progress' %}
+          Progress Terendah
+        {% elif sort_by == 'name' %}
+          Nama A-Z
+        {% else %}
+          Terbaru
+        {% endif %}
+      </span>
+      <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-navy-400"></i>
+    </summary>
+    <div class="absolute top-full left-0 mt-1 bg-white border border-navy-100 rounded-xl shadow-lg shadow-navy-900/8 py-1.5 w-44 z-30">
+      <a href="?sort=newest&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}" 
+         class="block px-3.5 py-2 text-sm {% if sort_by == 'newest' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Terbaru</a>
+      
+      <a href="?sort=oldest&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}" 
+         class="block px-3.5 py-2 text-sm {% if sort_by == 'oldest' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Terlama</a>
+      
+      <a href="?sort=highest_progress&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}" 
+         class="block px-3.5 py-2 text-sm {% if sort_by == 'highest_progress' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Progress Tertinggi</a>
+      
+      <a href="?sort=lowest_progress&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}" 
+         class="block px-3.5 py-2 text-sm {% if sort_by == 'lowest_progress' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Progress Terendah</a>
+      
+      <a href="?sort=name&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}" 
+         class="block px-3.5 py-2 text-sm {% if sort_by == 'name' %}text-navy-900 font-semibold bg-navy-50{% else %}text-navy-700 hover:bg-navy-50{% endif %} transition-colors">Nama A-Z</a>
+    </div>
+  </details>
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-xl border border-navy-100 overflow-hidden">
+
+  <!-- Table Header -->
+  <div class="grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-navy-100 text-[10px] font-bold uppercase tracking-widest text-navy-400 select-none">
+    <div class="col-span-3">Siswa</div>
+    <div class="col-span-2">Kelas</div>
+    <div class="col-span-3">Progress</div>
+    <div class="col-span-2 text-center">Sertifikat</div>
+    <div class="col-span-2 text-right">Aksi</div>
+  </div>
+
+  <!-- Table Body -->
+  {% for enrollment in page_obj %}
+    <div class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/50 transition-colors group {% if not forloop.first %}border-t border-navy-50{% endif %} {% if enrollment.progress_pct == 0.0 %}opacity-75{% endif %}">
+      
+      <!-- Siswa Info -->
+      <div class="col-span-3 flex items-center gap-3 min-w-0">
+        {% if enrollment.student.profile.avatar %}
+          <img src="{{ enrollment.student.profile.avatar.url }}" class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+        {% else %}
+          <img src="https://ui-avatars.com/api/?name={{ enrollment.student.get_full_name|default:enrollment.student.username }}&background=0D1B3E&color=fff" class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+        {% endif %}
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-navy-900 truncate">{{ enrollment.student.get_full_name|default:enrollment.student.username }}</p>
+          <p class="text-xs text-navy-400 truncate">{{ enrollment.student.email }}</p>
+        </div>
+      </div>
+
+      <!-- Kelas Info -->
+      <div class="col-span-2 min-w-0">
+        <p class="text-sm text-navy-700 truncate font-semibold">{{ enrollment.course.title }}</p>
+        <span class="text-[10px] font-semibold text-navy-400 bg-navy-50 px-1.5 py-0.5 rounded capitalize">{{ enrollment.course.level }}</span>
+      </div>
+
+      <!-- Progress Info -->
+      <div class="col-span-3">
+        <div class="flex items-center justify-between text-xs mb-1.5">
+          {% if enrollment.progress_pct >= 100.0 %}
+            <span class="font-bold text-emerald-600">100%</span>
+            <span class="text-emerald-500 font-semibold">Selesai</span>
+          {% elif enrollment.progress_pct > 0.0 %}
+            <span class="font-bold text-navy-900">{{ enrollment.progress_pct|floatformat:0 }}%</span>
+            <span class="text-navy-500 font-semibold">Sedang Belajar</span>
+          {% else %}
+            <span class="font-bold text-navy-400">0%</span>
+            <span class="text-navy-400 font-semibold">Belum Mulai</span>
+          {% endif %}
+        </div>
+        <div class="w-full h-2 bg-navy-50 rounded-full overflow-hidden">
+          <div class="h-full {% if enrollment.progress_pct >= 100.0 %}bg-emerald-500{% elif enrollment.progress_pct > 0.0 %}bg-navy-900{% else %}bg-navy-200{% endif %} rounded-full transition-all duration-500" style="width:{{ enrollment.progress_pct }}%"></div>
+        </div>
+      </div>
+
+      <!-- Sertifikat Info -->
+      <div class="col-span-2 flex justify-center">
+        {% if enrollment.progress_pct >= 100.0 and enrollment.certificate %}
+          <div class="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-100 select-none">
+            <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+            <div>
+              <p class="text-[10px] font-bold text-emerald-700 leading-none">Diterbitkan</p>
+              <p class="text-[9px] text-emerald-500 font-mono mt-0.5 font-bold">{{ enrollment.certificate.certificate_number }}</p>
+            </div>
+          </div>
+        {% else %}
+          <span class="text-[10px] font-semibold text-navy-400 bg-navy-50 px-2.5 py-1.5 rounded-lg border border-navy-100 select-none">Belum tersedia</span>
+        {% endif %}
+      </div>
+
+      <!-- Aksi Buttons -->
+      <div class="col-span-2 flex items-center justify-end gap-1.5">
+        <a href="mailto:{{ enrollment.student.email }}" title="Kirim Email" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+        </a>
+        {% if enrollment.wa_link %}
+          <a href="{{ enrollment.wa_link }}" target="_blank" title="Hubungi via WhatsApp" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+            <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.803-4.389 9.805-9.788.002-2.615-1.013-5.074-2.861-6.927C16.366 2.036 13.916.994 11.3 1.0c-5.396 0-9.793 4.394-9.795 9.79-.001 1.73.456 3.42 1.32 4.925l-.995 3.635 3.722-.976zm11.367-6.851c-.302-.151-1.791-.882-2.069-.982-.278-.1-.48-.15-.68.15-.2.3-.777.982-.953 1.182-.176.2-.352.226-.654.076-.301-.15-1.272-.469-2.423-1.493-.896-.798-1.5-1.785-1.676-2.086-.176-.3-.019-.462.131-.611.135-.134.302-.352.453-.528.151-.176.201-.302.302-.503.101-.2.05-.376-.025-.527-.075-.151-.68-1.637-.932-2.247-.245-.589-.494-.509-.68-.518-.176-.009-.377-.01-.578-.01-.2 0-.527.075-.803.376-.277.301-1.055 1.03-1.055 2.515s1.08 2.916 1.23 3.117c.15.2 2.128 3.25 5.156 4.557.719.31 1.282.496 1.72.636.723.23 1.381.198 1.902.12.58-.087 1.791-.733 2.043-1.442.251-.708.251-1.314.176-1.442-.076-.128-.278-.204-.579-.355z"/>
+            </svg>
+          </a>
+        {% else %}
+          <span title="Nomor telepon tidak tersedia" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-200 cursor-not-allowed select-none">
+            <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.803-4.389 9.805-9.788.002-2.615-1.013-5.074-2.861-6.927C16.366 2.036 13.916.994 11.3 1.0c-5.396 0-9.793 4.394-9.795 9.79-.001 1.73.456 3.42 1.32 4.925l-.995 3.635 3.722-.976zm11.367-6.851c-.302-.151-1.791-.882-2.069-.982-.278-.1-.48-.15-.68.15-.2.3-.777.982-.953 1.182-.176.2-.352.226-.654.076-.301-.15-1.272-.469-2.423-1.493-.896-.798-1.5-1.785-1.676-2.086-.176-.3-.019-.462.131-.611.135-.134.302-.352.453-.528.151-.176.201-.302.302-.503.101-.2.05-.376-.025-.527-.075-.151-.68-1.637-.932-2.247-.245-.589-.494-.509-.68-.518-.176-.009-.377-.01-.578-.01-.2 0-.527.075-.803.376-.277.301-1.055 1.03-1.055 2.515s1.08 2.916 1.23 3.117c.15.2 2.128 3.25 5.156 4.557.719.31 1.282.496 1.72.636.723.23 1.381.198 1.902.12.58-.087 1.791-.733 2.043-1.442.251-.708.251-1.314.176-1.442-.076-.128-.278-.204-.579-.355z"/>
+            </svg>
+          </span>
+        {% endif %}
+        {% if enrollment.progress_pct >= 100.0 and enrollment.certificate.pdf_file %}
+          <a href="{{ enrollment.certificate.pdf_file.url }}" target="_blank" title="Unduh Sertifikat" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+            <i data-lucide="download" class="w-4 h-4"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <div class="p-12 text-center select-none">
+      <i data-lucide="users" class="w-10 h-10 text-navy-200 mx-auto mb-3"></i>
+      <p class="text-sm text-navy-500 font-semibold">Tidak ada siswa ditemukan</p>
+      <p class="text-xs text-navy-400 mt-0.5">Siswa yang memenuhi kriteria pencarian atau penyaringan belum terdaftar.</p>
+    </div>
+  {% endfor %}
+
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+  <div class="flex items-center justify-between select-none">
+    <p class="text-xs text-navy-400">
+      Menampilkan {{ page_obj.start_index }}–{{ page_obj.end_index }} dari {{ page_obj.paginator.count }} siswa
+    </p>
+    <div class="flex items-center gap-1">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+           class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-500 hover:bg-navy-50 transition-colors">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        </a>
+      {% else %}
+        <button class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-200 cursor-not-allowed" disabled>
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        </button>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <span class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-semibold bg-navy-900 text-white select-none">
+            {{ num }}
+          </span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a href="?page={{ num }}&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+             class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors">
+            {{ num }}
+          </a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&course={{ course_filter }}&progress={{ progress_filter }}&certificate={{ certificate_filter }}&sort={{ sort_by }}" 
+           class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-500 hover:bg-navy-50 transition-colors">
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </a>
+      {% else %}
+        <button class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-200 cursor-not-allowed" disabled>
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      {% endif %}
+    </div>
+  </div>
+{% else %}
+  <div class="flex items-center justify-between select-none">
+    <p class="text-xs text-navy-400">
+      Menampilkan 1–{{ page_obj.object_list|length }} dari {{ page_obj.object_list|length }} siswa
+    </p>
+  </div>
+{% endif %}
+
+<!-- Legend -->
+<div class="flex items-center gap-6 pt-1 select-none">
+  <div class="flex items-center gap-2 text-xs text-navy-500">
+    <div class="w-8 h-2 rounded-full bg-emerald-500"></div> Lulus (100%)
+  </div>
+  <div class="flex items-center gap-2 text-xs text-navy-500">
+    <div class="w-8 h-2 rounded-full bg-navy-900"></div> Sedang Belajar (1–99%)
+  </div>
+  <div class="flex items-center gap-2 text-xs text-navy-500">
+    <div class="w-8 h-2 rounded-full bg-navy-200"></div> Belum Mulai (0%)
+  </div>
+  <div class="flex items-center gap-2 text-xs text-navy-500 ml-auto">
+    <i data-lucide="mail" class="w-3.5 h-3.5 text-navy-400"></i> Kirim email
+    <span class="text-navy-200">|</span>
+    <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 fill-current text-navy-400 inline-block align-text-bottom" xmlns="http://www.w3.org/2000/svg">
+      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.803-4.389 9.805-9.788.002-2.615-1.013-5.074-2.861-6.927C16.366 2.036 13.916.994 11.3 1.0c-5.396 0-9.793 4.394-9.795 9.79-.001 1.73.456 3.42 1.32 4.925l-.995 3.635 3.722-.976zm11.367-6.851c-.302-.151-1.791-.882-2.069-.982-.278-.1-.48-.15-.68.15-.2.3-.777.982-.953 1.182-.176.2-.352.226-.654.076-.301-.15-1.272-.469-2.423-1.493-.896-.798-1.5-1.785-1.676-2.086-.176-.3-.019-.462.131-.611.135-.134.302-.352.453-.528.151-.176.201-.302.302-.503.101-.2.05-.376-.025-.527-.075-.151-.68-1.637-.932-2.247-.245-.589-.494-.509-.68-.518-.176-.009-.377-.01-.578-.01-.2 0-.527.075-.803.376-.277.301-1.055 1.03-1.055 2.515s1.08 2.916 1.23 3.117c.15.2 2.128 3.25 5.156 4.557.719.31 1.282.496 1.72.636.723.23 1.381.198 1.902.12.58-.087 1.791-.733 2.043-1.442.251-.708.251-1.314.176-1.442-.076-.128-.278-.204-.579-.355z"/>
+    </svg> Hubungi via WA
+    <span class="text-navy-200">|</span>
+    <i data-lucide="download" class="w-3.5 h-3.5 text-navy-400"></i> Unduh sertifikat PDF
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  // Dynamic custom JavaScript dropdown code has been removed completely to fulfill your request of using zero JS.
+  // Standard Lucide icons initialization
+  lucide.createIcons();
+</script>
+{% endblock extra_js %}

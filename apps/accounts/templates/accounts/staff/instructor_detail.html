@@ -212,8 +212,8 @@
   <div class="bg-white rounded-xl border border-navy-100 p-6 mt-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h2 class="text-base font-bold text-navy-900">Analisis Pendapatan 12 Bulan Terakhir</h2>
-        <p class="text-xs text-navy-400 mt-1">Laporan grafik total bagi hasil kelas yang terverifikasi</p>
+        <h2 class="text-base font-bold text-navy-900">Analisis Kinerja 12 Bulan Terakhir</h2>
+        <p class="text-xs text-navy-400 mt-1">Kolom: Pendapatan bagi hasil (kiri) | Garis: Jumlah transaksi penjualan (kanan)</p>
       </div>
       <div class="text-right">
         <p class="text-xs text-navy-400">Total Pendapatan</p>
@@ -221,22 +221,333 @@
       </div>
     </div>
     
-    <div class="flex items-end gap-3 h-36 mt-4">
-      {% for m in monthly_revenues %}
-      <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
-        <!-- Bar Container with relative percentage height scaling -->
-        <div class="relative w-full h-24 bg-navy-50/50 hover:bg-navy-50 rounded-t-lg flex items-end transition-colors cursor-pointer" title="Rp {{ m.amount|floatformat:'0g' }}">
-          <div class="w-full rounded-t-lg bg-navy-800/80 group-hover:bg-navy-900 transition-all duration-500 shadow-sm" style="height:{{ m.pct }}%"></div>
+    <div class="relative w-full h-80 mt-4">
+      <canvas id="monthlyComboChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Contribution Activity Timeline Section -->
+  <div class="bg-white rounded-xl border border-navy-100 p-6 mt-6 animate-fade-in">
+    <h3 class="text-sm font-bold text-navy-900 mb-6 flex items-center gap-2 select-none">
+      <i data-lucide="activity" class="w-4 h-4 text-navy-500"></i>
+      Aktivitas Kontribusi Terbaru
+    </h3>
+    
+    <div class="relative border-l border-navy-100 pl-6 ml-3 space-y-6">
+      {% for act in activities %}
+      <!-- Timeline Item -->
+      <div class="relative group activity-item transition-all duration-300" data-index="{{ forloop.counter0 }}">
+        <!-- Bullet Icon Badge with Hover scale animation -->
+        <span class="absolute -left-[37px] w-6.5 h-6.5 rounded-full bg-white border border-navy-100 flex items-center justify-center text-navy-700 shadow-sm transition-all duration-200 group-hover:scale-110 group-hover:border-navy-300">
+          <i data-lucide="{{ act.icon }}" class="w-3.5 h-3.5"></i>
+        </span>
+        
+        <div class="transition-transform duration-200 group-hover:translate-x-1">
+          <span class="text-[10px] font-semibold text-navy-400">{{ act.date|date:"d F Y, H:i" }}</span>
+          <h4 class="text-sm font-bold text-navy-900 mt-0.5 group-hover:text-navy-700 transition-colors">{{ act.title }}</h4>
+          <p class="text-xs text-navy-400 mt-0.5">{{ act.subtitle }}</p>
         </div>
-        <span class="text-[10px] font-semibold text-navy-400 group-hover:text-navy-900 transition-colors">{{ m.name }}</span>
+      </div>
+      {% empty %}
+      <div class="text-center py-8">
+        <i data-lucide="activity" class="w-8 h-8 text-navy-200 mx-auto mb-2"></i>
+        <p class="text-xs text-navy-400 font-semibold">Belum ada aktivitas kontribusi baru-baru ini.</p>
       </div>
       {% endfor %}
     </div>
+
+    <!-- Dynamic JS Pagination Controls -->
+    {% if activities %}
+    <div id="activity-pagination" class="mt-6 pt-4 border-t border-navy-50 flex items-center justify-between">
+      <p class="text-xs text-navy-400" id="activity-pagination-info">
+        Menampilkan 1–5 dari {{ activities|length }} aktivitas
+      </p>
+      <div class="flex items-center gap-1">
+        <button id="activity-prev-btn" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 transition-colors disabled:text-navy-200 disabled:cursor-not-allowed disabled:hover:bg-transparent">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        </button>
+        
+        <div id="activity-page-numbers" class="flex items-center gap-1">
+          <!-- Dynamically populated page buttons -->
+        </div>
+
+        <button id="activity-next-btn" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 transition-colors disabled:text-navy-200 disabled:cursor-not-allowed disabled:hover:bg-transparent">
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+    {% endif %}
   </div>
 {% endblock content %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  lucide.createIcons();
+  document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+
+    // ----------------------------------------------------
+    // Premium Combo Chart: Revenue & Sales
+    // ----------------------------------------------------
+    const ctx = document.getElementById('monthlyComboChart');
+    if (ctx) {
+      const labels = [
+        {% for m in monthly_revenues %}"{{ m.name }}"{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+      const revenueData = [
+        {% for m in monthly_revenues %}{{ m.amount }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+      const salesData = [
+        {% for m in monthly_revenues %}{{ m.sales_count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+
+      // Excel-jet styled steel blue for columns, Sky blue line, matching the user image
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Pendapatan (Rp)',
+              data: revenueData,
+              backgroundColor: 'rgba(79, 117, 179, 0.85)', // Steel blue
+              hoverBackgroundColor: 'rgba(59, 93, 149, 1)',
+              borderColor: 'rgba(79, 117, 179, 1)',
+              borderWidth: 0,
+              borderRadius: { topLeft: 4, topRight: 4 },
+              borderSkipped: false,
+              yAxisID: 'y',
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'Jumlah Penjualan',
+              data: salesData,
+              borderColor: '#60A5FA', // Sky blue line matching user's image line
+              borderWidth: 3.5,
+              tension: 0, // Straight sharp segments as in the Excel image example!
+              fill: false,
+              pointBackgroundColor: '#FFFFFF',
+              pointBorderColor: '#3B82F6',
+              pointBorderWidth: 2.5,
+              pointRadius: 5.5,
+              pointHoverRadius: 8,
+              yAxisID: 'y1',
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                boxWidth: 16,
+                usePointStyle: false,
+                font: {
+                  family: 'Plus Jakarta Sans, Inter, sans-serif',
+                  size: 11,
+                  weight: '600'
+                },
+                color: '#1E293B'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0D1B3E',
+              titleFont: {
+                family: 'Plus Jakarta Sans, sans-serif',
+                size: 12,
+                weight: 'bold'
+              },
+              bodyFont: {
+                family: 'Inter, sans-serif',
+                size: 12
+              },
+              padding: 12,
+              cornerRadius: 8,
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  if (context.datasetIndex === 0) {
+                    label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(context.parsed.y);
+                  } else {
+                    label += context.parsed.y + ' transaksi';
+                  }
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#64748B',
+                font: {
+                  family: 'Plus Jakarta Sans, sans-serif',
+                  size: 11,
+                  weight: '600'
+                }
+              }
+            },
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              grid: {
+                color: '#F1F5F9',
+                drawBorder: false
+              },
+              ticks: {
+                color: '#64748B',
+                font: {
+                  family: 'Plus Jakarta Sans, sans-serif',
+                  size: 10,
+                  weight: '500'
+                },
+                callback: function(value) {
+                  if (value >= 1e6) {
+                    return 'Rp ' + (value / 1e6).toFixed(1) + ' jt';
+                  } else if (value >= 1e3) {
+                    return 'Rp ' + (value / 1e3).toFixed(0) + ' rb';
+                  }
+                  return 'Rp ' + value;
+                }
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              grid: {
+                drawOnChartArea: false // prevent grid overlaps
+              },
+              ticks: {
+                color: '#64748B',
+                font: {
+                  family: 'Plus Jakarta Sans, sans-serif',
+                  size: 10,
+                  weight: '500'
+                },
+                stepSize: 1,
+                precision: 0
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // ----------------------------------------------------
+    // Client-side pagination for Contribution Activity
+    // ----------------------------------------------------
+    const itemsPerPage = 5;
+    let currentPage = 1;
+    const items = Array.from(document.querySelectorAll('.activity-item'));
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    const prevBtn = document.getElementById('activity-prev-btn');
+    const nextBtn = document.getElementById('activity-next-btn');
+    const pageNumbersContainer = document.getElementById('activity-page-numbers');
+    const infoText = document.getElementById('activity-pagination-info');
+
+    function showPage(page) {
+      if (page < 1) page = 1;
+      if (page > totalPages) page = totalPages;
+      currentPage = page;
+
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+
+      // Hide all items, show only the current page items
+      items.forEach((item, index) => {
+        if (index >= startIndex && index < endIndex) {
+          item.style.display = 'block';
+          setTimeout(() => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+          }, 50);
+        } else {
+          item.style.display = 'none';
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(10px)';
+        }
+      });
+
+      // Update info text
+      if (infoText) {
+        if (totalItems > 0) {
+          infoText.textContent = `Menampilkan ${startIndex + 1}–${endIndex} dari ${totalItems} aktivitas`;
+        } else {
+          infoText.textContent = 'Tidak ada aktivitas';
+        }
+      }
+
+      // Update button states
+      if (prevBtn) {
+        prevBtn.disabled = currentPage === 1;
+      }
+      if (nextBtn) {
+        nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+      }
+
+      // Generate page numbers
+      renderPageNumbers();
+    }
+
+    function renderPageNumbers() {
+      if (!pageNumbersContainer) return;
+      pageNumbersContainer.innerHTML = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+          const activeSpan = document.createElement('span');
+          activeSpan.className = 'w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium bg-navy-900 text-white select-none';
+          activeSpan.textContent = i;
+          pageNumbersContainer.appendChild(activeSpan);
+        } else if (i > currentPage - 3 && i < currentPage + 3) {
+          const pageBtn = document.createElement('button');
+          pageBtn.className = 'w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-navy-500 hover:bg-navy-50 transition-colors';
+          pageBtn.textContent = i;
+          pageBtn.addEventListener('click', () => showPage(i));
+          pageNumbersContainer.appendChild(pageBtn);
+        }
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) showPage(currentPage - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) showPage(currentPage + 1);
+      });
+    }
+
+    // Initialize display styles for smooth transitions
+    items.forEach(item => {
+      item.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+    });
+
+    // Initialize first page
+    if (totalItems > 0) {
+      showPage(1);
+    } else {
+      const paginationDiv = document.getElementById('activity-pagination');
+      if (paginationDiv) paginationDiv.style.display = 'none';
+    }
+  });
 </script>
 {% endblock extra_js %}

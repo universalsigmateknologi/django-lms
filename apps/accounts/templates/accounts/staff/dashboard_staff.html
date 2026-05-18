@@ -149,9 +149,9 @@
   <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
     <!-- Tabbed: Verification + Approval (3 col) -->
-    <div class="lg:col-span-3 bg-white rounded-xl border border-navy-100 overflow-hidden shadow-sm">
+    <div class="lg:col-span-3 bg-white rounded-xl border border-navy-100 overflow-hidden shadow-sm flex flex-col h-[450px]">
       <!-- Tabs -->
-      <div class="flex border-b border-navy-100 bg-navy-50/20">
+      <div class="flex border-b border-navy-100 bg-navy-50/20 shrink-0">
         <button id="tab-payment" onclick="switchTab('payment')" class="flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 border-navy-900 text-navy-900 transition-colors">
           <i data-lucide="credit-card" class="w-4 h-4"></i>
           Verifikasi Pembayaran
@@ -165,107 +165,111 @@
       </div>
 
       <!-- Tab: Payment Verification -->
-      <div id="content-payment" class="p-5 space-y-3">
-        {% for order in pending_orders %}
-        <div class="flex items-center gap-4 p-3.5 rounded-xl border border-navy-50 hover:border-navy-100 hover:bg-navy-50/20 transition-all">
-          {% with first_item=order.items.first %}
-            {% if first_item.course.thumbnail %}
-              <img src="{{ first_item.course.thumbnail.url }}" class="w-10 h-10 rounded-lg object-cover shrink-0" alt="Thumbnail">
-            {% else %}
-              <div class="w-10 h-10 rounded-lg bg-navy-50 flex items-center justify-center shrink-0">
-                <i data-lucide="image" class="w-5 h-5 text-navy-400"></i>
-              </div>
-            {% endif %}
-          {% endwith %}
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold text-navy-900 truncate">{{ order.user.get_full_name|default:order.user.username }}</span>
-              {% if order.status == 'waiting_verification' %}
-                <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded uppercase">Pending</span>
+      <div id="content-payment" class="p-5 flex-1 flex flex-col justify-between overflow-hidden">
+        <div class="space-y-3 flex-1 overflow-y-auto pr-1 flex flex-col">
+          {% for order in pending_orders %}
+          <div class="flex items-center gap-4 p-3.5 rounded-xl border border-navy-50 hover:border-navy-100 hover:bg-navy-50/20 transition-all">
+            {% with first_item=order.items.first %}
+              {% if first_item.course.thumbnail %}
+                <img src="{{ first_item.course.thumbnail.url }}" class="w-10 h-10 rounded-lg object-cover shrink-0" alt="Thumbnail">
               {% else %}
-                <span class="text-[9px] font-bold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded uppercase">{{ order.get_status_display }}</span>
+                <div class="w-10 h-10 rounded-lg bg-navy-50 flex items-center justify-center shrink-0">
+                  <i data-lucide="image" class="w-5 h-5 text-navy-400"></i>
+                </div>
               {% endif %}
+            {% endwith %}
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-navy-900 truncate">{{ order.user.get_full_name|default:order.user.username }}</span>
+                {% if order.status == 'waiting_verification' %}
+                  <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded uppercase">Pending</span>
+                {% else %}
+                  <span class="text-[9px] font-bold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded uppercase">{{ order.get_status_display }}</span>
+                {% endif %}
+              </div>
+              <p class="text-xs text-navy-400 truncate mt-0.5">
+                {% for item in order.items.all %}{{ item.course_title }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                · <span class="font-medium text-navy-600">Rp {{ order.total_amount|floatformat:"0g" }}</span>
+                · {{ order.created_at|timesince }} yang lalu
+              </p>
             </div>
-            <p class="text-xs text-navy-400 truncate mt-0.5">
-              {% for item in order.items.all %}{{ item.course_title }}{% if not forloop.last %}, {% endif %}{% endfor %}
-              · <span class="font-medium text-navy-600">Rp {{ order.total_amount|floatformat:"0g" }}</span>
-              · {{ order.created_at|timesince }} yang lalu
-            </p>
+            <div class="flex items-center gap-2 shrink-0">
+              <a href="{% url 'payments:staff_order_verification' %}?status=waiting_verification&search={{ order.order_number }}" class="text-xs font-medium text-white bg-navy-900 hover:bg-navy-950 px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                Verifikasi
+              </a>
+            </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <a href="{% url 'payments:staff_order_verification' %}?status=waiting_verification&search={{ order.order_number }}" class="text-xs font-medium text-white bg-navy-900 hover:bg-navy-950 px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-              Verifikasi
-            </a>
+          {% empty %}
+          <div class="flex-1 flex flex-col items-center justify-center text-center py-6">
+            <i data-lucide="inbox" class="w-8 h-8 text-navy-300 mb-2"></i>
+            <p class="text-xs text-navy-400">Semua pembayaran telah terverifikasi!</p>
           </div>
+          {% endfor %}
         </div>
-        {% empty %}
-        <div class="p-10 text-center">
-          <i data-lucide="inbox" class="w-8 h-8 text-navy-300 mx-auto mb-2"></i>
-          <p class="text-xs text-navy-400">Semua pembayaran telah terverifikasi!</p>
-        </div>
-        {% endfor %}
         
         <!-- View All -->
-        <a href="{% url 'payments:staff_order_verification' %}" class="block w-full py-2.5 text-center text-xs font-semibold text-navy-500 hover:text-navy-700 border border-navy-100 hover:border-navy-200 rounded-xl transition-all mt-1">
+        <a href="{% url 'payments:staff_order_verification' %}" class="block w-full py-2.5 text-center text-xs font-semibold text-navy-500 hover:text-navy-700 border border-navy-100 hover:border-navy-200 rounded-xl transition-all shrink-0 mt-3">
           Lihat Semua Antrean Verifikasi
         </a>
       </div>
 
       <!-- Tab: Course Approval -->
-      <div id="content-approval" class="p-5 space-y-3 hidden">
-        {% for course in pending_courses %}
-        <div class="flex items-center gap-4 p-3.5 rounded-xl border border-navy-50 hover:border-navy-100 hover:bg-navy-50/20 transition-all">
-          {% if course.thumbnail %}
-            <img src="{{ course.thumbnail.url }}" class="w-14 h-10 rounded-lg object-cover shrink-0" alt="Thumbnail">
-          {% else %}
-            <div class="w-14 h-10 rounded-lg bg-navy-50 flex items-center justify-center shrink-0">
-              <i data-lucide="image" class="w-5 h-5 text-navy-400"></i>
+      <div id="content-approval" class="p-5 flex-1 flex flex-col justify-between overflow-hidden hidden">
+        <div class="space-y-3 flex-1 overflow-y-auto pr-1 flex flex-col">
+          {% for course in pending_courses %}
+          <div class="flex items-center gap-4 p-3.5 rounded-xl border border-navy-50 hover:border-navy-100 hover:bg-navy-50/20 transition-all">
+            {% if course.thumbnail %}
+              <img src="{{ course.thumbnail.url }}" class="w-14 h-10 rounded-lg object-cover shrink-0" alt="Thumbnail">
+            {% else %}
+              <div class="w-14 h-10 rounded-lg bg-navy-50 flex items-center justify-center shrink-0">
+                <i data-lucide="image" class="w-5 h-5 text-navy-400"></i>
+              </div>
+            {% endif %}
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-navy-900 truncate">{{ course.title }}</span>
+                {% if course.status == 'pending' %}
+                  <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded uppercase">Verify</span>
+                {% else %}
+                  <span class="text-[9px] font-bold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded uppercase">{{ course.get_status_display }}</span>
+                {% endif %}
+              </div>
+              <p class="text-xs text-navy-400 mt-0.5">
+                oleh <span class="font-semibold text-navy-600">{{ course.instructor.get_full_name|default:course.instructor.username }}</span>
+                · {{ course.category.name }}
+                · {{ course.module_count }} modul
+              </p>
             </div>
-          {% endif %}
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold text-navy-900 truncate">{{ course.title }}</span>
-              {% if course.status == 'pending' %}
-                <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded uppercase">Verify</span>
-              {% else %}
-                <span class="text-[9px] font-bold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded uppercase">{{ course.get_status_display }}</span>
-              {% endif %}
+            <div class="flex items-center gap-2 shrink-0">
+              <a href="{% url 'staff_course_verification' %}?status=pending&search={{ course.title }}" class="text-xs font-medium text-white bg-navy-900 hover:bg-navy-950 px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                Tinjau
+              </a>
             </div>
-            <p class="text-xs text-navy-400 mt-0.5">
-              oleh <span class="font-semibold text-navy-600">{{ course.instructor.get_full_name|default:course.instructor.username }}</span>
-              · {{ course.category.name }}
-              · {{ course.module_count }} modul
-            </p>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <a href="{% url 'staff_course_verification' %}?status=pending&search={{ course.title }}" class="text-xs font-medium text-white bg-navy-900 hover:bg-navy-950 px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-              Tinjau
-            </a>
+          {% empty %}
+          <div class="flex-1 flex flex-col items-center justify-center text-center py-6">
+            <i data-lucide="inbox" class="w-8 h-8 text-navy-300 mb-2"></i>
+            <p class="text-xs text-navy-400">Tidak ada pengajuan kelas baru.</p>
           </div>
+          {% endfor %}
         </div>
-        {% empty %}
-        <div class="p-10 text-center">
-          <i data-lucide="inbox" class="w-8 h-8 text-navy-300 mx-auto mb-2"></i>
-          <p class="text-xs text-navy-400">Tidak ada pengajuan kelas baru.</p>
-        </div>
-        {% endfor %}
         
-        <a href="{% url 'staff_course_verification' %}" class="block w-full py-2.5 text-center text-xs font-semibold text-navy-500 hover:text-navy-700 border border-navy-100 hover:border-navy-200 rounded-xl transition-all mt-1">
+        <a href="{% url 'staff_course_verification' %}" class="block w-full py-2.5 text-center text-xs font-semibold text-navy-500 hover:text-navy-700 border border-navy-100 hover:border-navy-200 rounded-xl transition-all shrink-0 mt-3">
           Lihat Semua Pengajuan Kelas
         </a>
       </div>
     </div>
 
     <!-- Activity Timeline (2 col) -->
-    <div class="lg:col-span-2 bg-white rounded-xl border border-navy-100 p-6 shadow-sm">
-      <div class="flex items-center justify-between mb-5">
+    <div class="lg:col-span-2 bg-white rounded-xl border border-navy-100 p-6 shadow-sm flex flex-col h-[450px]">
+      <div class="flex items-center justify-between mb-5 shrink-0">
         <h2 class="text-sm font-semibold text-navy-900">Aktivitas Live</h2>
         <span class="relative flex h-2 w-2">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
       </div>
-      <div class="space-y-4">
+      <div class="space-y-4 flex-1 overflow-y-auto pr-1">
         {% for act in activities %}
         <div class="flex gap-3">
           <div class="flex flex-col items-center">

@@ -1269,6 +1269,10 @@ video {
   height: 16rem;
 }
 
+.h-\[450px\] {
+  height: 450px;
+}
+
 .max-h-48 {
   max-height: 12rem;
 }
@@ -2666,6 +2670,10 @@ video {
 
 .pb-4 {
   padding-bottom: 1rem;
+}
+
+.pr-1 {
+  padding-right: 0.25rem;
 }
 
 .text-left {

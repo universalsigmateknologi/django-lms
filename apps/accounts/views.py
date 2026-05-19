@@ -178,6 +178,76 @@ def staff_instructor_list_view(request):
     return render(request, 'accounts/staff/instructor_list.html', context)
 
 @role_required(allowed_roles=['admin', 'staff'])
+def staff_student_list_view(request):
+    search_query = request.GET.get('search', '').strip()
+    status_filter = request.GET.get('status', 'all')
+    sort_by = request.GET.get('sort', 'newest')
+
+    # Query all users who have the role 'student'
+    students = User.objects.filter(role='student').annotate(
+        course_count=Count('enrollments', distinct=True)
+    )
+
+    # Calculate status counts for stats badges
+    total_count = User.objects.filter(role='student').count()
+    aktif_count = User.objects.filter(role='student', is_active=True).count()
+    pending_count = User.objects.filter(role='student', is_active=False, is_verified=False).count()
+    nonaktif_count = User.objects.filter(role='student', is_active=False, is_verified=True).count()
+
+    # Apply filters
+    if status_filter == 'active':
+        students = students.filter(is_active=True)
+    elif status_filter == 'pending':
+        students = students.filter(is_active=False, is_verified=False)
+    elif status_filter == 'inactive':
+        students = students.filter(is_active=False, is_verified=True)
+
+    if search_query:
+        students = students.filter(
+            Q(username__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+
+    # Apply sorting
+    if sort_by == 'oldest':
+        students = students.order_by('date_joined')
+    elif sort_by == 'name':
+        students = students.order_by('username')
+    elif sort_by == 'most_courses':
+        students = students.order_by('-course_count')
+    else: # newest
+        students = students.order_by('-date_joined')
+
+    # Pagination
+    paginator = Paginator(students, 10)  # Show 10 students per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Generate WhatsApp and Email links
+    for student in page_obj:
+        if student.no_telp:
+            clean_num = ''.join(filter(str.isdigit, str(student.no_telp)))
+            if clean_num.startswith('0'):
+                clean_num = '62' + clean_num[1:]
+            student.wa_link = f"https://wa.me/{clean_num}"
+        else:
+            student.wa_link = None
+
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'status_filter': status_filter,
+        'sort_by': sort_by,
+        'total_count': total_count,
+        'aktif_count': aktif_count,
+        'pending_count': pending_count,
+        'nonaktif_count': nonaktif_count,
+        'menu': 'staff_students',
+    }
+    return render(request, 'accounts/staff/student_list.html', context)
+
+
+@role_required(allowed_roles=['admin', 'staff'])
 def staff_instructor_detail_view(request, pk):
     from django.shortcuts import get_object_or_404
     instructor = get_object_or_404(User, id=pk, role='instructor')

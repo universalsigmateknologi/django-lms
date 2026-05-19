@@ -1,13 +1,43 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, UserProfile
+from django.contrib.auth.forms import UserChangeForm
+from django.forms import BaseInlineFormSet
+from django.core.exceptions import ValidationError
+from .models import CustomUser, UserProfile, InstructorSkill
+
+
+class InstructorSkillFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        
+        # Check if the parent instance is an instructor
+        if self.instance and self.instance.role == 'instructor':
+            # Check if there are any active skills in the formset
+            has_skills = False
+            for form in self.forms:
+                if form.cleaned_data and not form.cleaned_data.get('DELETE'):
+                    if form.cleaned_data.get('category'):
+                        has_skills = True
+                        break
+            
+            from apps.courses.models import Category
+            if Category.objects.exists() and not has_skills:
+                raise ValidationError('Instruktur wajib memiliki minimal satu skill beserta status jabatannya!')
+
+
+class InstructorSkillInline(admin.TabularInline):
+    model = InstructorSkill
+    formset = InstructorSkillFormSet
+    extra = 1
 
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
+    inlines = [InstructorSkillInline]
+    filter_horizontal = ('groups', 'user_permissions')
 
     # Field yang ditampilkan di list
-    list_display = ('email', 'username', 'role', 'is_verified', 'is_staff', 'is_active', 'no_telp')
+    list_display = ('email', 'username', 'role', 'is_verified', 'is_staff', 'is_active')
     list_filter = ('role', 'is_verified', 'is_staff', 'is_active')
 
     # Field saat edit user

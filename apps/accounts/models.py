@@ -4,6 +4,7 @@ from django.db import models
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.core.exceptions import ValidationError
 
 
 class CustomUserManager(BaseUserManager):
@@ -36,6 +37,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150, unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    skill = models.ManyToManyField('courses.Category', blank=True, through='InstructorSkill', related_name='instructors')
     is_verified = models.BooleanField(default=False)
 
     is_active = models.BooleanField(default=True)
@@ -48,6 +50,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    def clean(self):
+        super().clean()
+
     @property
     def is_admin(self):
         return self.role == 'admin'
@@ -81,3 +87,19 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Profile {self.user.email}"
+
+class InstructorSkill(models.Model):
+    POSITION_CHOICES = (
+        ('junior', 'Junior'),
+        ('senior', 'Senior'),
+    )
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='instructor_skills')
+    category = models.ForeignKey('courses.Category', on_delete=models.CASCADE, related_name='instructor_skills')
+    position_status = models.CharField(max_length=20, choices=POSITION_CHOICES)
+
+    class Meta:
+        unique_together = ('user', 'category')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.category.name} ({self.get_position_status_display()})"

@@ -80,6 +80,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.payments.context_processors.unverified_orders_count",
+                "apps.courses.context_processors.pending_course_verifications_count",
             ],
         },
     },

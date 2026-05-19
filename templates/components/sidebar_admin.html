@@ -29,9 +29,16 @@
         </a>
         {% if user.is_senior_instructor %}
         <a href="{% url 'staff_course_verification' %}"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'staff_course_verification' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
-            <i data-lucide="check-square" class="w-[18px] h-[18px]"></i>
-            Verifikasi Kursus
+            class="flex items-center justify-between px-3 py-2.5 rounded-lg {% if menu == 'staff_course_verification' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
+            <div class="flex items-center gap-3">
+                <i data-lucide="check-square" class="w-[18px] h-[18px]"></i>
+                Verifikasi Kursus
+            </div>
+            {% if pending_course_verifications_count > 0 %}
+                <span class="px-2 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full leading-none min-w-[18px] text-center shrink-0">
+                    {{ pending_course_verifications_count }}
+                </span>
+            {% endif %}
         </a>
         {% endif %}
         {% elif user.is_staff %}

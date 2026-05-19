@@ -1,0 +1,504 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block topbar %}
+<!-- Top Bar -->
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+  <div>
+    <h1 class="text-base font-semibold text-navy-900">Analisis Platform</h1>
+    <p class="text-xs text-navy-400 mt-0.5">Wawasan menyeluruh mengenai kinerja bisnis, akademik, dan aktivitas siswa.</p>
+  </div>
+  <div class="flex items-center gap-3">
+    <!-- Quick action to refresh snapshot -->
+    <a href="{% url 'admin:analytics_platformanalytic_changelist' %}" class="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-navy-600 hover:text-navy-800 bg-navy-50 hover:bg-navy-100 rounded-lg border border-navy-100/50 transition-all">
+      <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+      Kelola Snapshot
+    </a>
+  </div>
+</header>
+{% endblock topbar %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- ======================== -->
+  <!-- ROW 1: KPI Cards        -->
+  <!-- ======================== -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+    
+    <!-- Card 1: Revenue -->
+    <div class="relative bg-white rounded-xl border border-navy-100 p-5 shadow-sm hover:shadow-md hover:scale-[1.01] transition-all overflow-hidden duration-300">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50/50 rounded-bl-[40px]"></div>
+      <div class="relative flex flex-col justify-between h-full">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center border border-emerald-100">
+            <i data-lucide="wallet" class="w-5 h-5 text-emerald-600"></i>
+          </div>
+          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100/40">Real-time</span>
+        </div>
+        <p class="text-2xl font-bold text-navy-900">Rp {{ stats.total_revenue|floatformat:"0g" }}</p>
+        <p class="text-xs text-navy-400 mt-1">Total Pendapatan Bersih</p>
+        <p class="text-[10px] text-emerald-600 font-medium mt-2 flex items-center gap-1">
+          <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> +Rp {{ stats.new_revenue|floatformat:"0g" }} hari ini
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 2: Student Enrollment -->
+    <div class="relative bg-white rounded-xl border border-navy-100 p-5 shadow-sm hover:shadow-md hover:scale-[1.01] transition-all overflow-hidden duration-300">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50/50 rounded-bl-[40px]"></div>
+      <div class="relative flex flex-col justify-between h-full">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100">
+            <i data-lucide="users" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/40">Siswa</span>
+        </div>
+        <p class="text-2xl font-bold text-navy-900">{{ stats.total_students|intcomma }}</p>
+        <p class="text-xs text-navy-400 mt-1">Total Siswa Terdaftar</p>
+        <p class="text-[10px] text-blue-600 font-medium mt-2 flex items-center gap-1">
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> +{{ stats.new_enrollments }} pendaftaran hari ini
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 3: Quiz Attempts & Success -->
+    <div class="relative bg-white rounded-xl border border-navy-100 p-5 shadow-sm hover:shadow-md hover:scale-[1.01] transition-all overflow-hidden duration-300">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-amber-50/40 rounded-bl-[40px]"></div>
+      <div class="relative flex flex-col justify-between h-full">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center border border-amber-100">
+            <i data-lucide="help-circle" class="w-5 h-5 text-amber-600"></i>
+          </div>
+          <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100/40">Akademik</span>
+        </div>
+        <p class="text-2xl font-bold text-navy-900">{{ stats.quiz_pass_rate|floatformat:1 }}%</p>
+        <p class="text-xs text-navy-400 mt-1">Tingkat Kelulusan Kuis</p>
+        <p class="text-[10px] text-amber-600 font-medium mt-2 flex items-center gap-1">
+          <i data-lucide="activity" class="w-3.5 h-3.5"></i> {{ stats.total_quiz_attempts|intcomma }} percobaan kuis
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 4: Certificates Issued -->
+    <div class="relative bg-white rounded-xl border border-navy-100 p-5 shadow-sm hover:shadow-md hover:scale-[1.01] transition-all overflow-hidden duration-300">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-violet-50/50 rounded-bl-[40px]"></div>
+      <div class="relative flex flex-col justify-between h-full">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center border border-violet-100">
+            <i data-lucide="award" class="w-5 h-5 text-violet-600"></i>
+          </div>
+          <span class="text-[10px] font-bold text-violet-700 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100/40">Sertifikat</span>
+        </div>
+        <p class="text-2xl font-bold text-navy-900">{{ stats.total_certificates|intcomma }}</p>
+        <p class="text-xs text-navy-400 mt-1">Sertifikat Diterbitkan</p>
+        <p class="text-[10px] text-violet-600 font-medium mt-2 flex items-center gap-1">
+          <i data-lucide="check" class="w-3.5 h-3.5"></i> +{{ stats.new_certificates }} diterbitkan hari ini
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======================== -->
+  <!-- ROW 2: Charts            -->
+  <!-- ======================== -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+    <!-- Trend Chart (3 cols) -->
+    <div class="lg:col-span-3 bg-white rounded-xl border border-navy-100 p-6 shadow-sm flex flex-col justify-between h-[380px]">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-sm font-semibold text-navy-900">Pertumbuhan & Keuangan Platform</h2>
+          <p class="text-xs text-navy-400 mt-0.5">Membandingkan tren pendapatan bulanan dengan siswa baru.</p>
+        </div>
+        <div class="flex items-center gap-4 text-xs font-medium text-navy-500">
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-500/80 block"></span> Pendapatan</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-1.5 rounded-full bg-sky-400 block"></span> Siswa Baru</span>
+        </div>
+      </div>
+      <div class="relative flex-1 w-full min-h-0">
+        <canvas id="financialsTrendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Doughnut Category Chart (2 cols) -->
+    <div class="lg:col-span-2 bg-white rounded-xl border border-navy-100 p-6 shadow-sm flex flex-col justify-between h-[380px]">
+      <div class="mb-4">
+        <h2 class="text-sm font-semibold text-navy-900">Distribusi Minat Kategori</h2>
+        <p class="text-xs text-navy-400 mt-0.5">Persentase siswa terdaftar berdasarkan kategori materi.</p>
+      </div>
+      <div class="flex items-center gap-5 justify-between flex-1 min-h-0">
+        <div class="relative w-36 h-36 shrink-0">
+          <canvas id="categoryShareChart"></canvas>
+        </div>
+        <div class="space-y-3 flex-1 min-w-0">
+          {% for cat in category_distribution %}
+          <div class="flex items-center justify-between gap-2 border-b border-navy-50 pb-2 last:border-0 last:pb-0">
+            <span class="flex items-center gap-2 text-xs text-navy-600 truncate">
+              <span class="w-2.5 h-2.5 rounded-sm shrink-0" style="background-color: {{ cat.color }}"></span>
+              {{ cat.name }}
+            </span>
+            <div class="text-right shrink-0">
+              <span class="text-xs font-semibold text-navy-900 block">{{ cat.pct }}%</span>
+              <span class="text-[10px] text-navy-400 block">{{ cat.count }} siswa</span>
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-xs text-navy-400 text-center py-6">Belum ada data distribusi.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======================== -->
+  <!-- ROW 3: Leaders & Logs    -->
+  <!-- ======================== -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+    <!-- Leaderboard (3 cols) -->
+    <div class="lg:col-span-3 bg-white rounded-xl border border-navy-100 overflow-hidden shadow-sm flex flex-col h-[460px]">
+      <!-- Tab Headers -->
+      <div class="flex border-b border-navy-100 bg-navy-50/20 shrink-0">
+        <button id="btn-top-courses" onclick="switchLeaderboard('courses')" class="flex items-center gap-2 px-6 py-4.5 text-sm font-semibold border-b-2 border-navy-900 text-navy-900 transition-all">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          Top 5 Kursus Terbaik
+        </button>
+        <button id="btn-top-instructors" onclick="switchLeaderboard('instructors')" class="flex items-center gap-2 px-6 py-4.5 text-sm font-semibold border-b-2 border-transparent text-navy-400 hover:text-navy-600 transition-all">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          Top 5 Instruktur Terbaik
+        </button>
+      </div>
+
+      <!-- Tab: Top Courses -->
+      <div id="leaderboard-courses" class="p-5 flex-1 overflow-y-auto space-y-3.5">
+        {% for course in top_courses %}
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-navy-50 hover:border-navy-100 hover:bg-navy-50/10 transition-all">
+          <span class="text-xs font-bold text-navy-400 w-5 text-center shrink-0">#{{ forloop.counter }}</span>
+          {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" class="w-14 h-10 rounded-lg object-cover shrink-0" alt="Thumbnail">
+          {% else %}
+            <div class="w-14 h-10 rounded-lg bg-navy-50 flex items-center justify-center shrink-0 border border-navy-100">
+              <i data-lucide="image" class="w-5 h-5 text-navy-400"></i>
+            </div>
+          {% endif %}
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-semibold text-navy-900 truncate">{{ course.title }}</h3>
+            <p class="text-xs text-navy-400 mt-0.5">
+              oleh <span class="font-medium text-navy-600">{{ course.instructor.get_full_name|default:course.instructor.username }}</span>
+              · {{ course.category.name }}
+            </p>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="flex items-center justify-end gap-1">
+              <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+              <span class="text-xs font-bold text-navy-800">{{ course.rating }}</span>
+            </div>
+            <p class="text-[10px] text-navy-400 mt-0.5">{{ course.student_count_ann }} siswa · {{ course.completion_rate }}% lulus</p>
+          </div>
+        </div>
+        {% empty %}
+        <div class="h-full flex flex-col items-center justify-center text-center py-12">
+          <i data-lucide="box" class="w-10 h-10 text-navy-200 mb-2"></i>
+          <p class="text-xs text-navy-400">Belum ada kursus populer saat ini.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Tab: Top Instructors -->
+      <div id="leaderboard-instructors" class="p-5 flex-1 overflow-y-auto space-y-3.5 hidden">
+        {% for inst in top_instructors %}
+        <div class="flex items-center gap-4 p-3 rounded-xl border border-navy-50 hover:border-navy-100 hover:bg-navy-50/10 transition-all">
+          <span class="text-xs font-bold text-navy-400 w-5 text-center shrink-0">#{{ forloop.counter }}</span>
+          <div class="w-10 h-10 rounded-full bg-navy-900 text-white font-bold text-xs flex items-center justify-center shrink-0 border border-navy-800">
+            {{ inst.username|slice:":2"|upper }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-semibold text-navy-900 truncate">{{ inst.get_full_name|default:inst.username }}</h3>
+            <p class="text-xs text-navy-400 mt-0.5">
+              {{ inst.course_count }} kelas diterbitkan · <span class="font-medium text-navy-600">{{ inst.enrollment_count }} total siswa</span>
+            </p>
+          </div>
+          <div class="text-right shrink-0">
+            <span class="text-sm font-bold text-navy-900">Rp {{ inst.revenue|floatformat:"0g" }}</span>
+            <div class="flex items-center justify-end gap-1 mt-0.5">
+              <i data-lucide="star" class="w-3 h-3 text-amber-400 fill-amber-400"></i>
+              <span class="text-[10px] text-navy-500 font-medium">{{ inst.rating }}</span>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="h-full flex flex-col items-center justify-center text-center py-12">
+          <i data-lucide="users" class="w-10 h-10 text-navy-200 mb-2"></i>
+          <p class="text-xs text-navy-400">Belum ada pengajar terdaftar.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Live Activity Log (2 cols) -->
+    <div class="lg:col-span-2 bg-white rounded-xl border border-navy-100 p-6 shadow-sm flex flex-col h-[460px]">
+      <div class="flex items-center justify-between mb-5 shrink-0">
+        <h2 class="text-sm font-semibold text-navy-900">Aktivitas Pengguna Terbaru</h2>
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+        </span>
+      </div>
+      <div class="space-y-4.5 flex-1 overflow-y-auto pr-1">
+        {% for act in activity_feed %}
+        <div class="flex gap-3">
+          <div class="flex flex-col items-center shrink-0">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 {{ act.color }}">
+              <i data-lucide="{{ act.icon }}" class="w-3.5 h-3.5"></i>
+            </div>
+            {% if not forloop.last %}
+            <div class="w-px flex-1 bg-navy-50 mt-2"></div>
+            {% endif %}
+          </div>
+          <div class="pb-1 text-xs">
+            <p class="text-navy-700 leading-relaxed">{{ act.desc|safe }}</p>
+            <p class="text-[10px] text-navy-400 mt-1 flex items-center gap-1">
+              <i data-lucide="clock" class="w-3 h-3 text-navy-300"></i>
+              {{ act.time|timesince }} yang lalu
+            </p>
+          </div>
+        </div>
+        {% empty %}
+        <div class="h-full flex flex-col items-center justify-center text-center py-12">
+          <i data-lucide="compass" class="w-8 h-8 text-navy-200 mb-2"></i>
+          <p class="text-xs text-navy-400">Belum ada rekaman log aktivitas.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<!-- Include ChartJS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Dynamic switch tab for Leaderboard
+  function switchLeaderboard(tab) {
+    const coursesBtn = document.getElementById('btn-top-courses');
+    const instructorsBtn = document.getElementById('btn-top-instructors');
+    const coursesContent = document.getElementById('leaderboard-courses');
+    const instructorsContent = document.getElementById('leaderboard-instructors');
+
+    if (tab === 'courses') {
+      coursesBtn.classList.add('border-navy-900', 'text-navy-900');
+      coursesBtn.classList.remove('border-transparent', 'text-navy-400');
+      instructorsBtn.classList.add('border-transparent', 'text-navy-400');
+      instructorsBtn.classList.remove('border-navy-900', 'text-navy-900');
+
+      coursesContent.classList.remove('hidden');
+      instructorsContent.classList.add('hidden');
+    } else {
+      instructorsBtn.classList.add('border-navy-900', 'text-navy-900');
+      instructorsBtn.classList.remove('border-transparent', 'text-navy-400');
+      coursesBtn.classList.add('border-transparent', 'text-navy-400');
+      coursesBtn.classList.remove('border-navy-900', 'text-navy-900');
+
+      instructorsContent.classList.remove('hidden');
+      coursesContent.classList.add('hidden');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1. Combo Trend Chart (Revenue & Registrations)
+    const trendCtx = document.getElementById('financialsTrendChart');
+    if (trendCtx) {
+      const labels = [
+        {% for m in monthly_data %}"{{ m.name }}"{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+      const revenueData = [
+        {% for m in monthly_data %}{{ m.revenue }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+      const studentsData = [
+        {% for m in monthly_data %}{{ m.students }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+
+      new Chart(trendCtx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Pendapatan (Rp)',
+              data: revenueData,
+              backgroundColor: 'rgba(79, 117, 179, 0.85)',
+              hoverBackgroundColor: 'rgba(59, 93, 149, 1)',
+              borderRadius: { topLeft: 4, topRight: 4 },
+              yAxisID: 'y',
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'Siswa Baru',
+              data: studentsData,
+              borderColor: '#10B981',
+              borderWidth: 3,
+              tension: 0.1,
+              fill: false,
+              pointBackgroundColor: '#FFFFFF',
+              pointBorderColor: '#10B981',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              yAxisID: 'y1',
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                boxWidth: 12,
+                font: {
+                  family: 'Plus Jakarta Sans, sans-serif',
+                  size: 11,
+                  weight: '600'
+                },
+                color: '#1E293B'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0D1B3E',
+              padding: 12,
+              cornerRadius: 8,
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  if (context.datasetIndex === 0) {
+                    label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(context.parsed.y);
+                  } else {
+                    label += context.parsed.y + ' siswa';
+                  }
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#64748B',
+                font: {
+                  family: 'Plus Jakarta Sans, sans-serif',
+                  size: 11,
+                  weight: '600'
+                }
+              }
+            },
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              grid: {
+                color: '#F1F5F9',
+                drawBorder: false
+              },
+              ticks: {
+                color: '#64748B',
+                font: {
+                  family: 'Plus Jakarta Sans, sans-serif',
+                  size: 10
+                },
+                callback: function(value) {
+                  if (value >= 1e6) {
+                    return 'Rp ' + (value / 1e6).toFixed(1) + ' jt';
+                  } else if (value >= 1e3) {
+                    return 'Rp ' + (value / 1e3).toFixed(0) + ' rb';
+                  }
+                  return 'Rp ' + value;
+                }
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              grid: {
+                drawOnChartArea: false
+              },
+              ticks: {
+                color: '#64748B',
+                font: {
+                  family: 'Plus Jakarta Sans, sans-serif',
+                  size: 10
+                },
+                stepSize: 1,
+                precision: 0
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 2. Category Share Doughnut Chart
+    const catCtx = document.getElementById('categoryShareChart');
+    if (catCtx) {
+      const labels = [
+        {% for cat in category_distribution %}"{{ cat.name }}"{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+      const data = [
+        {% for cat in category_distribution %}{{ cat.count }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+      const colors = [
+        {% for cat in category_distribution %}"{{ cat.color }}"{% if not forloop.last %}, {% endif %}{% endfor %}
+      ];
+
+      new Chart(catCtx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: colors,
+            borderWidth: 0,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: '#0D1B3E',
+              padding: 10,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  return context.label + ': ' + context.raw + ' siswa';
+                }
+              }
+            }
+          },
+          cutout: '72%'
+        }
+      });
+    }
+  });
+</script>
+{% endblock extra_js %}

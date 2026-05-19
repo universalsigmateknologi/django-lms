@@ -33,6 +33,11 @@
             <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
             Dashboard
         </a>
+        <a href="{% url 'analytics:staff_analytics' %}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'staff_analytics' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
+            <i data-lucide="bar-chart-3" class="w-[18px] h-[18px]"></i>
+            Analisis Platform
+        </a>
         {% url 'payments:staff_order_verification' as staff_order_url %}
         <a href="{{ staff_order_url|default:'#' }}"
             class="flex items-center justify-between px-3 py-2.5 rounded-lg {% if menu == 'staff_orders' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">

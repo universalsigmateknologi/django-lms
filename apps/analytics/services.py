@@ -34,12 +34,11 @@ class PlatformAnalyticService:
     @staticmethod
     def snapshot() -> dict:
         """Hitung statistik platform secara real-time."""
-        from apps.accounts.models import CustomUser, UserRole
+        from apps.accounts.models import CustomUser
         from apps.courses.models import Course
-        from apps.enrollments.models import Enrollment, EnrollmentStatus
+        from apps.enrollments.models import Enrollment, EnrollmentStatus, QuizAttempt
         from apps.payments.models import Order, OrderStatus
         from apps.certificates.models import Certificate
-        from apps.quizzes.models import QuizAttempt
 
         today    = timezone.now().date()
         week_ago = timezone.now() - timedelta(days=7)
@@ -61,8 +60,8 @@ class PlatformAnalyticService:
         return {
             "total_users":       CustomUser.objects.count(),
             "new_users":         CustomUser.objects.filter(date_joined__date=today).count(),
-            "total_students":    CustomUser.objects.filter(role=UserRole.STUDENT).count(),
-            "total_instructors": CustomUser.objects.filter(role=UserRole.INSTRUCTOR).count(),
+            "total_students":    CustomUser.objects.filter(role='student').count(),
+            "total_instructors": CustomUser.objects.filter(role='instructor').count(),
             "total_courses":     Course.objects.count(),
             "published_courses": Course.objects.filter(status='published').count(),
             "total_enrollments": Enrollment.objects.count(),

@@ -27,6 +27,13 @@
             <i data-lucide="users" class="w-[18px] h-[18px]"></i>
             Siswa
         </a>
+        {% if user.is_senior_instructor %}
+        <a href="{% url 'staff_course_verification' %}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'staff_course_verification' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
+            <i data-lucide="check-square" class="w-[18px] h-[18px]"></i>
+            Verifikasi Kursus
+        </a>
+        {% endif %}
         {% elif user.is_staff %}
         <a href="{% url 'staff_dashboard' %}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'staff_dashboard' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
@@ -48,12 +55,6 @@
             {% if unverified_orders_count > 0 %}
                 <span class="w-2 h-2 bg-red-500 rounded-full shrink-0"></span>
             {% endif %}
-        </a>
-        {% url 'staff_course_verification' as staff_course_url %}
-        <a href="{{ staff_course_url|default:'#' }}"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'staff_course_verification' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">
-            <i data-lucide="check-square" class="w-[18px] h-[18px]"></i>
-            Verifikasi Kursus
         </a>
         <a href="{% url 'staff_instructor_list' %}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if menu == 'staff_instructors' %}bg-navy-900 text-white{% else %}text-navy-500 hover:bg-navy-50 hover:text-navy-700{% endif %} text-sm font-medium transition-colors">

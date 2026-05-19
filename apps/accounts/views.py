@@ -810,6 +810,20 @@ def instructor_dashboard_view(request):
             'students': month_students
         })
 
+    # 8. Pending Verification Courses for Senior Instructors
+    senior_pending_courses = None
+    if instructor.is_senior_instructor:
+        senior_categories = Category.objects.filter(
+            instructor_skills__user=instructor,
+            instructor_skills__position_status='senior'
+        )
+        senior_pending_courses = Course.objects.filter(
+            category__in=senior_categories,
+            status='pending'
+        ).select_related('instructor', 'category').annotate(
+            module_count=Count('modules', distinct=True)
+        ).order_by('-updated_at')[:4]
+
     context = {
         'total_sales_count': total_sales_count,
         'total_revenue': total_revenue,
@@ -824,6 +838,7 @@ def instructor_dashboard_view(request):
         'category_distribution': category_distribution,
         'monthly_data': monthly_data,
         'menu': 'instructor_dashboard',
+        'senior_pending_courses': senior_pending_courses,
     }
     return render(request, 'accounts/instructor/dashboard_instructor.html', context)
 

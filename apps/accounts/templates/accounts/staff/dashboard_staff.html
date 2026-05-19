@@ -148,20 +148,15 @@
   <!-- ======================== -->
   <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-    <!-- Tabbed: Verification + Approval (3 col) -->
+    <!-- Tabbed: Verification (3 col) -->
     <div class="lg:col-span-3 bg-white rounded-xl border border-navy-100 overflow-hidden shadow-sm flex flex-col h-[450px]">
-      <!-- Tabs -->
-      <div class="flex border-b border-navy-100 bg-navy-50/20 shrink-0">
-        <button id="tab-payment" onclick="switchTab('payment')" class="flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 border-navy-900 text-navy-900 transition-colors">
-          <i data-lucide="credit-card" class="w-4 h-4"></i>
+      <!-- Header -->
+      <div class="flex border-b border-navy-100 bg-navy-50/20 shrink-0 px-6 py-4">
+        <h2 class="text-sm font-semibold text-navy-900 flex items-center gap-2">
+          <i data-lucide="credit-card" class="w-4 h-4 text-navy-600"></i>
           Verifikasi Pembayaran
-          <span class="text-[10px] font-bold bg-amber-500 text-white w-5 h-5 rounded-full flex items-center justify-center">{{ pending_transactions_count }}</span>
-        </button>
-        <button id="tab-approval" onclick="switchTab('approval')" class="flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 border-transparent text-navy-400 hover:text-navy-600 transition-colors">
-          <i data-lucide="check-square" class="w-4 h-4"></i>
-          Approval Kelas
-          <span class="text-[10px] font-bold bg-navy-100 text-navy-600 w-5 h-5 rounded-full flex items-center justify-center">{{ pending_courses|length }}</span>
-        </button>
+          <span class="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-full">{{ pending_transactions_count }}</span>
+        </h2>
       </div>
 
       <!-- Tab: Payment Verification -->
@@ -210,52 +205,6 @@
         <!-- View All -->
         <a href="{% url 'payments:staff_order_verification' %}" class="block w-full py-2.5 text-center text-xs font-semibold text-navy-500 hover:text-navy-700 border border-navy-100 hover:border-navy-200 rounded-xl transition-all shrink-0 mt-3">
           Lihat Semua Antrean Verifikasi
-        </a>
-      </div>
-
-      <!-- Tab: Course Approval -->
-      <div id="content-approval" class="p-5 flex-1 flex flex-col justify-between overflow-hidden hidden">
-        <div class="space-y-3 flex-1 overflow-y-auto pr-1 flex flex-col">
-          {% for course in pending_courses %}
-          <div class="flex items-center gap-4 p-3.5 rounded-xl border border-navy-50 hover:border-navy-100 hover:bg-navy-50/20 transition-all">
-            {% if course.thumbnail %}
-              <img src="{{ course.thumbnail.url }}" class="w-14 h-10 rounded-lg object-cover shrink-0" alt="Thumbnail">
-            {% else %}
-              <div class="w-14 h-10 rounded-lg bg-navy-50 flex items-center justify-center shrink-0">
-                <i data-lucide="image" class="w-5 h-5 text-navy-400"></i>
-              </div>
-            {% endif %}
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-semibold text-navy-900 truncate">{{ course.title }}</span>
-                {% if course.status == 'pending' %}
-                  <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded uppercase">Verify</span>
-                {% else %}
-                  <span class="text-[9px] font-bold text-navy-500 bg-navy-50 px-1.5 py-0.5 rounded uppercase">{{ course.get_status_display }}</span>
-                {% endif %}
-              </div>
-              <p class="text-xs text-navy-400 mt-0.5">
-                oleh <span class="font-semibold text-navy-600">{{ course.instructor.get_full_name|default:course.instructor.username }}</span>
-                · {{ course.category.name }}
-                · {{ course.module_count }} modul
-              </p>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <a href="{% url 'staff_course_verification' %}?status=pending&search={{ course.title }}" class="text-xs font-medium text-white bg-navy-900 hover:bg-navy-950 px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-                Tinjau
-              </a>
-            </div>
-          </div>
-          {% empty %}
-          <div class="flex-1 flex flex-col items-center justify-center text-center py-6">
-            <i data-lucide="inbox" class="w-8 h-8 text-navy-300 mb-2"></i>
-            <p class="text-xs text-navy-400">Tidak ada pengajuan kelas baru.</p>
-          </div>
-          {% endfor %}
-        </div>
-        
-        <a href="{% url 'staff_course_verification' %}" class="block w-full py-2.5 text-center text-xs font-semibold text-navy-500 hover:text-navy-700 border border-navy-100 hover:border-navy-200 rounded-xl transition-all shrink-0 mt-3">
-          Lihat Semua Pengajuan Kelas
         </a>
       </div>
     </div>

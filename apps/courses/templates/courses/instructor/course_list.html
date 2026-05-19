@@ -57,6 +57,10 @@
             class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'pending' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
             Pending <span class="ml-1 text-xs opacity-60">{{ pending_count }}</span>
         </a>
+        <a href="?status=rejected{% if search_query %}&search={{ search_query }}{% endif %}" 
+            class="text-sm font-medium px-4 py-2 rounded-md {% if status_filter == 'rejected' %}bg-navy-900 text-white{% else %}text-navy-500 hover:text-navy-700 hover:bg-navy-50{% endif %} transition-colors">
+            Ditolak <span class="ml-1 text-xs opacity-60">{{ rejected_count }}</span>
+        </a>
     </div>
 
     <div class="bg-white rounded-xl border border-navy-100 divide-y divide-navy-100">

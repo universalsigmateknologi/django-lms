@@ -64,6 +64,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def is_instructor(self):
         return self.role == 'instructor'
     @property
+    def is_senior_instructor(self):
+        return self.role == 'instructor' and self.instructor_skills.filter(position_status='senior').exists()
+    @property
     def is_student(self):
         return self.role == 'student'
 

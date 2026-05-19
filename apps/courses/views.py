@@ -183,6 +183,7 @@ def instructor_course_list(request):
     active_count = Course.objects.filter(instructor=request.user, status='published').count()
     draft_count = Course.objects.filter(instructor=request.user, status='draft').count()
     pending_count = Course.objects.filter(instructor=request.user, status='pending').count()
+    rejected_count = Course.objects.filter(instructor=request.user, status='rejected').count()
     total_count = Course.objects.filter(instructor=request.user).count()
 
     # Filter by status if requested
@@ -193,6 +194,8 @@ def instructor_course_list(request):
         courses_list = courses_list.filter(status='draft')
     elif status_filter == 'pending':
         courses_list = courses_list.filter(status='pending')
+    elif status_filter == 'rejected':
+        courses_list = courses_list.filter(status='rejected')
 
     # Search
     search_query = request.GET.get('search', '')
@@ -208,8 +211,9 @@ def instructor_course_list(request):
         'page_obj': page_obj,
         'total_count': total_count,
         'active_count': active_count,
-        'draft_count': Course.objects.filter(instructor=request.user, status='draft').count(),
-        'pending_count': Course.objects.filter(instructor=request.user, status='pending').count(),
+        'draft_count': draft_count,
+        'pending_count': pending_count,
+        'rejected_count': rejected_count,
         'status_filter': status_filter,
         'search_query': search_query,
         'categories': Category.objects.all(),
@@ -462,15 +466,25 @@ def course_publish_request(request, pk):
     return redirect('instructor_course_list')
 
 
-@role_required(allowed_roles=['admin', 'staff'])
+@role_required(allowed_roles=['instructor'])
 def staff_course_verification_view(request):
     """
-    Halaman untuk staff melakukan verifikasi pengajuan publikasi kursus.
+    Halaman untuk Instruktur Senior melakukan verifikasi pengajuan publikasi kursus.
     """
+    # Dapatkan kategori di mana instruktur yang sedang login adalah senior
+    senior_categories = Category.objects.filter(
+        instructor_skills__user=request.user,
+        instructor_skills__position_status='senior'
+    )
+    
+    if not senior_categories.exists():
+        return redirect('no_permission')
+
     search_query = request.GET.get('search', '').strip()
     status_filter = request.GET.get('status', 'all')
     
-    courses = Course.objects.select_related('instructor', 'category').annotate(
+    # Ambil kursus hanya pada kategori di mana user adalah instruktur senior
+    courses = Course.objects.filter(category__in=senior_categories).select_related('instructor', 'category').annotate(
         total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
         student_count_ann=Count('enrollments', distinct=True),
         module_count=Count('modules', distinct=True)
@@ -494,10 +508,11 @@ def staff_course_verification_view(request):
             Q(instructor__email__icontains=search_query)
         )
         
-    total_count = Course.objects.exclude(status='draft').count()
-    pending_count = Course.objects.filter(status='pending').count()
-    published_count = Course.objects.filter(status='published').count()
-    rejected_count = Course.objects.filter(status='rejected').count()
+    # Hitung statistik ter-filter berdasarkan kategori senior milik instruktur ini
+    total_count = Course.objects.filter(category__in=senior_categories).exclude(status='draft').count()
+    pending_count = Course.objects.filter(category__in=senior_categories, status='pending').count()
+    published_count = Course.objects.filter(category__in=senior_categories, status='published').count()
+    rejected_count = Course.objects.filter(category__in=senior_categories, status='rejected').count()
     
     paginator = Paginator(courses, 10)
     page_number = request.GET.get('page')
@@ -516,14 +531,27 @@ def staff_course_verification_view(request):
     return render(request, 'courses/staff/course_publish_verification.html', context)
 
 
-@role_required(allowed_roles=['admin', 'staff'])
+@role_required(allowed_roles=['instructor'])
 def staff_verify_course_action(request, pk, action):
     """
-    Action untuk mempublikasikan atau menolak pengajuan kursus.
+    Action untuk mempublikasikan atau menolak pengajuan kursus oleh Instruktur Senior.
     """
     from django.contrib import messages
+    from apps.accounts.models import InstructorSkill
+    
     course = get_object_or_404(Course, pk=pk)
     
+    # Pastikan instruktur yang sedang login adalah senior untuk kategori kelas tersebut
+    is_senior = InstructorSkill.objects.filter(
+        user=request.user,
+        category=course.category,
+        position_status='senior'
+    ).exists()
+    
+    if not is_senior:
+        messages.error(request, 'Anda tidak memiliki wewenang untuk melakukan verifikasi di kategori ini.')
+        return redirect('no_permission')
+        
     if action == 'publish':
         course.status = 'published'
         course.save()
@@ -547,10 +575,18 @@ def instructor_course_detail(request, pk):
     from django.db.models import Avg
 
     # Staf/Admin bisa melihat semua kelas, Instruktur hanya bisa melihat kelas miliknya sendiri
+    # Instruktur Senior juga bisa melihat kelas di kategori di mana mereka berstatus Senior untuk kebutuhan verifikasi.
     if request.user.role in ['admin', 'staff']:
         course_qs = Course.objects.all()
     else:
-        course_qs = Course.objects.filter(instructor=request.user)
+        # Cari kategori di mana user adalah senior
+        senior_categories = Category.objects.filter(
+            instructor_skills__user=request.user,
+            instructor_skills__position_status='senior'
+        )
+        course_qs = Course.objects.filter(
+            Q(instructor=request.user) | Q(category__in=senior_categories)
+        )
 
     course = get_object_or_404(
         course_qs.annotate(
@@ -585,6 +621,11 @@ def instructor_course_detail(request, pk):
         enrollment__course=course
     ).select_related('enrollment__student', 'quiz').order_by('-started_at')[:15]
 
+    # Tentukan menu aktif di sidebar secara dinamis
+    active_menu = 'instructor_courses'
+    if course.instructor != request.user:
+        active_menu = 'staff_course_verification'
+
     context = {
         'course': course,
         'modules': modules,
@@ -593,7 +634,7 @@ def instructor_course_detail(request, pk):
         'avg_progress': avg_progress,
         'total_revenue': total_revenue,
         'quiz_attempts': quiz_attempts,
-        'menu': 'instructor_courses',
+        'menu': active_menu,
     }
     return render(request, 'courses/instructor/course_detail.html', context)
 

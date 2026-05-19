@@ -311,11 +311,13 @@
         {% for inst in top_instructors %}
         <div class="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-navy-50/30 border border-transparent hover:border-navy-50">
           <span class="text-xs font-bold text-navy-400 w-5 text-center">{{ forloop.counter }}</span>
-          <div class="w-8 h-8 rounded-full bg-navy-100 flex items-center justify-center shrink-0 font-bold text-xs text-navy-700">
+          <a href="{% url 'staff_instructor_detail' pk=inst.id %}" class="w-8 h-8 rounded-full bg-navy-100 flex items-center justify-center shrink-0 font-bold text-xs text-navy-700 hover:opacity-85 transition-opacity">
             {{ inst.username|slice:":2"|upper }}
-          </div>
+          </a>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-navy-900 truncate">{{ inst.get_full_name|default:inst.username }}</p>
+            <a href="{% url 'staff_instructor_detail' pk=inst.id %}" class="text-sm font-medium text-navy-900 hover:text-navy-700 hover:underline truncate block">
+              {{ inst.get_full_name|default:inst.username }}
+            </a>
             <p class="text-xs text-navy-400">{{ inst.course_count }} kelas · {{ inst.enrollment_count }} siswa</p>
           </div>
           <div class="text-right shrink-0">

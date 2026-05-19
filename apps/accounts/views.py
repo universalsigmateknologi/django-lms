@@ -19,7 +19,7 @@ User = get_user_model()
 # Create your views here.
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("course_preview")
+        return redirect(redirect_user_by_role(request.user))
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -857,4 +857,4 @@ def instructor_student_list_view(request):
     }
     return render(request, 'accounts/instructor/student/student_list.html', context)
 
-
+

@@ -83,7 +83,7 @@
                     <span class="text-[10px] font-medium text-navy-500">Oleh: <span class="font-semibold text-navy-700">{{ course.instructor.get_full_name|default:course.instructor.username }}</span></span>
                 </div>
                 <h3 class="text-sm font-semibold text-navy-900 truncate">
-                    <a href="{% url 'course_detail' course.slug %}" target="_blank" class="hover:text-navy-700 transition-colors inline-flex items-center gap-1.5">
+                    <a href="{% url 'instructor_course_detail' course.id %}" target="_blank" class="hover:text-navy-700 transition-colors inline-flex items-center gap-1.5">
                         {{ course.title }}
                         <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
                     </a>

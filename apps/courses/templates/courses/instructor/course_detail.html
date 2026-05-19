@@ -1,0 +1,383 @@
+{% extends 'base_admin.html' %}
+{% load humanize %}
+
+{% block topbar %}
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5 text-xs text-navy-400">
+            <a href="{% url 'instructor_course_list' %}" class="hover:text-navy-900 transition-colors">Kelas Saya</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-navy-900 font-medium">Detail Manajemen</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-3">
+        <a href="{% url 'instructor_course_list' %}" class="flex items-center gap-2 text-xs font-semibold text-navy-600 bg-white border border-navy-200 hover:bg-navy-50 px-3 py-2 rounded-lg transition-all">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali ke Daftar Kelas
+        </a>
+    </div>
+</header>
+{% endblock topbar %}
+
+{% block content %}
+    <!-- 1. Header Banner & Action Panel -->
+    <div class="bg-white border border-navy-100 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex gap-5 items-center">
+            {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="w-28 h-20 rounded-xl object-cover border border-navy-100 shrink-0 shadow-sm" alt="{{ course.title }}">
+            {% else %}
+                <div class="w-28 h-20 rounded-xl bg-navy-50 flex items-center justify-center shrink-0 border border-navy-100">
+                    <i data-lucide="image" class="w-8 h-8 text-navy-300"></i>
+                </div>
+            {% endif %}
+            <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                    <!-- Status Badges -->
+                    {% if course.status == 'published' %}
+                        <span class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">Aktif & Publik</span>
+                    {% elif course.status == 'pending' %}
+                        <span class="text-[9px] font-extrabold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">Menunggu Verifikasi</span>
+                    {% elif course.status == 'rejected' %}
+                        <span class="text-[9px] font-extrabold uppercase tracking-widest text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100">Ditolak</span>
+                    {% else %}
+                        <span class="text-[9px] font-extrabold uppercase tracking-widest text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">Draft</span>
+                    {% endif %}
+
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{{ course.get_level_display }}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">{{ course.category.name }}</span>
+                </div>
+                <h1 class="text-xl font-bold text-navy-900 truncate leading-snug">{{ course.title }}</h1>
+                <p class="text-xs text-navy-400 mt-0.5 flex items-center gap-1.5">
+                    <i data-lucide="user" class="w-3.5 h-3.5"></i> Instruktur: <span class="font-medium text-navy-600">{{ course.instructor.get_full_name|default:course.instructor.username }}</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Aksi berdasarkan Role dan Status -->
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            {% if request.user.role in 'admin,staff' and course.status == 'pending' %}
+                <!-- Aksi Khusus Staff/Admin -->
+                <div class="flex gap-2 p-2 bg-amber-50/50 border border-amber-100 rounded-xl">
+                    <a href="{% url 'staff_verify_course_action' course.id 'publish' %}" 
+                       class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i> Setujui
+                    </a>
+                    <a href="{% url 'staff_verify_course_action' course.id 'reject' %}" 
+                       class="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors">
+                        <i data-lucide="x-circle" class="w-4 h-4"></i> Tolak
+                    </a>
+                </div>
+            {% else %}
+                <!-- Aksi untuk Instruktur -->
+                {% if course.status == 'published' %}
+                    <a href="{% url 'course_detail' course.slug %}" target="_blank"
+                       class="flex items-center gap-2 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-4 py-2.5 rounded-lg transition-all">
+                        <i data-lucide="external-link" class="w-4 h-4"></i> Lihat Halaman Siswa
+                    </a>
+                {% endif %}
+                <a href="{% url 'instructor_module_list' course.id %}"
+                   class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-md transition-all">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i> Kelola Kurikulum
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Banner Info Khusus Pending -->
+    {% if course.status == 'pending' %}
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+        <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5"></i>
+        <div>
+            <h4 class="text-xs font-bold text-amber-900">Kelas dalam Proses Verifikasi Staf</h4>
+            <p class="text-xs text-amber-700 mt-0.5">Materi tidak dapat diubah selama proses review berlangsung. Anda akan menerima notifikasi setelah tim kami selesai memverifikasi kelas Anda.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 2. Kartu Statistik Utama -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Revenue Card -->
+        <div class="bg-white border border-navy-100 rounded-xl p-5 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-navy-400">Total Revenue</p>
+                <h3 class="text-lg font-bold text-navy-900 mt-1">Rp {{ total_revenue|intcomma }}</h3>
+                <p class="text-[10px] text-navy-400 mt-0.5">Berdasarkan siswa terdaftar</p>
+            </div>
+            <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                <i data-lucide="credit-card" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <!-- Student Count -->
+        <div class="bg-white border border-navy-100 rounded-xl p-5 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-navy-400">Siswa Terdaftar</p>
+                <h3 class="text-lg font-bold text-navy-900 mt-1">{{ course.student_count_ann }} Siswa</h3>
+                <p class="text-[10px] text-navy-400 mt-0.5">Aktif belajar kelas ini</p>
+            </div>
+            <div class="w-10 h-10 bg-navy-50 rounded-lg flex items-center justify-center text-navy-600">
+                <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <!-- Average Progress -->
+        <div class="bg-white border border-navy-100 rounded-xl p-5 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-navy-400">Rata-rata Progress</p>
+                <h3 class="text-lg font-bold text-navy-900 mt-1">{{ avg_progress|floatformat:1 }}%</h3>
+                <p class="text-[10px] text-navy-400 mt-0.5">Persentase pengerjaan materi</p>
+            </div>
+            <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
+                <i data-lucide="activity" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <!-- Curriculum Scope -->
+        <div class="bg-white border border-navy-100 rounded-xl p-5 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-navy-400">Total Pelajaran</p>
+                <h3 class="text-lg font-bold text-navy-900 mt-1">{{ total_lessons }} Materi</h3>
+                <p class="text-[10px] text-navy-400 mt-0.5">Di dalam {{ course.module_count }} modul terstruktur</p>
+            </div>
+            <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Tab Konten Interaktif -->
+    <div class="space-y-4">
+        <!-- Header Tab Buttons -->
+        <div class="flex border-b border-navy-100">
+            <button onclick="switchTab('curriculum')" id="btn-tab-curriculum" class="tab-btn py-3 px-6 text-sm font-semibold border-b-2 border-navy-900 text-navy-900 focus:outline-none transition-all flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4"></i> Cetak Biru Kurikulum
+            </button>
+            <button onclick="switchTab('students')" id="btn-tab-students" class="tab-btn py-3 px-6 text-sm font-semibold border-b-2 border-transparent text-navy-400 hover:text-navy-600 focus:outline-none transition-all flex items-center gap-2">
+                <i data-lucide="users-2" class="w-4 h-4"></i> Siswa Terdaftar ({{ enrollments.count }})
+            </button>
+            <button onclick="switchTab('quizzes')" id="btn-tab-quizzes" class="tab-btn py-3 px-6 text-sm font-semibold border-b-2 border-transparent text-navy-400 hover:text-navy-600 focus:outline-none transition-all flex items-center gap-2">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Analitik Kuis
+            </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <!-- A. Curriculum Tab -->
+        <div id="tab-curriculum" class="tab-content space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-bold text-navy-900">Kurikulum dan Struktur Pelajaran</h3>
+                {% if course.status != 'pending' %}
+                <a href="{% url 'instructor_module_list' course.id %}" class="text-xs font-semibold text-navy-900 hover:underline flex items-center gap-1">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Kelola Modul & Materi
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="space-y-3">
+                {% for module in modules %}
+                <div class="bg-white border border-navy-100 rounded-xl overflow-hidden shadow-sm">
+                    <!-- Module Header -->
+                    <div class="px-5 py-4 bg-navy-50/50 flex items-center justify-between border-b border-navy-50">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full bg-navy-900 text-white text-xs font-bold flex items-center justify-center">{{ forloop.counter }}</span>
+                            <div>
+                                <h4 class="text-sm font-bold text-navy-900">{{ module.title }}</h4>
+                                <p class="text-[10px] text-navy-400 font-medium">Modul Ke-{{ module.order }} &bull; {{ module.lessons.count }} Materi</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Module Body (Lessons) -->
+                    <div class="divide-y divide-navy-50">
+                        {% for lesson in module.lessons.all %}
+                        <div class="px-5 py-3 flex items-center justify-between hover:bg-navy-50/20 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <!-- Type Icon -->
+                                <span class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 {% if lesson.lesson_type == 'video' %}bg-red-50 text-red-600{% elif lesson.lesson_type == 'quiz' %}bg-amber-50 text-amber-600{% elif lesson.lesson_type == 'text' %}bg-blue-50 text-blue-600{% else %}bg-slate-50 text-slate-600{% endif %}">
+                                    {% if lesson.lesson_type == 'video' %}
+                                        <i data-lucide="video" class="w-4 h-4"></i>
+                                    {% elif lesson.lesson_type == 'quiz' %}
+                                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                                    {% elif lesson.lesson_type == 'text' %}
+                                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                                    {% else %}
+                                        <i data-lucide="paperclip" class="w-4 h-4"></i>
+                                    {% endif %}
+                                </span>
+                                <div class="min-w-0">
+                                    <h5 class="text-xs font-semibold text-navy-800 truncate">{{ lesson.title }}</h5>
+                                    <span class="text-[9px] font-bold text-navy-400 uppercase tracking-widest">{{ lesson.get_lesson_type_display }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-navy-400">
+                                {% if lesson.duration_seconds > 0 %}
+                                <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> {{ lesson.duration_seconds|floatformat:0 }} dtk</span>
+                                {% endif %}
+                                {% if lesson.is_free_preview %}
+                                <span class="text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 uppercase tracking-wider">Preview Gratis</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="p-4 text-center text-xs text-navy-400">Modul ini belum memiliki materi.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-white border border-navy-100 rounded-xl p-8 text-center">
+                    <i data-lucide="book-open" class="w-8 h-8 text-navy-200 mx-auto mb-2"></i>
+                    <p class="text-xs text-navy-500 font-semibold">Belum ada kurikulum</p>
+                    <p class="text-[11px] text-navy-400 mt-0.5">Mulai tambahkan modul untuk merancang kurikulum kelas.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- B. Students Tab -->
+        <div id="tab-students" class="tab-content hidden space-y-4">
+            <h3 class="text-sm font-bold text-navy-900">Siswa yang Mengambil Kelas Ini</h3>
+
+            <div class="bg-white rounded-xl border border-navy-100 overflow-hidden shadow-sm">
+                <!-- Table Header -->
+                <div class="grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-navy-100 text-[10px] font-bold uppercase tracking-widest text-navy-400 select-none bg-navy-50/50">
+                    <div class="col-span-4">Siswa</div>
+                    <div class="col-span-3">Progress Belajar</div>
+                    <div class="col-span-2">Tanggal Terdaftar</div>
+                    <div class="col-span-3 text-right">Hubungi</div>
+                </div>
+
+                <!-- Table Body -->
+                <div class="divide-y divide-navy-50">
+                    {% for enrollment in enrollments %}
+                    <div class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/20 transition-colors">
+                        <!-- Siswa Profile -->
+                        <div class="col-span-4 flex items-center gap-3 min-w-0">
+                            {% if enrollment.student.profile.avatar %}
+                                <img src="{{ enrollment.student.profile.avatar.url }}" class="w-9 h-9 rounded-full object-cover shrink-0 border border-navy-100" alt="">
+                            {% else %}
+                                <img src="https://ui-avatars.com/api/?name={{ enrollment.student.get_full_name|default:enrollment.student.username }}&background=0D1B3E&color=fff" class="w-9 h-9 rounded-full object-cover shrink-0" alt="">
+                            {% endif %}
+                            <div class="min-w-0">
+                                <p class="text-xs font-semibold text-navy-900 truncate">{{ enrollment.student.get_full_name|default:enrollment.student.username }}</p>
+                                <p class="text-[10px] text-navy-400 truncate">{{ enrollment.student.email }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Student Progress -->
+                        <div class="col-span-3">
+                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                {% if enrollment.progress_pct >= 100.0 %}
+                                    <span class="font-bold text-emerald-600">Lulus (100%)</span>
+                                {% else %}
+                                    <span class="font-semibold text-navy-700">{{ enrollment.progress_pct|floatformat:0 }}%</span>
+                                {% endif %}
+                            </div>
+                            <div class="w-full h-1.5 bg-navy-50 rounded-full overflow-hidden border border-navy-50">
+                                <div class="h-full {% if enrollment.progress_pct >= 100.0 %}bg-emerald-500{% else %}bg-navy-900{% endif %} rounded-full" style="width:{{ enrollment.progress_pct }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="col-span-2 text-xs text-navy-500">
+                            {{ enrollment.enrolled_at|date:"d M Y" }}
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="col-span-3 flex items-center justify-end gap-1.5">
+                            <a href="mailto:{{ enrollment.student.email }}" title="Kirim Email" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-700 hover:bg-navy-50 transition-colors">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                            </a>
+                            {% if enrollment.wa_link %}
+                            <a href="{{ enrollment.wa_link }}" target="_blank" title="WhatsApp" class="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                                <i data-lucide="message-square" class="w-4 h-4"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-8 text-center">
+                        <i data-lucide="users" class="w-8 h-8 text-navy-200 mx-auto mb-2"></i>
+                        <p class="text-xs text-navy-500 font-semibold">Belum ada siswa terdaftar</p>
+                        <p class="text-[11px] text-navy-400 mt-0.5">Begitu siswa membeli kelas ini, mereka akan muncul di daftar ini.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- C. Quizzes Tab -->
+        <div id="tab-quizzes" class="tab-content hidden space-y-4">
+            <h3 class="text-sm font-bold text-navy-900">Performa Percobaan Kuis Siswa</h3>
+
+            <div class="bg-white rounded-xl border border-navy-100 overflow-hidden shadow-sm">
+                <!-- Table Header -->
+                <div class="grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-navy-100 text-[10px] font-bold uppercase tracking-widest text-navy-400 select-none bg-navy-50/50">
+                    <div class="col-span-4">Siswa</div>
+                    <div class="col-span-3">Kuis</div>
+                    <div class="col-span-2 text-center">Skor</div>
+                    <div class="col-span-3 text-right">Tanggal Pengajuan</div>
+                </div>
+
+                <!-- Table Body -->
+                <div class="divide-y divide-navy-50">
+                    {% for attempt in quiz_attempts %}
+                    <div class="grid grid-cols-12 items-center gap-4 px-6 py-4 hover:bg-navy-50/20 transition-colors">
+                        <!-- Student -->
+                        <div class="col-span-4 min-w-0">
+                            <p class="text-xs font-semibold text-navy-900 truncate">{{ attempt.enrollment.student.get_full_name|default:attempt.enrollment.student.username }}</p>
+                            <p class="text-[10px] text-navy-400 truncate">{{ attempt.enrollment.student.email }}</p>
+                        </div>
+
+                        <!-- Quiz -->
+                        <div class="col-span-3 min-w-0">
+                            <p class="text-xs font-semibold text-navy-700 truncate">{{ attempt.quiz.title }}</p>
+                            <p class="text-[9px] font-bold text-navy-400 uppercase tracking-widest">Modul: {{ attempt.quiz.lesson.module.title }}</p>
+                        </div>
+
+                        <!-- Score -->
+                        <div class="col-span-2 flex justify-center">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg border {% if attempt.is_passed %}text-emerald-700 bg-emerald-50 border-emerald-100{% else %}text-red-700 bg-red-50 border-red-100{% endif %}">
+                                {{ attempt.score|floatformat:0 }}%
+                            </span>
+                        </div>
+
+                        <!-- Submitted At -->
+                        <div class="col-span-3 text-right text-xs text-navy-500">
+                            {{ attempt.submitted_at|date:"d M Y, H:i" }}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-8 text-center">
+                        <i data-lucide="bar-chart-2" class="w-8 h-8 text-navy-200 mx-auto mb-2"></i>
+                        <p class="text-xs text-navy-500 font-semibold">Belum ada aktivitas kuis</p>
+                        <p class="text-[11px] text-navy-400 mt-0.5">Riwayat hasil pengerjaan kuis siswa akan terdaftar di sini.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    function switchTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('border-navy-900', 'text-navy-900');
+            btn.classList.add('border-transparent', 'text-navy-400');
+        });
+        
+        // Show current tab content
+        document.getElementById('tab-' + tabId).classList.remove('hidden');
+        
+        // Highlight current button
+        const activeBtn = document.getElementById('btn-tab-' + tabId);
+        activeBtn.classList.remove('border-transparent', 'text-navy-400');
+        activeBtn.classList.add('border-navy-900', 'text-navy-900');
+    }
+    
+    // Initialize Lucide Icons
+    lucide.createIcons();
+</script>
+{% endblock extra_js %}

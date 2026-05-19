@@ -538,6 +538,67 @@ def staff_verify_course_action(request, pk, action):
     return redirect('staff_course_verification')
 
 
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
+def instructor_course_detail(request, pk):
+    """
+    Halaman detail kursus khusus untuk Instruktur pembuat kelas 
+    atau staf/admin untuk verifikasi dan monitoring.
+    """
+    from django.db.models import Avg
+
+    # Staf/Admin bisa melihat semua kelas, Instruktur hanya bisa melihat kelas miliknya sendiri
+    if request.user.role in ['admin', 'staff']:
+        course_qs = Course.objects.all()
+    else:
+        course_qs = Course.objects.filter(instructor=request.user)
+
+    course = get_object_or_404(
+        course_qs.annotate(
+            total_duration_sec=Coalesce(Sum('modules__lessons__duration_seconds'), 0),
+            student_count_ann=Count('enrollments', distinct=True),
+            module_count=Count('modules', distinct=True)
+        ).annotate(
+            total_hours_ann=ExpressionWrapper(
+                F('total_duration_sec') / 3600.0,
+                output_field=FloatField()
+            )
+        ),
+        pk=pk
+    )
+
+    # Prefetch modul & pelajaran untuk Tab 1
+    modules = course.modules.all().prefetch_related('lessons')
+    total_lessons = sum(module.lessons.count() for module in modules)
+
+    # Ambil data siswa terdaftar untuk Tab 2
+    enrollments = Enrollment.objects.filter(course=course).select_related('student', 'student__profile').order_by('-enrolled_at')
+    
+    # Hitung rata-rata progress belajar siswa
+    avg_progress = enrollments.aggregate(avg=Avg('progress_pct'))['avg'] or 0.0
+
+    # Estimasi Pendapatan
+    total_revenue = course.price * course.student_count_ann
+
+    # Ambil riwayat percobaan kuis siswa untuk Tab 3
+    from apps.enrollments.models import QuizAttempt
+    quiz_attempts = QuizAttempt.objects.filter(
+        enrollment__course=course
+    ).select_related('enrollment__student', 'quiz').order_by('-started_at')[:15]
+
+    context = {
+        'course': course,
+        'modules': modules,
+        'total_lessons': total_lessons,
+        'enrollments': enrollments,
+        'avg_progress': avg_progress,
+        'total_revenue': total_revenue,
+        'quiz_attempts': quiz_attempts,
+        'menu': 'instructor_courses',
+    }
+    return render(request, 'courses/instructor/course_detail.html', context)
+
+
+
 
 
 

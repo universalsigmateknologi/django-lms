@@ -218,12 +218,16 @@
       <!-- Siswa Info -->
       <div class="col-span-3 flex items-center gap-3 min-w-0">
         {% if enrollment.student.profile.avatar %}
-          <img src="{{ enrollment.student.profile.avatar.url }}" class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+          <a href="{% url 'instructor_student_detail' enrollment.id %}" class="shrink-0">
+            <img src="{{ enrollment.student.profile.avatar.url }}" class="w-10 h-10 rounded-full object-cover" alt="">
+          </a>
         {% else %}
-          <img src="https://ui-avatars.com/api/?name={{ enrollment.student.get_full_name|default:enrollment.student.username }}&background=0D1B3E&color=fff" class="w-10 h-10 rounded-full object-cover shrink-0" alt="">
+          <a href="{% url 'instructor_student_detail' enrollment.id %}" class="shrink-0">
+            <img src="https://ui-avatars.com/api/?name={{ enrollment.student.get_full_name|default:enrollment.student.username }}&background=0D1B3E&color=fff" class="w-10 h-10 rounded-full object-cover" alt="">
+          </a>
         {% endif %}
         <div class="min-w-0">
-          <p class="text-sm font-semibold text-navy-900 truncate">{{ enrollment.student.get_full_name|default:enrollment.student.username }}</p>
+          <a href="{% url 'instructor_student_detail' enrollment.id %}" class="text-sm font-semibold text-navy-900 hover:text-navy-700 hover:underline truncate block">{{ enrollment.student.get_full_name|default:enrollment.student.username }}</a>
           <p class="text-xs text-navy-400 truncate">{{ enrollment.student.email }}</p>
         </div>
       </div>

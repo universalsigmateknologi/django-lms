@@ -1,0 +1,287 @@
+{% extends 'base_admin.html' %}
+
+{% block topbar %}
+<!-- Top Bar -->
+<header class="h-16 bg-white border-b border-navy-100 flex items-center justify-between px-8 sticky top-0 z-10">
+  <div class="flex items-center gap-1.5 text-xs text-navy-400">
+    <a href="{% url 'instructor_student_list' %}" class="hover:text-navy-900 transition-colors">Siswa</a>
+    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+    <span class="text-navy-900 font-medium">Detail Siswa</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <a href="{% url 'instructor_student_list' %}" class="flex items-center gap-2 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 hover:bg-navy-50 px-4 py-2 rounded-lg transition-colors select-none">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Kembali
+    </a>
+  </div>
+</header>
+{% endblock topbar %}
+
+{% block content %}
+<!-- Student Profile Header -->
+<div class="bg-white rounded-xl border border-navy-100 p-6 flex flex-col md:flex-row md:items-start gap-6 relative overflow-hidden">
+  <!-- Subtle Gradient Background -->
+  <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-50 to-emerald-50 rounded-full blur-3xl opacity-50 z-0 pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+  
+  <div class="shrink-0 relative z-10">
+    {% if enrollment.student.profile.avatar %}
+      <img src="{{ enrollment.student.profile.avatar.url }}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-sm" alt="Avatar">
+    {% else %}
+      <img src="https://ui-avatars.com/api/?name={{ enrollment.student.get_full_name|default:enrollment.student.username }}&background=0D1B3E&color=fff&size=128" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-sm" alt="Avatar">
+    {% endif %}
+    {% if enrollment.progress_pct >= 100.0 %}
+      <div class="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-1.5 border-2 border-white shadow-sm">
+        <i data-lucide="award" class="w-4 h-4"></i>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="flex-1 z-10">
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-navy-900">{{ enrollment.student.get_full_name|default:enrollment.student.username }}</h1>
+        <p class="text-sm text-navy-500 mt-1 flex items-center gap-2">
+          <i data-lucide="mail" class="w-4 h-4 text-navy-400"></i> {{ enrollment.student.email }}
+          {% if enrollment.student.no_telp %}
+            <span class="text-navy-200">|</span>
+            <i data-lucide="phone" class="w-4 h-4 text-navy-400"></i> {{ enrollment.student.no_telp }}
+          {% endif %}
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="mailto:{{ enrollment.student.email }}" class="flex items-center gap-2 text-sm font-medium text-navy-600 bg-white border border-navy-200 hover:border-navy-300 hover:bg-navy-50 px-4 py-2 rounded-lg transition-colors select-none shadow-sm">
+          <i data-lucide="mail" class="w-4 h-4"></i> Email
+        </a>
+        {% if wa_link %}
+          <a href="{{ wa_link }}" target="_blank" class="flex items-center gap-2 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 px-4 py-2 rounded-lg transition-colors select-none shadow-sm">
+            <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.803-4.389 9.805-9.788.002-2.615-1.013-5.074-2.861-6.927C16.366 2.036 13.916.994 11.3 1.0c-5.396 0-9.793 4.394-9.795 9.79-.001 1.73.456 3.42 1.32 4.925l-.995 3.635 3.722-.976zm11.367-6.851c-.302-.151-1.791-.882-2.069-.982-.278-.1-.48-.15-.68.15-.2.3-.777.982-.953 1.182-.176.2-.352.226-.654.076-.301-.15-1.272-.469-2.423-1.493-.896-.798-1.5-1.785-1.676-2.086-.176-.3-.019-.462.131-.611.135-.134.302-.352.453-.528.151-.176.201-.302.302-.503.101-.2.05-.376-.025-.527-.075-.151-.68-1.637-.932-2.247-.245-.589-.494-.509-.68-.518-.176-.009-.377-.01-.578-.01-.2 0-.527.075-.803.376-.277.301-1.055 1.03-1.055 2.515s1.08 2.916 1.23 3.117c.15.2 2.128 3.25 5.156 4.557.719.31 1.282.496 1.72.636.723.23 1.381.198 1.902.12.58-.087 1.791-.733 2.043-1.442.251-.708.251-1.314.176-1.442-.076-.128-.278-.204-.579-.355z"/>
+            </svg> WhatsApp
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <div class="bg-navy-50/50 rounded-lg p-3 border border-navy-100">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-bold mb-1">Kelas</p>
+        <p class="text-sm font-semibold text-navy-900 truncate" title="{{ enrollment.course.title }}">{{ enrollment.course.title }}</p>
+      </div>
+      <div class="bg-navy-50/50 rounded-lg p-3 border border-navy-100">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-bold mb-1">Tgl Daftar</p>
+        <p class="text-sm font-semibold text-navy-900">{{ enrollment.enrolled_at|date:"d M Y" }}</p>
+      </div>
+      <div class="bg-navy-50/50 rounded-lg p-3 border border-navy-100">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-bold mb-1">Total Waktu Belajar</p>
+        <p class="text-sm font-semibold text-navy-900">
+          {% widthratio total_watch_time 3600 1 %} Jam {% widthratio total_watch_time 60 1 %} Menit
+        </p>
+      </div>
+      <div class="bg-navy-50/50 rounded-lg p-3 border border-navy-100">
+        <p class="text-[10px] uppercase tracking-widest text-navy-400 font-bold mb-1">Rata-rata Kuis</p>
+        <p class="text-sm font-semibold {% if avg_quiz_score and avg_quiz_score >= 80 %}text-emerald-600{% elif avg_quiz_score %}text-navy-900{% else %}text-navy-400{% endif %}">
+          {% if avg_quiz_score %}{{ avg_quiz_score }}%{% else %}Belum ada{% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mt-6">
+      <div class="flex items-center justify-between text-sm mb-2">
+        <span class="font-medium text-navy-700">Progress Belajar</span>
+        {% if enrollment.progress_pct >= 100.0 %}
+          <span class="font-bold text-emerald-600">Selesai (100%)</span>
+        {% else %}
+          <span class="font-bold text-navy-900">{{ enrollment.progress_pct|floatformat:1 }}%</span>
+        {% endif %}
+      </div>
+      <div class="w-full h-2.5 bg-navy-100 rounded-full overflow-hidden">
+        <div class="h-full {% if enrollment.progress_pct >= 100.0 %}bg-emerald-500{% elif enrollment.progress_pct > 0.0 %}bg-navy-900{% else %}bg-navy-200{% endif %} rounded-full transition-all duration-1000 ease-out" style="width:{{ enrollment.progress_pct }}%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-6 items-start mt-6">
+  
+  <!-- Lesson Progress Tracker -->
+  <div class="bg-white rounded-xl border border-navy-100 overflow-hidden flex flex-col h-[500px]">
+    <div class="px-6 py-4 border-b border-navy-100 flex items-center justify-between bg-navy-50/30 shrink-0">
+      <h2 class="font-bold text-navy-900 flex items-center gap-2">
+        <i data-lucide="book-open" class="w-4 h-4 text-navy-500"></i>
+        Aktivitas Materi
+      </h2>
+      <span class="text-xs font-medium text-navy-500 bg-white px-2.5 py-1 rounded-md border border-navy-200 shadow-sm">{{ lesson_progresses.count }} Materi</span>
+    </div>
+    
+    <div class="p-4 overflow-y-auto flex-1 custom-scrollbar">
+      <div class="relative border-l-2 border-navy-100 ml-3 py-2 space-y-6">
+        {% for progress in lesson_progresses %}
+          <div class="relative pl-6">
+            <!-- Timeline Node -->
+            {% if progress.is_completed %}
+              <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow-sm ring-2 ring-emerald-500/20"></div>
+            {% else %}
+              <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-navy-200 border-2 border-white shadow-sm"></div>
+            {% endif %}
+            
+            <div class="bg-white border {% if progress.is_completed %}border-emerald-100 bg-emerald-50/30{% else %}border-navy-100{% endif %} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-navy-400 mb-1 block">{{ progress.lesson.module.title }}</span>
+                  <h3 class="text-sm font-semibold text-navy-900 leading-tight">{{ progress.lesson.title }}</h3>
+                  
+                  <div class="flex items-center gap-3 mt-3">
+                    {% if progress.is_completed %}
+                      <span class="text-xs font-medium text-emerald-600 flex items-center gap-1 bg-emerald-100/50 px-2 py-0.5 rounded">
+                        <i data-lucide="check-circle-2" class="w-3 h-3"></i> Selesai
+                      </span>
+                    {% else %}
+                      <span class="text-xs font-medium text-navy-500 flex items-center gap-1 bg-navy-100/50 px-2 py-0.5 rounded">
+                        <i data-lucide="clock" class="w-3 h-3"></i> Belum Selesai
+                      </span>
+                    {% endif %}
+                    
+                    {% if progress.lesson.lesson_type == 'video' %}
+                      <span class="text-xs text-navy-500 flex items-center gap-1" title="Waktu ditonton">
+                        <i data-lucide="play-circle" class="w-3 h-3"></i> 
+                        {% widthratio progress.watch_duration 60 1 %}m ditonton
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                {% if progress.completed_at %}
+                  <div class="text-right shrink-0">
+                    <p class="text-xs font-medium text-navy-700">{{ progress.completed_at|date:"d M y" }}</p>
+                    <p class="text-[10px] text-navy-400">{{ progress.completed_at|date:"H:i" }}</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="pl-6 py-4 text-sm text-navy-400 italic">Belum ada aktivitas belajar.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz & Certificate Area -->
+  <div class="flex flex-col gap-6 h-[500px]">
+    
+    <!-- Quiz Tracker -->
+    <div class="bg-white rounded-xl border border-navy-100 overflow-hidden flex flex-col flex-1">
+      <div class="px-6 py-4 border-b border-navy-100 flex items-center justify-between bg-navy-50/30 shrink-0">
+        <h2 class="font-bold text-navy-900 flex items-center gap-2">
+          <i data-lucide="help-circle" class="w-4 h-4 text-navy-500"></i>
+          Riwayat Kuis
+        </h2>
+        <span class="text-xs font-medium text-navy-500 bg-white px-2.5 py-1 rounded-md border border-navy-200 shadow-sm">{{ quiz_attempts.count }} Percobaan</span>
+      </div>
+      
+      <div class="p-4 overflow-y-auto flex-1 custom-scrollbar">
+        <div class="space-y-3">
+          {% for attempt in quiz_attempts %}
+            <div class="border border-navy-100 rounded-lg p-4 hover:border-navy-200 transition-colors bg-white shadow-sm flex items-center justify-between gap-4">
+              <div class="min-w-0">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-navy-400 mb-0.5">{{ attempt.quiz.lesson.module.title }}</p>
+                <h4 class="text-sm font-semibold text-navy-900 truncate">{{ attempt.quiz.title }}</h4>
+                <div class="flex items-center gap-2 mt-2 text-xs text-navy-500">
+                  <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> {{ attempt.started_at|date:"d M y, H:i" }}</span>
+                </div>
+              </div>
+              <div class="shrink-0 text-center flex flex-col items-end">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shadow-inner
+                  {% if attempt.status == 'passed' %}bg-emerald-50 text-emerald-600 border border-emerald-200
+                  {% elif attempt.status == 'failed' %}bg-red-50 text-red-600 border border-red-200
+                  {% else %}bg-amber-50 text-amber-600 border border-amber-200{% endif %}">
+                  {{ attempt.score|floatformat:0 }}%
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider mt-1.5
+                  {% if attempt.status == 'passed' %}text-emerald-600
+                  {% elif attempt.status == 'failed' %}text-red-600
+                  {% else %}text-amber-600{% endif %}">
+                  {% if attempt.status == 'passed' %}Lulus
+                  {% elif attempt.status == 'failed' %}Gagal
+                  {% else %}Proses{% endif %}
+                </span>
+              </div>
+            </div>
+          {% empty %}
+            <div class="p-6 text-center text-sm text-navy-400 border border-dashed border-navy-200 rounded-lg bg-navy-50/50">
+              Belum ada percobaan kuis.
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificate Widget -->
+    <div class="bg-white rounded-xl border border-navy-100 p-6 shrink-0 shadow-sm relative overflow-hidden">
+      {% if enrollment.certificate and enrollment.certificate.is_valid %}
+        <div class="absolute -right-6 -top-6 w-32 h-32 bg-emerald-50 rounded-full opacity-50 pointer-events-none"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 shadow-sm">
+              <i data-lucide="award" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-navy-900">Sertifikat Kelulusan</h3>
+              <p class="text-xs text-navy-500">Telah diterbitkan pada {{ enrollment.certificate.issued_at|date:"d M Y" }}</p>
+            </div>
+          </div>
+          <div class="bg-navy-50 rounded-lg p-3 border border-navy-100 flex items-center justify-between mb-4">
+            <div>
+              <p class="text-[10px] uppercase font-bold text-navy-400 tracking-wider">No. Sertifikat</p>
+              <p class="text-sm font-mono font-medium text-navy-900 mt-0.5">{{ enrollment.certificate.certificate_number }}</p>
+            </div>
+            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
+          </div>
+          {% if enrollment.certificate.pdf_file %}
+            <a href="{{ enrollment.certificate.pdf_file.url }}" target="_blank" class="w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-navy-900 hover:bg-navy-800 py-2.5 rounded-lg transition-colors shadow-md hover:shadow-lg">
+              <i data-lucide="download" class="w-4 h-4"></i> Unduh PDF
+            </a>
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="flex items-center gap-3 opacity-60">
+          <div class="w-10 h-10 rounded-lg bg-navy-100 text-navy-400 flex items-center justify-center shrink-0">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-navy-900">Sertifikat Belum Tersedia</h3>
+            <p class="text-xs text-navy-500">Siswa belum menyelesaikan kelas 100%</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* Custom Scrollbar for Tracker Lists */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 20px;
+  }
+  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: #94a3b8;
+  }
+</style>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  lucide.createIcons();
+</script>
+{% endblock extra_js %}

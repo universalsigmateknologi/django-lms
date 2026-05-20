@@ -943,3 +943,45 @@ def instructor_student_list_view(request):
     return render(request, 'accounts/instructor/student/student_list.html', context)
 
 
+@role_required(allowed_roles=['instructor'])
+def instructor_student_detail_view(request, pk):
+    from apps.enrollments.models import Enrollment, LessonProgress, QuizAttempt
+    from django.shortcuts import get_object_or_404
+    from django.db.models import Sum
+
+    instructor = request.user
+    enrollment = get_object_or_404(Enrollment.objects.select_related('student', 'course', 'certificate'), id=pk, course__instructor=instructor)
+
+    # Tracker: progress of lessons
+    lesson_progresses = LessonProgress.objects.filter(enrollment=enrollment).select_related('lesson', 'lesson__module').order_by('lesson__module__order', 'lesson__order')
+    
+    # Tracker: quizzes
+    quiz_attempts = QuizAttempt.objects.filter(enrollment=enrollment).select_related('quiz', 'quiz__lesson', 'quiz__lesson__module').order_by('-started_at')
+    
+    # Analysis: Total time spent, average quiz score
+    total_watch_time = lesson_progresses.aggregate(total=Sum('watch_duration'))['total'] or 0
+    avg_quiz_score = None
+    if quiz_attempts.exists():
+        avg_quiz_score = round(sum(attempt.score for attempt in quiz_attempts) / quiz_attempts.count(), 2)
+
+    # WhatsApp Link
+    student = enrollment.student
+    if student.no_telp:
+        clean_num = ''.join(filter(str.isdigit, str(student.no_telp)))
+        if clean_num.startswith('0'):
+            clean_num = '62' + clean_num[1:]
+        wa_link = f"https://wa.me/{clean_num}"
+    else:
+        wa_link = None
+
+    context = {
+        'enrollment': enrollment,
+        'lesson_progresses': lesson_progresses,
+        'quiz_attempts': quiz_attempts,
+        'total_watch_time': total_watch_time,
+        'avg_quiz_score': avg_quiz_score,
+        'wa_link': wa_link,
+        'menu': 'instructor_students',
+    }
+    return render(request, 'accounts/instructor/student/student_detail.html', context)
+

@@ -207,6 +207,11 @@ def instructor_course_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    if request.user.role == 'instructor':
+        categories = Category.objects.filter(instructor_skills__user=request.user)
+    else:
+        categories = Category.objects.all()
+
     context = {
         'page_obj': page_obj,
         'total_count': total_count,
@@ -216,7 +221,7 @@ def instructor_course_list(request):
         'rejected_count': rejected_count,
         'status_filter': status_filter,
         'search_query': search_query,
-        'categories': Category.objects.all(),
+        'categories': categories,
         'tags': Tag.objects.all(),
         'menu': 'instructor_courses',
     }
@@ -235,6 +240,13 @@ def course_create_view(request):
         tag_ids = request.POST.getlist('tags')
 
         category = get_object_or_404(Category, id=category_id)
+        
+        if request.user.role == 'instructor':
+            from apps.accounts.models import InstructorSkill
+            if not InstructorSkill.objects.filter(user=request.user, category=category).exists():
+                from django.contrib import messages
+                messages.error(request, 'Anda tidak memiliki keahlian di kategori ini.')
+                return redirect('instructor_course_list')
         
         course = Course.objects.create(
             instructor=request.user,
@@ -272,7 +284,14 @@ def course_edit_view(request, pk):
         if thumbnail:
             course.thumbnail = thumbnail
             
-        course.category = get_object_or_404(Category, id=category_id)
+        category = get_object_or_404(Category, id=category_id)
+        if request.user.role == 'instructor':
+            from apps.accounts.models import InstructorSkill
+            if not InstructorSkill.objects.filter(user=request.user, category=category).exists():
+                from django.contrib import messages
+                messages.error(request, 'Anda tidak memiliki keahlian di kategori ini.')
+                return redirect('instructor_course_list')
+        course.category = category
         course.save()
         
         tag_ids = request.POST.getlist('tags')

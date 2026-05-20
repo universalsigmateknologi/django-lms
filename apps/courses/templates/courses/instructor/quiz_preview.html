@@ -1,0 +1,158 @@
+{% extends 'base_learn.html' %}
+{% load static %}
+{% block content2 %}
+<!-- Quiz Preview -->
+<div class="max-w-6xl mx-auto pt-8 px-5">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
+        
+        <!-- Left Column: Questions -->
+        <div class="lg:col-span-8">
+            <!-- Top Bar: Title -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-2 text-sm text-navy-500">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span class="font-medium">{{ quiz.title }} (Preview Mode)</span>
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="questionsContainer">
+                {% for question in questions %}
+                <div class="question-slide {% if not forloop.first %}hidden{% endif %}" data-question-index="{{ forloop.counter }}">
+                    <div class="bg-white border border-navy-100 rounded-2xl p-5 sm:p-7 mb-6 shadow-sm">
+                        <div class="flex items-center gap-2 mb-5">
+                            <span class="w-7 h-7 rounded-lg bg-navy-900 text-white text-xs font-bold flex items-center justify-center">{{ forloop.counter }}</span>
+                            <span class="text-xs font-medium text-navy-400 uppercase tracking-wide">{{ question.get_question_type_display }}</span>
+                        </div>
+
+                        <h2 class="text-lg sm:text-xl font-semibold text-navy-900 leading-relaxed mb-6">
+                            {{ question.text }}
+                        </h2>
+
+                        {% if question.image %}
+                        <img src="{{ question.image.url }}" alt="Question Image" class="rounded-xl mb-6 max-h-64 object-contain">
+                        {% endif %}
+
+                        {% if question.question_type == 'multiple_choice' or question.question_type == 'true_false' %}
+                        <div class="space-y-3">
+                            {% for answer in question.shuffled_answers %}
+                            <div class="quiz-option flex items-start gap-4 p-4 rounded-xl border-2 {% if answer.is_correct %}border-emerald-500 bg-emerald-50{% else %}border-navy-100 bg-navy-50/50{% endif %}">
+                                {% if answer.is_correct %}
+                                <i data-lucide="check-circle-2" class="mt-0.5 w-5 h-5 text-emerald-600"></i>
+                                {% else %}
+                                <i data-lucide="circle" class="mt-0.5 w-5 h-5 text-navy-300"></i>
+                                {% endif %}
+                                <div class="flex flex-col">
+                                    <span class="text-sm {% if answer.is_correct %}text-emerald-900 font-bold{% else %}text-navy-700{% endif %}">{{ answer.text }}</span>
+                                    {% if answer.is_correct %}
+                                    <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mt-1">Jawaban Benar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% elif question.question_type == 'essay' or question.question_type == 'code' %}
+                        <div class="w-full p-4 rounded-xl border-2 border-navy-100 bg-navy-50 text-navy-500 text-sm font-mono flex items-center gap-2">
+                            <i data-lucide="info" class="w-4 h-4"></i>
+                            Tipe pertanyaan ini membutuhkan jawaban manual atau berupa kode yang akan dinilai oleh instruktur.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="flex items-center justify-between gap-4 mt-2">
+                <button type="button" onclick="prevQuestion()" id="prevBtn" class="flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-navy-200 text-navy-600 font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled>
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>Sebelumnya</span>
+                </button>
+
+                <button type="button" onclick="nextQuestion()" id="nextBtn" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-semibold text-sm transition-colors">
+                    <span>Selanjutnya</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Column: Info & Navigation -->
+        <div class="hidden lg:block lg:col-span-4 sticky top-8">
+            <!-- Navigation Card -->
+            <div class="bg-white border border-navy-100 rounded-2xl p-6 shadow-sm">
+                <!-- Navigator -->
+                <div>
+                    <span class="text-xs font-bold text-navy-900 uppercase block mb-4">Navigasi Soal (Preview)</span>
+                    <div class="grid grid-cols-5 gap-2">
+                        {% for question in questions %}
+                        <button type="button" onclick="goToQuestion({{ forloop.counter }})" id="navBtn_{{ forloop.counter }}" class="nav-btn aspect-square rounded-lg {% if forloop.first %}bg-navy-900/10 border-2 border-navy-900 text-navy-900{% else %}bg-navy-50 border border-navy-100 text-navy-400{% endif %} text-xs font-bold flex items-center justify-center hover:bg-navy-100 transition-colors">
+                            {{ forloop.counter }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigator (Only visible on mobile) -->
+        <div class="lg:hidden mt-8">
+            <div class="bg-white border border-navy-100 rounded-2xl p-5 mb-6">
+                <span class="text-xs font-bold text-navy-900 uppercase block mb-4 text-center">Navigasi Soal (Preview)</span>
+                <div class="grid grid-cols-5 gap-2">
+                    {% for question in questions %}
+                    <button type="button" onclick="goToQuestion({{ forloop.counter }})" id="navBtnMobile_{{ forloop.counter }}" class="nav-btn aspect-square rounded-lg {% if forloop.first %}bg-navy-900/10 border-2 border-navy-900 text-navy-900{% else %}bg-navy-50 border border-navy-100 text-navy-400{% endif %} text-xs font-bold flex items-center justify-center">
+                        {{ forloop.counter }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let currentIdx = 1;
+    const totalQuestions = {{ questions|length }};
+
+    function goToQuestion(idx) {
+        document.querySelectorAll('.question-slide').forEach(s => s.classList.add('hidden'));
+        document.querySelector(`.question-slide[data-question-index="${idx}"]`).classList.remove('hidden');
+        
+        // Update nav buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('bg-navy-900/10', 'border-2', 'border-navy-900', 'text-navy-900');
+            btn.classList.add('bg-navy-50', 'border', 'border-navy-100', 'text-navy-400');
+        });
+        
+        const desktopBtn = document.getElementById(`navBtn_${idx}`);
+        const mobileBtn = document.getElementById(`navBtnMobile_${idx}`);
+        
+        [desktopBtn, mobileBtn].forEach(btn => {
+            if (btn) {
+                btn.classList.add('bg-navy-900/10', 'border-2', 'border-navy-900', 'text-navy-900');
+                btn.classList.remove('bg-navy-50', 'border-navy-100', 'text-navy-400');
+            }
+        });
+
+        currentIdx = idx;
+        
+        // Update navigation buttons
+        document.getElementById('prevBtn').disabled = (currentIdx === 1);
+        if (currentIdx === totalQuestions) {
+            document.getElementById('nextBtn').classList.add('hidden');
+        } else {
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
+    }
+
+    function nextQuestion() {
+        if (currentIdx < totalQuestions) goToQuestion(currentIdx + 1);
+    }
+
+    function prevQuestion() {
+        if (currentIdx > 1) goToQuestion(currentIdx - 1);
+    }
+</script>
+
+{% endblock content2 %}

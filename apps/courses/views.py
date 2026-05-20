@@ -727,4 +727,54 @@ def instructor_course_preview(request, course_id, lesson_id):
     
     return render(request, 'enrollments/learn.html', context)
 
+
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
+def instructor_quiz_preview(request, course_id, quiz_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Check permissions (instructor of the course or senior instructor or staff/admin)
+    if request.user.role in ['admin', 'staff']:
+        pass
+    elif course.instructor == request.user:
+        pass
+    else:
+        from apps.accounts.models import InstructorSkill
+        is_senior = InstructorSkill.objects.filter(
+            user=request.user,
+            category=course.category,
+            position_status='senior'
+        ).exists()
+        if not is_senior:
+            from django.contrib import messages
+            messages.error(request, 'Anda tidak memiliki wewenang untuk preview kuis ini.')
+            return redirect('instructor_course_list')
+            
+    from apps.quizzes.models import Quiz
+    quiz = get_object_or_404(Quiz, id=quiz_id, lesson__module__course=course)
+    
+    questions = list(quiz.questions.all().prefetch_related('answers'))
+    for q in questions:
+        q.shuffled_answers = q.answers.all() # No randomization in preview, show as is
+        
+    modules = Module.objects.filter(course=course).prefetch_related('lessons').order_by('order')
+    all_lessons = list(Lesson.objects.filter(module__course=course).order_by('module__order', 'order'))
+    unlocked_lesson_ids = {l.id for l in all_lessons}
+    completed_lesson_ids = set()
+
+    context = {
+        'course': course,
+        'quiz': quiz,
+        'questions': questions,
+        'lesson': quiz.lesson,
+        'modules': modules,
+        'unlocked_lesson_ids': unlocked_lesson_ids,
+        'completed_lesson_ids': completed_lesson_ids,
+        'total_lessons_count': len(all_lessons),
+        'completed_count': 0,
+        'is_preview': True,
+        'menu': 'quiz_attempt', # Using quiz_attempt layout
+    }
+    
+    return render(request, 'courses/instructor/quiz_preview.html', context)
+
 

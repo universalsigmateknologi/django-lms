@@ -74,10 +74,12 @@
                         <i data-lucide="external-link" class="w-4 h-4"></i> Lihat Halaman Siswa
                     </a>
                 {% endif %}
+                {% if request.user == course.instructor %}
                 <a href="{% url 'instructor_module_list' course.id %}"
                    class="flex items-center gap-2 bg-navy-900 hover:bg-navy-950 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-md transition-all">
                     <i data-lucide="edit-3" class="w-4 h-4"></i> Kelola Kurikulum
                 </a>
+                {% endif %}
             {% endif %}
         </div>
     </div>
@@ -170,7 +172,7 @@
                         <i data-lucide="eye" class="w-4 h-4"></i> Preview
                     </a>
                     {% endif %}
-                    {% if course.status != 'pending' %}
+                    {% if course.status != 'pending' and request.user == course.instructor %}
                     <a href="{% url 'instructor_module_list' course.id %}" class="text-xs font-semibold text-navy-900 hover:underline flex items-center gap-1">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i> Kelola Modul & Materi
                     </a>

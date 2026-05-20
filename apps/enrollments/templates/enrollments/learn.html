@@ -52,10 +52,16 @@
     </div>
     <h3 class="text-xl font-semibold text-navy-950 mb-2">Siap untuk Uji Pemahaman?</h3>
     <p class="text-navy-500 text-sm mb-6 max-w-sm mx-auto">Selesaikan quiz ini untuk mengukur pemahamanmu tentang materi {{ lesson.module.title }}.</p>
+    {% if is_preview %}
+    <button disabled class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-navy-400 text-white font-medium cursor-not-allowed">
+        Mulai Quiz (Disabled in Preview)
+    </button>
+    {% else %}
     <a href="{% url 'enrollments:quiz_start' course.slug lesson.quiz.id %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-navy-900 text-white font-medium hover:bg-navy-800 transition-colors">
         Mulai Quiz
         <i data-lucide="arrow-right" class="w-4 h-4"></i>
     </a>
+    {% endif %}
 </div>
 {% endif %}
 
@@ -251,7 +257,7 @@
 <!-- Bottom Navigation -->
 <div class="flex items-center justify-between mt-12 pt-8 border-t border-navy-200 mb-8">
   {% if prev_lesson %}
-  <a href="{% url 'enrollments:learn' course.slug prev_lesson.id %}" class="flex items-center gap-2 text-sm text-navy-500 hover:text-navy-900 transition-colors group">
+  <a href="{% if is_preview %}{% url 'instructor_course_preview' course.id prev_lesson.id %}{% else %}{% url 'enrollments:learn' course.slug prev_lesson.id %}{% endif %}" class="flex items-center gap-2 text-sm text-navy-500 hover:text-navy-900 transition-colors group">
     <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
     <span>{{ prev_lesson.title }}</span>
   </a>
@@ -259,7 +265,7 @@
   <div></div>
   {% endif %}
 
-  {% if lesson.lesson_type != 'quiz' %}
+  {% if lesson.lesson_type != 'quiz' and not is_preview %}
   <form action="{% url 'enrollments:mark_lesson_complete' lesson.id %}" method="POST">
       {% csrf_token %}
       <button type="submit" id="markCompleteBtn" 
@@ -272,7 +278,7 @@
   {% endif %}
 
   {% if next_lesson %}
-  <a href="{% url 'enrollments:learn' course.slug next_lesson.id %}" class="flex items-center gap-2 text-sm text-navy-500 hover:text-navy-900 transition-colors group">
+  <a href="{% if is_preview %}{% url 'instructor_course_preview' course.id next_lesson.id %}{% else %}{% url 'enrollments:learn' course.slug next_lesson.id %}{% endif %}" class="flex items-center gap-2 text-sm text-navy-500 hover:text-navy-900 transition-colors group">
     <span>{{ next_lesson.title }}</span>
     <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
   </a>

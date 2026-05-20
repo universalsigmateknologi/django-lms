@@ -624,6 +624,13 @@ def instructor_course_detail(request, pk):
     # Prefetch modul & pelajaran untuk Tab 1
     modules = course.modules.all().prefetch_related('lessons')
     total_lessons = sum(module.lessons.count() for module in modules)
+    
+    first_lesson_id = None
+    first_module = course.modules.order_by('order').first()
+    if first_module:
+        first_lesson = first_module.lessons.order_by('order').first()
+        if first_lesson:
+            first_lesson_id = first_lesson.id
 
     # Ambil data siswa terdaftar untuk Tab 2
     enrollments = Enrollment.objects.filter(course=course).select_related('student', 'student__profile').order_by('-enrolled_at')
@@ -649,6 +656,7 @@ def instructor_course_detail(request, pk):
         'course': course,
         'modules': modules,
         'total_lessons': total_lessons,
+        'first_lesson_id': first_lesson_id,
         'enrollments': enrollments,
         'avg_progress': avg_progress,
         'total_revenue': total_revenue,
@@ -657,8 +665,66 @@ def instructor_course_detail(request, pk):
     }
     return render(request, 'courses/instructor/course_detail.html', context)
 
+@role_required(allowed_roles=['instructor', 'admin', 'staff'])
+def instructor_course_preview(request, course_id, lesson_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Check permissions (instructor of the course or senior instructor or staff/admin)
+    if request.user.role in ['admin', 'staff']:
+        pass
+    elif course.instructor == request.user:
+        pass
+    else:
+        from apps.accounts.models import InstructorSkill
+        is_senior = InstructorSkill.objects.filter(
+            user=request.user,
+            category=course.category,
+            position_status='senior'
+        ).exists()
+        if not is_senior:
+            from django.contrib import messages
+            messages.error(request, 'Anda tidak memiliki wewenang untuk preview kelas ini.')
+            return redirect('instructor_course_list')
 
+    lesson = get_object_or_404(Lesson, id=lesson_id, module__course=course)
+    modules = Module.objects.filter(course=course).prefetch_related('lessons').order_by('order')
+    all_lessons = list(Lesson.objects.filter(module__course=course).order_by('module__order', 'order'))
+    
+    unlocked_lesson_ids = {l.id for l in all_lessons}
+    completed_lesson_ids = set() # No progress in preview mode
+    
+    current_index = -1
+    for i, l in enumerate(all_lessons):
+        if l.id == lesson.id:
+            current_index = i
+            break
 
+    # Handle YouTube URL transformation
+    youtube_id = None
+    if lesson.lesson_type == 'video' and lesson.video_url:
+        if 'youtube.com/watch?v=' in lesson.video_url:
+            youtube_id = lesson.video_url.split('watch?v=')[-1].split('&')[0]
+        elif 'youtu.be/' in lesson.video_url:
+            youtube_id = lesson.video_url.split('/')[-1]
+        elif 'youtube.com/embed/' in lesson.video_url:
+            youtube_id = lesson.video_url.split('embed/')[-1]
 
+    context = {
+        'course': course,
+        'lesson': lesson,
+        'modules': modules,
+        'unlocked_lesson_ids': unlocked_lesson_ids,
+        'completed_lesson_ids': completed_lesson_ids,
+        'total_lessons_count': len(all_lessons),
+        'completed_count': 0,
+        'prev_lesson': all_lessons[current_index - 1] if current_index > 0 else None,
+        'next_lesson': all_lessons[current_index + 1] if current_index < len(all_lessons) - 1 else None,
+        'current_lesson_num': current_index + 1,
+        'youtube_id': youtube_id,
+        'is_preview': True,
+        'menu': 'instructor_courses',
+    }
+    
+    return render(request, 'enrollments/learn.html', context)
 
 

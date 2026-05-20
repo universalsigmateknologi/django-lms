@@ -33,7 +33,7 @@
                 </button>
                 <div class="module-content {% if lesson.module != mod %}hidden{% endif %}">
                     {% for les in mod.lessons.all %}
-                        <a {% if les.id in unlocked_lesson_ids %}href="{% if les.lesson_type == 'quiz' %}{% url 'enrollments:quiz_start' course.slug les.quiz.id %}{% else %}{% url 'enrollments:learn' course.slug les.id %}{% endif %}"{% endif %}
+                        <a {% if les.id in unlocked_lesson_ids %}href="{% if is_preview %}{% url 'instructor_course_preview' course.id les.id %}{% elif les.lesson_type == 'quiz' %}{% url 'enrollments:quiz_start' course.slug les.quiz.id %}{% else %}{% url 'enrollments:learn' course.slug les.id %}{% endif %}"{% endif %}
                             class="lesson-item flex items-center gap-3 px-4 py-2 pl-13 transition-colors 
                             {% if lesson == les %}bg-navy-50 border-l-2 border-navy-900{% elif les.id in unlocked_lesson_ids %}hover:bg-navy-50{% else %}opacity-50 cursor-not-allowed{% endif %}"
                             {% if les.id not in unlocked_lesson_ids %}onclick="return false;"{% endif %}>

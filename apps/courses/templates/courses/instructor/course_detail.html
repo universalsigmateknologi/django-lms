@@ -164,11 +164,18 @@
         <div id="tab-curriculum" class="tab-content space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="text-sm font-bold text-navy-900">Kurikulum dan Struktur Pelajaran</h3>
-                {% if course.status != 'pending' %}
-                <a href="{% url 'instructor_module_list' course.id %}" class="text-xs font-semibold text-navy-900 hover:underline flex items-center gap-1">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Kelola Modul & Materi
-                </a>
-                {% endif %}
+                <div class="flex items-center gap-4">
+                    {% if first_lesson_id %}
+                    <a href="{% url 'instructor_course_preview' course.id first_lesson_id %}" target="_blank" class="text-xs font-semibold text-navy-600 hover:text-navy-900 hover:underline flex items-center gap-1">
+                        <i data-lucide="eye" class="w-4 h-4"></i> Preview
+                    </a>
+                    {% endif %}
+                    {% if course.status != 'pending' %}
+                    <a href="{% url 'instructor_module_list' course.id %}" class="text-xs font-semibold text-navy-900 hover:underline flex items-center gap-1">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Kelola Modul & Materi
+                    </a>
+                    {% endif %}
+                </div>
             </div>
 
             <div class="space-y-3">

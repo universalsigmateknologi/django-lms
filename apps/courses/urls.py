@@ -6,7 +6,7 @@ from .views import (
     module_edit_view, module_delete_view, lesson_create_view,
     lesson_edit_view, lesson_delete_view, course_publish_request,
     staff_course_verification_view, staff_verify_course_action,
-    instructor_course_detail
+    instructor_course_detail, instructor_course_preview
 )
 
 
@@ -28,6 +28,7 @@ urlpatterns = [
     path('instructor/courses/edit/<int:pk>/', course_edit_view, name='course_edit'),
     path('instructor/courses/publish/<int:pk>/', course_publish_request, name='course_publish'),
     path('instructor/courses/detail/<int:pk>/', instructor_course_detail, name='instructor_course_detail'),
+    path('instructor/courses/<int:course_id>/preview/<int:lesson_id>/', instructor_course_preview, name='instructor_course_preview'),
 
     # Staff Verification Routes
     path('staff/courses/verify/', staff_course_verification_view, name='staff_course_verification'),

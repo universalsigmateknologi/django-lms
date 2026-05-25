@@ -91,6 +91,23 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"Profile {self.user.email}"
 
+class InstructorCertificate(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='instructor_certificates'
+    )
+    title = models.CharField(max_length=255)
+
+    issuing_organization = models.CharField(max_length=255)
+    issue_date = models.DateField()
+    certificate_file = models.FileField(upload_to='instructor_certificates/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"
+
+
 class InstructorSkill(models.Model):
     POSITION_CHOICES = (
         ('junior', 'Junior'),

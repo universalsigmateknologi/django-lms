@@ -2,10 +2,15 @@ from django.urls import path
 from apps.accounts.views import (
     login_view, verify_email, register, logout_view, no_permission,
     staff_instructor_list_view, staff_instructor_detail_view, staff_dashboard_view,
-    instructor_dashboard_view, instructor_student_list_view, instructor_student_detail_view, staff_student_list_view
+        instructor_dashboard_view, instructor_student_list_view, instructor_student_detail_view, staff_student_list_view,
+    profile_view, certificate_create_view, certificate_delete_view
 )
 urlpatterns = [
+    path('profile/', profile_view, name='profile_user'),
+    path('instructor/certificate/create/', certificate_create_view, name='certificate_create'),
+    path('instructor/certificate/delete/<int:pk>/', certificate_delete_view, name='certificate_delete'),
     path('login/', login_view, name='login'),
+
     path('logout/', logout_view, name='logout'),
     path('register/', register, name='register'),
     path('verify/<uidb64>/<token>/', verify_email, name='verify_email'),
@@ -18,4 +23,4 @@ urlpatterns = [
     path('staff/instructors/', staff_instructor_list_view, name='staff_instructor_list'),
     path('staff/instructors/<uuid:pk>/', staff_instructor_detail_view, name='staff_instructor_detail'),
 ]
-
+

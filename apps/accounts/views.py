@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode
@@ -13,6 +14,9 @@ from apps.accounts.decorators import role_required
 from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator
 from django.utils import timezone
+from .forms import UserProfileForm, CustomUserForm, InstructorCertificateForm
+from .models import InstructorCertificate, UserProfile
+
 
 User = get_user_model()
 
@@ -984,4 +988,62 @@ def instructor_student_detail_view(request, pk):
         'menu': 'instructor_students',
     }
     return render(request, 'accounts/instructor/student/student_detail.html', context)
+
+
+@login_required
+def profile_view(request):
+    user = request.user
+    # Ensure profile exists
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    
+    if request.method == 'POST':
+        user_form = CustomUserForm(request.POST, instance=user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Profil berhasil diperbarui!')
+            return redirect('profile')
+    else:
+        user_form = CustomUserForm(instance=user)
+        profile_form = UserProfileForm(instance=profile)
+
+    certificates = None
+    cert_form = None
+    if user.role == 'instructor':
+        certificates = user.instructor_certificates.all().order_by('-issue_date')
+        cert_form = InstructorCertificateForm()
+
+    context = {
+        'title': 'Profil Saya',
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'certificates': certificates,
+        'cert_form': cert_form,
+        'menu': 'profile',
+    }
+    return render(request, 'accounts/profile.html', context)
+
+@role_required(allowed_roles=['instructor'])
+def certificate_create_view(request):
+    if request.method == 'POST':
+        form = InstructorCertificateForm(request.POST, request.FILES)
+        if form.is_valid():
+            certificate = form.save(commit=False)
+            certificate.user = request.user
+            certificate.save()
+            messages.success(request, 'Sertifikat berhasil ditambahkan!')
+        else:
+            messages.error(request, 'Gagal menambahkan sertifikat. Silakan cek form kembali.')
+    return redirect('profile')
+
+@role_required(allowed_roles=['instructor'])
+def certificate_delete_view(request, pk):
+    certificate = get_object_or_404(InstructorCertificate, id=pk, user=request.user)
+    if request.method == 'POST':
+        certificate.delete()
+        messages.success(request, 'Sertifikat berhasil dihapus!')
+    return redirect('profile')
+
 

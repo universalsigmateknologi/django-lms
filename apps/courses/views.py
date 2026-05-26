@@ -10,9 +10,6 @@ from django.core.paginator import Paginator
 from apps.payments.models import Order, OrderStatus
 from apps.enrollments.models import Enrollment, EnrollmentStatus
 
-def landing_view(request):
-    return render(request, 'courses/landing.html')
-
 @role_required(allowed_roles=['student'])
 def course_list_view(request):
 
@@ -777,4 +774,4 @@ def instructor_quiz_preview(request, course_id, quiz_id):
     
     return render(request, 'courses/instructor/quiz_preview.html', context)
 
-
+

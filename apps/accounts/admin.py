@@ -37,13 +37,16 @@ class CustomUserAdmin(UserAdmin):
     filter_horizontal = ('groups', 'user_permissions')
 
     # Field yang ditampilkan di list
-    list_display = ('email', 'username', 'role', 'is_verified', 'is_staff', 'is_active')
-    list_filter = ('role', 'is_verified', 'is_staff', 'is_active')
+    list_display = ('email', 'username', 'role', 'is_verified', 'jenis_kelamin', 'provinsi', 'is_staff', 'is_active')
+    list_filter = ('role', 'is_verified', 'jenis_kelamin', 'is_staff', 'is_active')
 
     # Field saat edit user
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Informasi User', {'fields': ('username', 'role', 'is_verified', 'no_telp')}),
+        ('Informasi Tambahan & Wilayah', {'fields': (
+            'jenis_kelamin', 'provinsi', 'kabupaten_kota', 'kecamatan', 'desa_kelurahan', 'detail_alamat', 'kode_pos'
+        )}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
         ('Tanggal', {'fields': ('last_login', 'date_joined')}),
     )
@@ -52,11 +55,14 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'role', 'password1', 'password2', 'is_staff', 'is_active', 'no_telp')
+            'fields': (
+                'email', 'username', 'role', 'password1', 'password2', 'is_staff', 'is_active', 'no_telp',
+                'jenis_kelamin', 'provinsi', 'kabupaten_kota', 'kecamatan', 'desa_kelurahan', 'detail_alamat', 'kode_pos'
+            )
         }),
     )
 
-    search_fields = ('email', 'username')
+    search_fields = ('email', 'username', 'provinsi', 'kabupaten_kota')
     ordering = ('email',)
     readonly_fields = ('date_joined', 'last_login')
 

@@ -46,6 +46,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     no_telp = models.CharField(max_length=20, blank=True, null=True)
 
+    # Kolom Biodata Tambahan
+    GENDER_CHOICES = (
+        ('L', 'Laki-laki'),
+        ('P', 'Perempuan'),
+    )
+    jenis_kelamin = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    
+    # Kolom Wilayah Indonesia (Integrasi API)
+    provinsi = models.CharField(max_length=100, blank=True, null=True)
+    kabupaten_kota = models.CharField(max_length=100, blank=True, null=True)
+    kecamatan = models.CharField(max_length=100, blank=True, null=True)
+    desa_kelurahan = models.CharField(max_length=100, blank=True, null=True)
+    
+    # Detail Alamat & Kode Pos
+    detail_alamat = models.TextField(blank=True, null=True)
+    kode_pos = models.CharField(max_length=10, blank=True, null=True)
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
